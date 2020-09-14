@@ -195,7 +195,7 @@ public class OpenNoteScannerActivity extends AppCompatActivity implements Naviga
         mSharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (mSharedPref.getBoolean("isFirstRun", true) && !mSharedPref.getBoolean("usage_stats", false)) {
-            statsOptInDialog();
+            //statsOptInDialog();
         }
 
         //tracker = ((OpenNoteScannerApplication) getApplication()).getTracker();
