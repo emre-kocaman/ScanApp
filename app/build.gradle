@@ -55,7 +55,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
 
-
+    //for image scanning
     implementation 'com.google.zxing:core:3.0.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.github.ctodobom:OpenCV-3.1.0-Android:9e00ee4218ca0c9e60a905c9f09bf499f9dc5115'
@@ -69,5 +69,8 @@ dependencies {
     implementation 'com.itextpdf:layout:7.1.11'
     implementation 'com.itextpdf:io:7.1.11'
     implementation 'com.github.addisonelliott:SegmentedButton:3.1.9'
+
+    //for image editting
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.4.+'
 
 }

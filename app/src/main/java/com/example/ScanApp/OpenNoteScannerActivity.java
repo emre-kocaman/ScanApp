@@ -56,6 +56,7 @@ import com.example.ScanApp.helpers.OpenNoteMessage;
 import com.example.ScanApp.helpers.PreviewFrame;
 import com.example.ScanApp.helpers.ScanTopicDialogFragment;
 import com.example.ScanApp.helpers.ScannedDocument;
+import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
 import com.example.ScanApp.views.HUDCanvasView;
 import com.google.android.material.navigation.NavigationView;
 
@@ -194,9 +195,6 @@ public class OpenNoteScannerActivity extends AppCompatActivity implements Naviga
 
         mSharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if (mSharedPref.getBoolean("isFirstRun", true) && !mSharedPref.getBoolean("usage_stats", false)) {
-            //statsOptInDialog();
-        }
 
         //tracker = ((OpenNoteScannerApplication) getApplication()).getTracker();
         //TrackHelper.track().screen("/OpenNoteScannerActivity").title("Main Screen").with(tracker);
@@ -211,7 +209,7 @@ public class OpenNoteScannerActivity extends AppCompatActivity implements Naviga
         mWaitSpinner = findViewById(R.id.wait_spinner);
 
         textViewInfo= findViewById(R.id.textViewInfo);
-        //textViewInfo.setText(StaticVeriables.informationText);
+        textViewInfo.setText(StaticVeriables.informationText);
 
 
         // Set up the user interaction to manually show or hide the system UI.

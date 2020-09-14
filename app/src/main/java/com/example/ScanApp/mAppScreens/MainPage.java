@@ -29,9 +29,7 @@ public class MainPage extends AppCompatActivity {
     SegmentedButtonGroup segmentedButtonGroup;
 
     //Veriables
-
     Intent intent;
-    Bitmap bitmap;
 
 
     @Override
@@ -39,7 +37,6 @@ public class MainPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
         defs();
-        pickMatImg();
         segmentGroupListener();
     }
 
@@ -50,8 +47,6 @@ public class MainPage extends AppCompatActivity {
 
         folderImage.setImageResource(R.drawable.folder);
         scanImage.setImageResource(R.drawable.scan);
-
-        imageViewTaken=findViewById(R.id.imageViewTaken);
 
         segmentedButtonGroup = findViewById(R.id.segmentedButtonGroup);
         intent=new Intent(MainPage.this, OpenNoteScannerActivity.class);
@@ -78,43 +73,10 @@ public class MainPage extends AppCompatActivity {
         });
     }
 
-    private void pickMatImg(){
-        if(StaticVeriables.scannedDocument!=null){
-            Mat seedsImage = StaticVeriables.scannedDocument.processed;
-            Mat tmp = new Mat (seedsImage.rows(),seedsImage.cols(), CvType.CV_8U, new Scalar(4));
-            try {
-                //Imgproc.cvtColor(seedsImage, tmp, Imgproc.COLOR_RGB2BGRA);
-                Imgproc.cvtColor(seedsImage, tmp, Imgproc.COLOR_GRAY2RGBA, 4);
-                bitmap = Bitmap.createBitmap(tmp.cols(), tmp.rows(), Bitmap.Config.ARGB_8888);
-                Utils.matToBitmap(tmp, bitmap);
-            }
-            catch (CvException e){Log.d("Exception",e.getMessage());}
-
-
-            bitmap = mUtils.RotateBitmap(bitmap,90);
-            //imageViewTaken.getLayoutParams().height=seedsImage.height();
-            //imageViewTaken.getLayoutParams().width=seedsImage.width();
-            imageViewTaken.setImageBitmap(bitmap);
-        }
-
-
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        StaticVeriables.photoCount--;
-        if (StaticVeriables.photoCount==0){//Tarama bitmiştir
-            Log.e("TARAMA DURUMU","TARAMA BİTMİŞTİR");
-            StaticVeriables.informationText="";
-            StaticVeriables.photoCount=20;
-        }
-        else if (StaticVeriables.photoCount==1){//Kimlik sayfasının arka sayfasını çekmeye git
-            Log.e("TARAMA DURUMU","2. TARAMAYA GİTMESİ LAZIM");
-            StaticVeriables.informationText="SCAN THE BACK OF YOUR CARD";
-
-            startActivity(intent);
-        }
     }
 
     @Override

@@ -18,6 +18,7 @@ import com.example.ScanApp.helpers.PreviewFrame;
 import com.example.ScanApp.helpers.Quadrilateral;
 import com.example.ScanApp.helpers.ScannedDocument;
 import com.example.ScanApp.helpers.Utils;
+import com.example.ScanApp.mAppScreens.mUtils.CropingImage;
 import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
 import com.example.ScanApp.views.HUDCanvasView;
 import com.example.ScanApp.mAppScreens.MainPage;
@@ -163,7 +164,7 @@ public class ImageProcessor extends Handler {
         ScannedDocument doc = detectDocument(img);
         Log.e("IMAGEPROCCESS",img.toString());
         //StaticVeriables.scannedMat=doc.getProcessed();
-        mMainActivity.startActivity(new Intent(mMainActivity, MainPage.class));
+        mMainActivity.startActivity(new Intent(mMainActivity, CropingImage.class));
         //mMainActivity.saveDocument(doc);
 
         doc.release();

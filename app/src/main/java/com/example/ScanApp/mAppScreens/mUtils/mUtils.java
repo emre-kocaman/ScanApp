@@ -1,13 +1,18 @@
 package com.example.ScanApp.mAppScreens.mUtils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import org.opencv.android.Utils;
 import org.opencv.core.CvException;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
+
+import java.io.ByteArrayOutputStream;
 
 public class mUtils {
 
@@ -33,6 +38,13 @@ public class mUtils {
             Log.d("Exception",e.getMessage());}
 
 
+    }
+
+    public static Uri getImageUriFromBitmap(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 
 }
