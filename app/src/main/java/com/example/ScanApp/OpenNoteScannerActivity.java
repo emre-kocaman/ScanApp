@@ -1030,40 +1030,4 @@ public class OpenNoteScannerActivity extends AppCompatActivity implements Naviga
     }
 
 
-
-
-    private void statsOptInDialog() {
-        AlertDialog.Builder statsOptInDialog = new AlertDialog.Builder(this);
-
-        statsOptInDialog.setTitle(getString(R.string.stats_optin_title));
-        statsOptInDialog.setMessage(getString(R.string.stats_optin_text));
-
-        statsOptInDialog.setPositiveButton(R.string.answer_yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                mSharedPref.edit().putBoolean("usage_stats", true).commit();
-                mSharedPref.edit().putBoolean("isFirstRun", false).commit();
-                dialog.dismiss();
-            }
-        });
-
-        statsOptInDialog.setNegativeButton(R.string.answer_no, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                mSharedPref.edit().putBoolean("usage_stats", false).commit();
-                mSharedPref.edit().putBoolean("isFirstRun", false).commit();
-                dialog.dismiss();
-            }
-        });
-
-        statsOptInDialog.setNeutralButton(R.string.answer_later, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        statsOptInDialog.create().show();
-    }
-
 }
