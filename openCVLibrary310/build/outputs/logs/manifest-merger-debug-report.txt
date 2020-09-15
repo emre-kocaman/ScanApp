@@ -22,12 +22,12 @@ INJECTED from C:\Users\emre_\AndroidStudioProjects\ScanApp\openCVLibrary310\src\
 		INJECTED from C:\Users\emre_\AndroidStudioProjects\ScanApp\openCVLibrary310\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\emre_\AndroidStudioProjects\ScanApp\openCVLibrary310\src\main\AndroidManifest.xml
 uses-sdk
-ADDED from C:\Users\emre_\AndroidStudioProjects\ScanApp\openCVLibrary310\src\main\AndroidManifest.xml:7:5-74
-INJECTED from C:\Users\emre_\AndroidStudioProjects\ScanApp\openCVLibrary310\src\main\AndroidManifest.xml:7:5-74
-INJECTED from C:\Users\emre_\AndroidStudioProjects\ScanApp\openCVLibrary310\src\main\AndroidManifest.xml:7:5-74
+ADDED from C:\Users\emre_\AndroidStudioProjects\ScanApp\openCVLibrary310\src\main\AndroidManifest.xml:7:5-47
+INJECTED from C:\Users\emre_\AndroidStudioProjects\ScanApp\openCVLibrary310\src\main\AndroidManifest.xml:7:5-47
+INJECTED from C:\Users\emre_\AndroidStudioProjects\ScanApp\openCVLibrary310\src\main\AndroidManifest.xml:7:5-47
 	android:targetSdkVersion
 		ADDED from C:\Users\emre_\AndroidStudioProjects\ScanApp\openCVLibrary310\src\main\AndroidManifest.xml:7:15-44
 	android:minSdkVersion
-		ADDED from C:\Users\emre_\AndroidStudioProjects\ScanApp\openCVLibrary310\src\main\AndroidManifest.xml:7:45-71
 		INJECTED from C:\Users\emre_\AndroidStudioProjects\ScanApp\openCVLibrary310\src\main\AndroidManifest.xml
+		ADDED from C:\Users\emre_\AndroidStudioProjects\ScanApp\openCVLibrary310\src\main\AndroidManifest.xml:7:5-47
 		INJECTED from C:\Users\emre_\AndroidStudioProjects\ScanApp\openCVLibrary310\src\main\AndroidManifest.xml
