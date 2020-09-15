@@ -152,6 +152,7 @@ public class ImageProcessor extends Handler {
         }
 
         ScannedDocument doc = detectDocument(img);
+
         mMainActivity.saveDocument(doc);
 
         doc.release();

@@ -417,6 +417,8 @@ public class DocumentScannerActivity extends AppCompatActivity
     public void turnCameraOn() {
         mSurfaceView = (SurfaceView) findViewById(R.id.surfaceView);
 
+        if (mSurfaceView == null)
+            return;
         mSurfaceHolder = mSurfaceView.getHolder();
 
         mSurfaceHolder.addCallback(this);
@@ -481,7 +483,7 @@ public class DocumentScannerActivity extends AppCompatActivity
         if (actionBar != null) {
             actionBar.hide();
         }
-        mControlsView.setVisibility(View.GONE);
+        //mControlsView.setVisibility(View.GONE);
         mVisible = false;
 
         // Schedule a runnable to remove the status and navigation bar after a delay

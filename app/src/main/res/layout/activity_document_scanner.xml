@@ -1,30 +1,17 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:opencv="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/doc_scan_background"
-    tools:context=".newImport.DocumentScannerActivity">
-
-    <!-- The primary full-screen view. This can be replaced with whatever view
-         is needed to present your content, e.g. VideoView, SurfaceView,
-         TextureView, etc. -->
+    android:background="@color/doc_scan_background">
 
     <SurfaceView
         android:id="@+id/surfaceView"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentTop="true"
+        android:layout_gravity="center"
         android:visibility="gone" />
 
-    <!-- This FrameLayout insets its children based on system windows using
-         android:fitsSystemWindows. -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -61,8 +48,8 @@
 
         <com.example.ScanApp.newImport.views.HUDCanvasView
             android:id="@+id/hud"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:background="@color/transparent"
             android:paddingBottom="@dimen/zerodp"
             android:paddingLeft="@dimen/zerodp" />
