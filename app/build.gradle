@@ -71,5 +71,7 @@ dependencies {
 
     //for image editting
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.4.+'
+    implementation 'info.androidhive:imagefilters:1.0.7'
+
 
 }

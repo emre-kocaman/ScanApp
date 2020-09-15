@@ -634,6 +634,30 @@ public class DocumentScannerActivity extends AppCompatActivity
         int hotAreaHeight = previewHeight / 2 - hotAreaWidth;
 
 
+        ImageView angleNorthWest = (ImageView) findViewById(R.id.nw_angle);
+        RelativeLayout.LayoutParams paramsNW = (RelativeLayout.LayoutParams) angleNorthWest.getLayoutParams();
+        paramsNW.leftMargin = hotAreaWidth - paramsNW.width;
+        paramsNW.topMargin = hotAreaHeight - paramsNW.height;
+        angleNorthWest.setLayoutParams(paramsNW);
+
+        ImageView angleNorthEast = (ImageView) findViewById(R.id.ne_angle);
+        RelativeLayout.LayoutParams paramsNE = (RelativeLayout.LayoutParams) angleNorthEast.getLayoutParams();
+        paramsNE.leftMargin = displayWidth - hotAreaWidth;
+        paramsNE.topMargin = hotAreaHeight - paramsNE.height;
+        angleNorthEast.setLayoutParams(paramsNE);
+
+        ImageView angleSouthEast = (ImageView) findViewById(R.id.se_angle);
+        RelativeLayout.LayoutParams paramsSE = (RelativeLayout.LayoutParams) angleSouthEast.getLayoutParams();
+        paramsSE.leftMargin = displayWidth - hotAreaWidth;
+        paramsSE.topMargin = previewHeight - hotAreaHeight;
+        angleSouthEast.setLayoutParams(paramsSE);
+
+        ImageView angleSouthWest = (ImageView) findViewById(R.id.sw_angle);
+        RelativeLayout.LayoutParams paramsSW = (RelativeLayout.LayoutParams) angleSouthWest.getLayoutParams();
+        paramsSW.leftMargin = hotAreaWidth - paramsSW.width;
+        paramsSW.topMargin = previewHeight - hotAreaHeight;
+        angleSouthWest.setLayoutParams(paramsSW);
+
 
 
         Camera.Size maxRes = getMaxPictureResolution(previewRatio);

@@ -13,9 +13,8 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.example.ScanApp.mAppScreens.mUtils.CropingImage;
+import com.example.ScanApp.mAppScreens.PhotoEditting.CropingImage;
 import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
-import com.example.ScanApp.newImport.DocumentScannerActivity;
 import com.example.ScanApp.newImport.helpers.DocumentMessage;
 import com.example.ScanApp.newImport.helpers.PreviewFrame;
 import com.example.ScanApp.newImport.helpers.Quadrilateral;

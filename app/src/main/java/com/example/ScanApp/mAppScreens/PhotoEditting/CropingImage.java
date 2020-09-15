@@ -1,14 +1,12 @@
-package com.example.ScanApp.mAppScreens.mUtils;
+package com.example.ScanApp.mAppScreens.PhotoEditting;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +15,8 @@ import android.widget.Toast;
 
 import com.example.ScanApp.R;
 import com.example.ScanApp.mAppScreens.MainPage;
+import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
+import com.example.ScanApp.mAppScreens.mUtils.mUtils;
 import com.example.ScanApp.newImport.DocumentScannerActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -27,8 +27,6 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-
-import java.io.ByteArrayOutputStream;
 
 public class CropingImage extends AppCompatActivity implements View.OnClickListener {
 

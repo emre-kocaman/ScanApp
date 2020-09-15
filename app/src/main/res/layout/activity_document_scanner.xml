@@ -67,22 +67,6 @@
             android:paddingBottom="@dimen/zerodp"
             android:paddingLeft="@dimen/zerodp" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/galleryButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginRight="@dimen/thirtydp"
-            android:layout_marginTop="@dimen/eightydp"
-            android:alpha="0.8"
-            android:backgroundTint="@color/toolbarcolor"
-            android:src="@drawable/ic_menu_gallery"
-            android:tint="@color/white"
-            app:borderWidth="@dimen/zerodp"
-            app:elevation="@dimen/zerosp"
-            app:fabSize="mini" />
-
 
         <ImageView
             android:id="@+id/nw_angle"
@@ -138,10 +122,10 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginTop="@dimen/margin10"
                     android:alpha="0.8"
-                    android:backgroundTint="@color/toolbarcolor"
+                    android:backgroundTint="#00FFFFFF"
                     android:rotation="90"
-                    android:src="@drawable/folder"
-                    android:tint="@color/white"
+                    android:src="@drawable/ic_android_noback_24dp"
+                    android:tint="#00FFFFFF"
                     app:borderWidth="@dimen/zerodp"
                     app:elevation="@dimen/zerosp"
                     app:fabSize="mini" />
@@ -153,77 +137,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/seventydp"
                 android:layout_alignParentTop="true"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/autoModeButton"
-                    android:layout_width="@dimen/zerodp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:enabled="true"
-                    android:gravity="center"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_find_in_page"
-                    app:tint="@color/toolbarcolor" />
-
-                <ImageView
-                    android:id="@+id/filterModeButton"
-                    android:layout_width="@dimen/zerodp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:enabled="true"
-                    android:focusableInTouchMode="false"
-                    android:gravity="center"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_photo_filter_white_24dp"
-                    app:tint="@color/white" />
-
-                <ImageView
-                    android:id="@+id/flashModeButton"
-                    android:layout_width="@dimen/zerodp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:enabled="true"
-                    android:gravity="center"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_flash_on_24dp"
-                    app:tint="@color/toolbarcolor" />
-
-                <ImageView
-                    android:id="@+id/colorModeButton"
-                    android:layout_width="@dimen/zerodp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:enabled="true"
-                    android:focusableInTouchMode="false"
-                    android:gravity="center"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_palette"
-                    app:tint="@color/toolbarcolor" />
-
-                <ImageView
-                    android:id="@+id/settingsButton"
-                    android:layout_width="@dimen/zerodp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:enabled="true"
-                    android:gravity="center"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_settings"
-                    app:tint="@color/white" />
-
-                <ImageView
-                    android:id="@+id/hideToolbarButton"
-                    android:layout_width="@dimen/zerodp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:enabled="true"
-                    android:gravity="center"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/folder"
-                    app:tint="@color/white" />
-
-            </LinearLayout>
+                android:orientation="horizontal"/>
 
         </com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout>
 
@@ -243,98 +157,28 @@
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="@dimen/layout_margin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/status_message"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="@dimen/text_size"
-            android:text="@string/click_ocr_to_detect_text"
-            android:textColor="@color/colorSecondary" />
-
-        <Button
-            android:id="@+id/ocr_click"
-            android:layout_width="@dimen/ocr_button_size"
-            android:layout_height="@dimen/ocr_button_size"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginRight="@dimen/thirtydp"
-            android:background="@drawable/ic_camera_blue"
-            android:elevation="@dimen/gap"
-            android:shadowColor="@color/shadow"
-            android:translationZ="@dimen/gap"
-            android:enabled="true"
-            android:gravity="center"
-            android:text="@string/ocr"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-
-    <Button
-        android:id="@+id/saved_ocr_texts"
-        android:layout_width="@dimen/sq_button_size"
-        android:layout_height="@dimen/sq_button_size"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="@dimen/thirtydp"
-        android:layout_marginTop="@dimen/eightydp"
-        android:alpha="0.8"
-        android:elevation="@dimen/gap"
-        android:shadowColor="@color/shadow"
-        android:translationZ="@dimen/gap"
-        android:background="@drawable/savedocrtexts" />
-
 
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|bottom"
+        android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="@dimen/margin10"
+        android:gravity="center_horizontal"
         android:weightSum="3">
-
-        <TextView
-            android:layout_width="@dimen/zerodp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.5"
-            android:gravity="right|center_vertical"
-            android:text="@string/bscan"
-            android:paddingRight="@dimen/gap"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/colorSecondaryDark"
-            android:typeface="monospace"/>
 
         <Button
             android:id="@+id/scanDocButton"
             android:layout_width="@dimen/seventydp"
             android:layout_height="@dimen/seventydp"
-            android:background="@drawable/capture"
+            android:layout_gravity="center|center_horizontal|center_vertical"
+            android:background="@drawable/scan"
+            android:backgroundTint="#19FF00"
             android:elevation="@dimen/gap"
-            android:shadowColor="@color/shadow"
-            android:translationZ="@dimen/gap"
             android:enabled="true"
-            android:gravity="center_vertical"/>
-
-        <TextView
-            android:layout_width="@dimen/zerodp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.5"
-            android:gravity="left|center_vertical"
-            android:text="@string/bdoc"
-            android:paddingLeft="@dimen/gap"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/colorSecondaryDark"
-            android:typeface="monospace" />
+            android:gravity="center_horizontal|center_vertical"
+            android:shadowColor="@color/shadow"
+            android:translationZ="@dimen/gap" />
 
     </LinearLayout>
 
