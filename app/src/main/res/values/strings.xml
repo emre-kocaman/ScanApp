@@ -43,7 +43,6 @@
     <string name="stats_optin_title">Usage Stats</string>
     <string name="stats_optin_text">Do you want to enable Open Note Scanner to send anonymous usage statistics to the developer?\n\nYou can change this anytime on the settings screen.</string>
     <string name="answer_later">Later</string>
-    <string name="ask_install_opencv">In order to work, Open Note Scanner needs the services of OpenCV Manager, which is not installed yet.</string>
     <string name="googleplay">Google Play</string>
     <string name="githubdownload">Direct Download</string>
     <string name="activateunknown">Go to Settings</string>
@@ -80,4 +79,5 @@
     <string name="close">Close</string>
     <string name="donation_pending">Previous donation pending</string>
     <string name="custom_scan_topic_summary">Enable setting a custom topic to scan file name</string>
+    <string name="ask_install_opencv">Download opencv manager</string>
 </resources>

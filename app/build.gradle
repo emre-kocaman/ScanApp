@@ -28,7 +28,6 @@ android {
         fdroid {
             dimension "version"
             applicationIdSuffix ""
-            versionNameSuffix "-fdroid"
         }
         gplay {
             dimension "version"
@@ -46,7 +45,6 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
-    implementation project(path: ':openCVLibrary310')
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -69,6 +67,8 @@ dependencies {
     implementation 'com.itextpdf:layout:7.1.11'
     implementation 'com.itextpdf:io:7.1.11'
     implementation 'com.github.addisonelliott:SegmentedButton:3.1.9'
+    implementation project(':openCVLibrary310')
+
 
     //for image editting
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.4.+'

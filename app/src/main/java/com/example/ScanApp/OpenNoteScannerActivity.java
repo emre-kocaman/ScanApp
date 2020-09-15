@@ -3,9 +3,7 @@ package com.example.ScanApp;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -404,6 +402,7 @@ public class OpenNoteScannerActivity extends AppCompatActivity implements Naviga
         }
 
         checkCreatePermissions();
+
 
         CustomOpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_1_0, this, mLoaderCallback);
 
