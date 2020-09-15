@@ -1,5 +1,6 @@
 package com.example.ScanApp.newImport;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -12,6 +13,8 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.example.ScanApp.mAppScreens.mUtils.CropingImage;
+import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
 import com.example.ScanApp.newImport.DocumentScannerActivity;
 import com.example.ScanApp.newImport.helpers.DocumentMessage;
 import com.example.ScanApp.newImport.helpers.PreviewFrame;
@@ -151,9 +154,15 @@ public class ImageProcessor extends Handler {
             Core.flip(img, img, 0 );
         }
 
-        ScannedDocument doc = detectDocument(img);
 
-        mMainActivity.saveDocument(doc);
+
+        StaticVeriables.scannedDocument=detectDocument(img);
+        ScannedDocument doc = detectDocument(img);
+        Log.e("IMAGEPROCCESS",img.toString());
+        mMainActivity.startActivity(new Intent(mMainActivity, CropingImage.class));
+        //mMainActivity.saveDocument(doc);
+
+
 
         doc.release();
         picture.release();

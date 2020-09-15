@@ -258,89 +258,7 @@ public class DocumentScannerActivity extends AppCompatActivity
                 }
             });
 
-            final ImageView colorModeButton = (ImageView) findViewById(R.id.colorModeButton);
 
-            colorModeButton.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    colorMode = !colorMode;
-                    ((ImageView) v).setColorFilter(colorMode ? 0xFFFFFFFF : 0xFF64B5F6);
-
-                    sendImageProcessorMessage("colorMode", colorMode);
-
-                    Toast.makeText(getApplicationContext(), colorMode ? R.string.colorMode : R.string.bwMode, Toast.LENGTH_SHORT).show();
-
-                }
-            });
-
-            final ImageView filterModeButton = (ImageView) findViewById(R.id.filterModeButton);
-
-            filterModeButton.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    filterMode = !filterMode;
-                    ((ImageView) v).setColorFilter(filterMode ? 0xFFFFFFFF : 0xFF64B5F6);
-
-                    sendImageProcessorMessage("filterMode", filterMode);
-
-                    Toast.makeText(getApplicationContext(), filterMode ? R.string.filterModeOn : R.string.filterModeOff, Toast.LENGTH_SHORT).show();
-
-                }
-            });
-
-            final ImageView flashModeButton = (ImageView) findViewById(R.id.flashModeButton);
-
-            flashModeButton.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    mFlashMode = setFlash(!mFlashMode);
-                    ((ImageView) v).setColorFilter(mFlashMode ? 0xFFFFFFFF : 0xFF64B5F6);
-
-                }
-            });
-
-            final ImageView autoModeButton = (ImageView) findViewById(R.id.autoModeButton);
-
-            autoModeButton.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    autoMode = !autoMode;
-                    ((ImageView) v).setColorFilter(autoMode ? 0xFFFFFFFF : 0xFF64B5F6);
-                    Toast.makeText(getApplicationContext(), autoMode ? R.string.autoMode : R.string.manualMode, Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            final ImageView settingsButton = (ImageView) findViewById(R.id.settingsButton);
-
-
-
-
-            final FloatingActionButton galleryButton = (FloatingActionButton) findViewById(R.id.galleryButton);
-
-
-
-            mFabToolbar = (FABToolbarLayout) findViewById(R.id.fabtoolbar);
-
-            FloatingActionButton fabToolbarButton = (FloatingActionButton) findViewById(R.id.fabtoolbar_fab);
-            fabToolbarButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mFabToolbar.show();
-                }
-            });
-
-            findViewById(R.id.hideToolbarButton).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mFabToolbar.hide();
-                }
-            });
-
-            statusMessage = (TextView) findViewById(R.id.status_message);
 
 
 
@@ -715,29 +633,7 @@ public class DocumentScannerActivity extends AppCompatActivity
         int hotAreaWidth = displayWidth / 4;
         int hotAreaHeight = previewHeight / 2 - hotAreaWidth;
 
-        ImageView angleNorthWest = (ImageView) findViewById(R.id.nw_angle);
-        RelativeLayout.LayoutParams paramsNW = (RelativeLayout.LayoutParams) angleNorthWest.getLayoutParams();
-        paramsNW.leftMargin = hotAreaWidth - paramsNW.width;
-        paramsNW.topMargin = hotAreaHeight - paramsNW.height;
-        angleNorthWest.setLayoutParams(paramsNW);
 
-        ImageView angleNorthEast = (ImageView) findViewById(R.id.ne_angle);
-        RelativeLayout.LayoutParams paramsNE = (RelativeLayout.LayoutParams) angleNorthEast.getLayoutParams();
-        paramsNE.leftMargin = displayWidth - hotAreaWidth;
-        paramsNE.topMargin = hotAreaHeight - paramsNE.height;
-        angleNorthEast.setLayoutParams(paramsNE);
-
-        ImageView angleSouthEast = (ImageView) findViewById(R.id.se_angle);
-        RelativeLayout.LayoutParams paramsSE = (RelativeLayout.LayoutParams) angleSouthEast.getLayoutParams();
-        paramsSE.leftMargin = displayWidth - hotAreaWidth;
-        paramsSE.topMargin = previewHeight - hotAreaHeight;
-        angleSouthEast.setLayoutParams(paramsSE);
-
-        ImageView angleSouthWest = (ImageView) findViewById(R.id.sw_angle);
-        RelativeLayout.LayoutParams paramsSW = (RelativeLayout.LayoutParams) angleSouthWest.getLayoutParams();
-        paramsSW.leftMargin = hotAreaWidth - paramsSW.width;
-        paramsSW.topMargin = previewHeight - hotAreaHeight;
-        angleSouthWest.setLayoutParams(paramsSW);
 
 
         Camera.Size maxRes = getMaxPictureResolution(previewRatio);
