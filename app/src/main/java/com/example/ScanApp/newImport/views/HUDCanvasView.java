@@ -1,4 +1,4 @@
-package com.example.ScanApp.views;
+package com.example.ScanApp.newImport.views;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -101,4 +101,5 @@ public class HUDCanvasView extends View {
     public void clear() {
         shapes.clear();
     }
+
 }

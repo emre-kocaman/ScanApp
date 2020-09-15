@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.ScanApp.OpenNoteScannerActivity;
 import com.example.ScanApp.R;
 import com.example.ScanApp.mAppScreens.MainPage;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -44,16 +43,16 @@ public class CropingImage extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_crop_image);
 
         //getSupportActionBar().show();
-        defs();
-        clicks();
-        pickMatImgAndConvertToBitmap();
-        startCrop(mUtils.getImageUriFromBitmap(this,bitmap));
+        //defs();
+        //clicks();
+        //pickMatImgAndConvertToBitmap();
+        //startCrop(mUtils.getImageUriFromBitmap(this,bitmap));
 
     }
 
     private void defs(){
         imageViewCropped=findViewById(R.id.imageViewCropped);
-         intent = new Intent(CropingImage.this, OpenNoteScannerActivity.class);
+         //intent = new Intent(CropingImage.this, OpenNoteScannerActivity.class);
         saveCropppedImage=findViewById(R.id.saveCropppedImage);
     }
 
@@ -83,7 +82,7 @@ public class CropingImage extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void pickMatImgAndConvertToBitmap(){
+   /* private void pickMatImgAndConvertToBitmap(){
         if(StaticVeriables.scannedDocument!=null){
             Mat seedsImage = StaticVeriables.scannedDocument.processed;
             Mat tmp = new Mat (seedsImage.rows(),seedsImage.cols(), CvType.CV_8U, new Scalar(4));
@@ -101,7 +100,7 @@ public class CropingImage extends AppCompatActivity implements View.OnClickListe
         }
 
 
-    }
+    }*/
 
 
 

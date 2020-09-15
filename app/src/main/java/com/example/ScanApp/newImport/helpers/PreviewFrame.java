@@ -1,8 +1,10 @@
-package com.example.ScanApp.helpers;
+package com.example.ScanApp.newImport.helpers;
 
 import org.opencv.core.Mat;
 
 public class PreviewFrame {
+
+
 
     private final boolean previewOnly;
     private Mat frame;

@@ -1,14 +1,10 @@
-package com.example.ScanApp.helpers;
+package com.example.ScanApp.newImport.helpers;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.view.Display;
 import android.view.WindowManager;
@@ -28,13 +24,12 @@ import javax.microedition.khronos.egl.EGLDisplay;
 
 public class Utils {
 
-    private final SharedPreferences mSharedPref;
+
     private Context _context;
 
     // constructor
     public Utils(Context context) {
         this._context = context;
-        mSharedPref = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     /*
@@ -45,7 +40,7 @@ public class Utils {
 
         File directory = new File(
                 android.os.Environment.getExternalStorageDirectory()
-                        + File.separator + mSharedPref.getString("storage_folder","OpenNoteScanner"));
+                        + File.separator + AppConstant.PHOTO_ALBUM);
 
         // check for directory
         if (directory.isDirectory()) {
@@ -221,21 +216,5 @@ public class Utils {
                         + "='"
                         + filePath
                         + "'", null);
-    }
-
-    public static boolean isPackageInstalled(Context context , String packagename) {
-        PackageManager pm = context.getPackageManager();
-        boolean app_installed = false;
-        try
-        {
-            PackageInfo info = pm.getPackageInfo(packagename, PackageManager.GET_ACTIVITIES);
-            String label = (String) info.applicationInfo.loadLabel(pm);
-            app_installed = (label != null);
-        }
-        catch (PackageManager.NameNotFoundException e)
-        {
-            app_installed = false;
-        }
-        return app_installed;
     }
 }

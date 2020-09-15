@@ -1,6 +1,5 @@
-package com.example.ScanApp;
+package com.example.ScanApp.newImport;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -13,15 +12,12 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.example.ScanApp.helpers.OpenNoteMessage;
-import com.example.ScanApp.helpers.PreviewFrame;
-import com.example.ScanApp.helpers.Quadrilateral;
-import com.example.ScanApp.helpers.ScannedDocument;
-import com.example.ScanApp.helpers.Utils;
-import com.example.ScanApp.mAppScreens.mUtils.CropingImage;
-import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
-import com.example.ScanApp.views.HUDCanvasView;
-import com.example.ScanApp.mAppScreens.MainPage;
+import com.example.ScanApp.newImport.DocumentScannerActivity;
+import com.example.ScanApp.newImport.helpers.DocumentMessage;
+import com.example.ScanApp.newImport.helpers.PreviewFrame;
+import com.example.ScanApp.newImport.helpers.Quadrilateral;
+import com.example.ScanApp.newImport.helpers.Utils;
+import com.example.ScanApp.newImport.views.HUDCanvasView;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
 import com.google.zxing.FormatException;
@@ -52,10 +48,9 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class ImageProcessor extends Handler {
-
     private static final String TAG = "ImageProcessor";
     private final Handler mUiHandler;
-    private final OpenNoteScannerActivity mMainActivity;
+    private final DocumentScannerActivity mMainActivity;
     private boolean mBugRotate;
     private boolean colorMode=false;
     private boolean filterMode=true;
@@ -66,7 +61,7 @@ public class ImageProcessor extends Handler {
     private Point[] mPreviewPoints;
     private ResultPoint[] qrResultPoints;
 
-    public ImageProcessor (Looper looper , Handler uiHandler , OpenNoteScannerActivity mainActivity ) {
+    public ImageProcessor (Looper looper , Handler uiHandler , DocumentScannerActivity mainActivity ) {
         super(looper);
         mUiHandler = uiHandler;
         mMainActivity = mainActivity;
@@ -74,12 +69,11 @@ public class ImageProcessor extends Handler {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mainActivity);
         mBugRotate = sharedPref.getBoolean("bug_rotate",false);
     }
-
     public void handleMessage ( Message msg ) {
 
-        if (msg.obj.getClass() == OpenNoteMessage.class) {
+        if (msg.obj.getClass() == DocumentMessage.class) {
 
-            OpenNoteMessage obj = (OpenNoteMessage) msg.obj;
+            DocumentMessage obj = (DocumentMessage) msg.obj;
 
             String command = obj.getCommand();
 
@@ -96,7 +90,6 @@ public class ImageProcessor extends Handler {
             }
         }
     }
-
 
     private void processPreviewFrame( PreviewFrame previewFrame ) {
 
@@ -144,13 +137,11 @@ public class ImageProcessor extends Handler {
 
         frame.release();
         mMainActivity.setImageProcessorBusy(false);
-
     }
 
     public void processPicture( Mat picture ) {
-        Log.e("Mesaj","deneme");
+
         Mat img = Imgcodecs.imdecode(picture, Imgcodecs.CV_LOAD_IMAGE_UNCHANGED);
-        //StaticVeriables.scannedMat=Imgcodecs.imdecode(picture, Imgcodecs.CV_LOAD_IMAGE_UNCHANGED);
         picture.release();
 
         Log.d(TAG, "processPicture - imported image " + img.size().width + "x" + img.size().height);
@@ -160,20 +151,16 @@ public class ImageProcessor extends Handler {
             Core.flip(img, img, 0 );
         }
 
-        StaticVeriables.scannedDocument=detectDocument(img);
         ScannedDocument doc = detectDocument(img);
-        Log.e("IMAGEPROCCESS",img.toString());
-        //StaticVeriables.scannedMat=doc.getProcessed();
-        mMainActivity.startActivity(new Intent(mMainActivity, CropingImage.class));
-        //mMainActivity.saveDocument(doc);
+        mMainActivity.saveDocument(doc);
 
         doc.release();
         picture.release();
 
         mMainActivity.setImageProcessorBusy(false);
-        mMainActivity.setAttemptToFocus(false);
         mMainActivity.waitSpinnerInvisible();
     }
+
 
     private ScannedDocument detectDocument(Mat inputRgba) {
         ArrayList<MatOfPoint> contours = findContours(inputRgba);
@@ -202,6 +189,7 @@ public class ImageProcessor extends Handler {
         enhanceDocument(doc);
         return sd.setProcessed(doc);
     }
+
 
     private HashMap<String,Long> pageHistory = new HashMap<>();
 
@@ -244,14 +232,12 @@ public class ImageProcessor extends Handler {
             Log.d(TAG, quad.points[0].toString() + " , " + quad.points[1].toString() + " , " + quad.points[2].toString() + " , " + quad.points[3].toString());
 
             return true;
-
         }
 
         mMainActivity.getHUD().clear();
         mMainActivity.invalidateHUD();
 
         return false;
-
     }
 
     private void drawDocumentBox(Point[] points, Size stdSize) {
@@ -283,8 +269,6 @@ public class ImageProcessor extends Handler {
         hud.clear();
         hud.addShape(newBox, paint, border);
         mMainActivity.invalidateHUD();
-
-
     }
 
     private Quadrilateral getQuadrilateral( ArrayList<MatOfPoint> contours , Size srcSize ) {
@@ -398,6 +382,18 @@ public class ImageProcessor extends Handler {
         }
     }
 
+    /**
+     * When a pixel have any of its three elements above the threshold
+     * value and the average of the three values are less than 80% of the
+     * higher one, brings all three values to the max possible keeping
+     * the relation between them, any absolute white keeps the value, all
+     * others go to absolute black.
+     *
+     * src must be a 3 channel image with 8 bits per channel
+     *
+     * @param src
+     * @param threshold
+     */
     private void colorThresh(Mat src, int threshold) {
         Size srcSize = src.size();
         int size = (int) (srcSize.height * srcSize.width)*3;
@@ -542,11 +538,9 @@ public class ImageProcessor extends Handler {
         try {
             results = qrCodeMultiReader.decodeMultiple(bitmap);
         }
-        catch (NotFoundException e) {
+        catch (NotFoundException ignored) {
         }
-
         return results;
-
     }
 
     public void setBugRotate(boolean bugRotate) {

@@ -10,7 +10,6 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.addisonelliott.segmentedbutton.SegmentedButtonGroup;
-import com.example.ScanApp.OpenNoteScannerActivity;
 import com.example.ScanApp.R;
 import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
 import com.example.ScanApp.mAppScreens.mUtils.mUtils;
@@ -37,8 +36,8 @@ public class MainPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
-        defs();
-        segmentGroupListener();
+        //defs();
+        //segmentGroupListener();
     }
 
 
@@ -50,7 +49,7 @@ public class MainPage extends AppCompatActivity {
         scanImage.setImageResource(R.drawable.scan);
 
         segmentedButtonGroup = findViewById(R.id.segmentedButtonGroup);
-        intent=new Intent(MainPage.this, OpenNoteScannerActivity.class);
+        //intent=new Intent(MainPage.this, OpenNoteScannerActivity.class);
 
 
 

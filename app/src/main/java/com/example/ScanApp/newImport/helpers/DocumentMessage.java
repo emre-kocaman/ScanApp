@@ -1,11 +1,11 @@
-package com.example.ScanApp.helpers;
+package com.example.ScanApp.newImport.helpers;
 
-public class OpenNoteMessage {
+public class DocumentMessage {
 
     private String command;
     private Object obj;
 
-    public OpenNoteMessage( String command , Object obj ) {
+    public DocumentMessage( String command , Object obj ) {
         setObj(obj);
         setCommand(command);
     }

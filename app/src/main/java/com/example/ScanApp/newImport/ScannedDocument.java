@@ -1,10 +1,14 @@
-package com.example.ScanApp.helpers;
+package com.example.ScanApp.newImport;
+
+import com.example.ScanApp.newImport.helpers.Quadrilateral;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Size;
 
 public class ScannedDocument {
+
+
 
     public Mat original;
     public Mat processed;

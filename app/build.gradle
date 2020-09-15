@@ -48,10 +48,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-
-
-    implementation 'androidx.appcompat:appcompat:1.0.0'
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.android.material:material:1.2.1'
 
     //for image scanning
     implementation 'com.google.zxing:core:3.0.1'
@@ -68,6 +65,8 @@ dependencies {
     implementation 'com.itextpdf:io:7.1.11'
     implementation 'com.github.addisonelliott:SegmentedButton:3.1.9'
     implementation project(':openCVLibrary310')
+
+    implementation 'com.google.android.gms:play-services-analytics:17.0.0'
 
 
     //for image editting
