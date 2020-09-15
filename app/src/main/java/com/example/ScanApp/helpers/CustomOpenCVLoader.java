@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -48,8 +49,8 @@ public class CustomOpenCVLoader extends OpenCVLoader {
         boolean app_installed = false;
 
         // DISABLED installation from Google Play since OpenCV Manager is removed from there
-        /*
-        try
+
+        /*try
         {
             PackageInfo info = pm.getPackageInfo("com.android.vending", PackageManager.GET_ACTIVITIES);
             String label = (String) info.applicationInfo.loadLabel(pm);
@@ -58,8 +59,8 @@ public class CustomOpenCVLoader extends OpenCVLoader {
         catch (PackageManager.NameNotFoundException e)
         {
             app_installed = false;
-        }
-        */
+        }*/
+
 
         return app_installed;
     }
@@ -270,7 +271,7 @@ public class CustomOpenCVLoader extends OpenCVLoader {
 
         } else {
             // initialize opencv
-            return OpenCVLoader.initAsync(Version, AppContext, Callback);
+            return OpenCVLoader.initAsync(version,AppContext,Callback);
         }
 
         return false;
