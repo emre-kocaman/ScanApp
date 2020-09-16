@@ -2,48 +2,63 @@ package com.example.ScanApp.mAppScreens;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.addisonelliott.segmentedbutton.SegmentedButtonGroup;
 import com.example.ScanApp.R;
+import com.example.ScanApp.mAppScreens.Adapters.PdfsCardAdapter;
+import com.example.ScanApp.mAppScreens.Models.PdfDocumentsModel;
 import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
 import com.example.ScanApp.OpenCvClasses.DocumentScannerActivity;
+
+import java.util.ArrayList;
 
 public class MainPage extends AppCompatActivity {
 
     //Visual Objects
-    ImageView folderImage,scanImage,imageViewBmp;
+    ImageView folderImage,scanImage;
     SegmentedButtonGroup segmentedButtonGroup;
 
+    private RecyclerView recyclerView;
+    private ArrayList<PdfDocumentsModel> pdfDocumentsModelArrayList;
+    private PdfsCardAdapter pdfsCardAdapter;
     //Veriables
     Intent intent;
+    Bitmap temp;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
+        temp = BitmapFactory.decodeResource(getResources(),R.drawable.capture);
         defs();
         segmentGroupListener();
+        exampleForMainPage();
     }
 
 
     private void defs(){
         folderImage = findViewById(R.id.folderImage);
         scanImage = findViewById(R.id.scanImage);
-        imageViewBmp=findViewById(R.id.imageViewBmp);
         folderImage.setImageResource(R.drawable.folder);
         scanImage.setImageResource(R.drawable.scan);
 
         segmentedButtonGroup = findViewById(R.id.segmentedButtonGroup);
         intent=new Intent(MainPage.this, DocumentScannerActivity.class);
 
-
+        recyclerView=findViewById(R.id.pdfRv);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));
+        pdfDocumentsModelArrayList=new ArrayList<>();
 
     }
 
@@ -65,27 +80,21 @@ public class MainPage extends AppCompatActivity {
         });
     }
 
+    private void exampleForMainPage(){
+        PdfDocumentsModel pdfDocumentsModel1 = new PdfDocumentsModel(temp,"scanner-app-wireframe","1.9 MB - 13 Eylül, 16:14");
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+        pdfDocumentsModelArrayList.add(pdfDocumentsModel1);
+        pdfDocumentsModelArrayList.add(pdfDocumentsModel1);
+        pdfDocumentsModelArrayList.add(pdfDocumentsModel1);
+        pdfDocumentsModelArrayList.add(pdfDocumentsModel1);
+        pdfDocumentsModelArrayList.add(pdfDocumentsModel1);
+        pdfDocumentsModelArrayList.add(pdfDocumentsModel1);
+        pdfDocumentsModelArrayList.add(pdfDocumentsModel1);
+        pdfDocumentsModelArrayList.add(pdfDocumentsModel1);
+        pdfDocumentsModelArrayList.add(pdfDocumentsModel1);
+
+        pdfsCardAdapter = new PdfsCardAdapter(this,pdfDocumentsModelArrayList);
+        recyclerView.setAdapter(pdfsCardAdapter);
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.e("LIFECYCLE","RESTART");
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.e("LIFECYCLE","RESULT");
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.e("LIFECYCLE","START");
-    }
 }
