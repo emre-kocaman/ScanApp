@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.ScanApp.R;
 import com.example.ScanApp.mAppScreens.MainPage;
+import com.example.ScanApp.mAppScreens.ScannedImagePage;
 import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
 import com.example.ScanApp.mAppScreens.mUtils.mUtils;
 import com.example.ScanApp.OpenCvClasses.DocumentScannerActivity;
@@ -144,8 +145,7 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
         if (StaticVeriables.photoCount==0){//Tarama bitmiştir taranan resimlerin olduğu sayfaya gönder.
             StaticVeriables.informationText="";
             StaticVeriables.photoCount=20;
-
-            Intent intent = new Intent(this,MainPage.class);
+            Intent intent = new Intent(this, ScannedImagePage.class);
             startActivity(intent);
             finish();
         }
