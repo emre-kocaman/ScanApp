@@ -1,6 +1,5 @@
 package com.example.ScanApp.mAppScreens;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -9,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.addisonelliott.segmentedbutton.SegmentedButtonGroup;
@@ -39,7 +37,7 @@ public class MainPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
-        temp = BitmapFactory.decodeResource(getResources(),R.drawable.capture);
+        temp = BitmapFactory.decodeResource(getResources(),R.drawable.tmp);
         defs();
         segmentGroupListener();
         exampleForMainPage();

@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#EAEAEA"
-    android:padding="10dp">
+    android:elevation="2dp"
+    android:padding="10dp"
+    android:paddingRight="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -13,6 +15,8 @@
         android:background="@drawable/background_radius"
         android:backgroundTint="#FFFFFF"
         android:padding="10dp"
+        android:paddingEnd="0dp"
+        android:paddingRight="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,6 +28,8 @@
             android:layout_height="wrap_content"
             android:button="@drawable/image_checkbox"
             android:checked="false"
+            android:gravity="center"
+            android:padding="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -56,7 +62,8 @@
             android:id="@+id/pdfImage"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:background="@drawable/background_radius"
+            android:background="@drawable/image_background_element"
+            android:padding="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
