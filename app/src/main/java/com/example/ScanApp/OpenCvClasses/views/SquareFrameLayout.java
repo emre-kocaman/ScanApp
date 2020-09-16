@@ -1,4 +1,4 @@
-package com.example.ScanApp.newImport.views;
+package com.example.ScanApp.OpenCvClasses.views;
 
 import android.annotation.TargetApi;
 import android.content.Context;

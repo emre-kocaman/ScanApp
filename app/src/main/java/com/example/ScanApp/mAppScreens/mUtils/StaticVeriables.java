@@ -1,9 +1,7 @@
 package com.example.ScanApp.mAppScreens.mUtils;
 
 
-import com.example.ScanApp.newImport.ScannedDocument;
-
-import org.opencv.core.Mat;
+import com.example.ScanApp.OpenCvClasses.ScannedDocument;
 
 public class StaticVeriables {
 

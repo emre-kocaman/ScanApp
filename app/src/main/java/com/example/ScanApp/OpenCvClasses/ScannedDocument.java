@@ -1,6 +1,6 @@
-package com.example.ScanApp.newImport;
+package com.example.ScanApp.OpenCvClasses;
 
-import com.example.ScanApp.newImport.helpers.Quadrilateral;
+import com.example.ScanApp.OpenCvClasses.helpers.Quadrilateral;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Point;

@@ -12,21 +12,12 @@ import android.widget.ImageView;
 import com.addisonelliott.segmentedbutton.SegmentedButtonGroup;
 import com.example.ScanApp.R;
 import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
-import com.example.ScanApp.mAppScreens.mUtils.mUtils;
-import com.example.ScanApp.newImport.DocumentScannerActivity;
-
-import org.opencv.android.OpenCVLoader;
-import org.opencv.android.Utils;
-import org.opencv.core.CvException;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
+import com.example.ScanApp.OpenCvClasses.DocumentScannerActivity;
 
 public class MainPage extends AppCompatActivity {
 
     //Visual Objects
-    ImageView folderImage,scanImage,imageViewTaken;
+    ImageView folderImage,scanImage,imageViewBmp;
     SegmentedButtonGroup segmentedButtonGroup;
 
     //Veriables
@@ -45,7 +36,7 @@ public class MainPage extends AppCompatActivity {
     private void defs(){
         folderImage = findViewById(R.id.folderImage);
         scanImage = findViewById(R.id.scanImage);
-
+        imageViewBmp=findViewById(R.id.imageViewBmp);
         folderImage.setImageResource(R.drawable.folder);
         scanImage.setImageResource(R.drawable.scan);
 

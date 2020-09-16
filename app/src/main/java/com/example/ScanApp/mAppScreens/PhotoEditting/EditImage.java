@@ -11,13 +11,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.example.ScanApp.R;
 import com.example.ScanApp.mAppScreens.MainPage;
 import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
 import com.example.ScanApp.mAppScreens.mUtils.mUtils;
-import com.example.ScanApp.newImport.DocumentScannerActivity;
+import com.example.ScanApp.OpenCvClasses.DocumentScannerActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -28,14 +29,19 @@ import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
-public class CropingImage extends AppCompatActivity implements View.OnClickListener {
+import java.io.IOException;
+
+public class EditImage extends AppCompatActivity implements View.OnClickListener {
 
     //Visual Objects
     ImageView imageViewCropped;
     Button saveCropppedImage;
+    SeekBar seekBarSharpnes,seekBarBrightness;
     //Veriables
     Intent intent;
-    Bitmap bitmap;
+    Bitmap bitmap=null;
+    Uri uri=null;
+    PictureThread thread;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,12 +52,19 @@ public class CropingImage extends AppCompatActivity implements View.OnClickListe
         clicks();
         pickMatImgAndConvertToBitmap();
         startCrop(mUtils.getImageUriFromBitmap(this,bitmap));
+        seekBarsListener();
+
+        Log.e("CREATEPRGBRGHT",String.valueOf(seekBarBrightness.getProgress()));
+        Log.e("CREATEPRGSHRPN",String.valueOf(seekBarSharpnes.getProgress()));
 
     }
 
     private void defs(){
+
+        seekBarSharpnes=findViewById(R.id.seekBarSharpness);
+        seekBarBrightness=findViewById(R.id.seekBarBrightness);
         imageViewCropped=findViewById(R.id.imageViewCropped);
-         intent = new Intent(CropingImage.this, DocumentScannerActivity.class);
+        intent = new Intent(EditImage.this, DocumentScannerActivity.class);
         saveCropppedImage=findViewById(R.id.saveCropppedImage);
     }
 
@@ -66,7 +79,21 @@ public class CropingImage extends AppCompatActivity implements View.OnClickListe
         if (requestCode == com.theartofdev.edmodo.cropper.CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             com.theartofdev.edmodo.cropper.CropImage.ActivityResult result = com.theartofdev.edmodo.cropper.CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                imageViewCropped.setImageURI(result.getUri());
+                uri=result.getUri();
+                try {
+                    bitmap=mUtils.getBitmapFromUri(uri,bitmap,this);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    imageViewCropped.setImageBitmap(mUtils.getBitmapFromUri(uri,bitmap,this));
+                    thread = new PictureThread(imageViewCropped,bitmap);
+                    thread.start();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //imageViewCropped.setImageURI(result.getUri());
                 Toast.makeText(this, "Image Update Succesfuly !!!", Toast.LENGTH_SHORT).show();
             }
         }
@@ -113,21 +140,67 @@ public class CropingImage extends AppCompatActivity implements View.OnClickListe
     }
 
     private void checkIsCard(){
-        Log.e("GIRIYORMUcount",String.valueOf(StaticVeriables.photoCount));
-        //Alttaki işlemi yapmadan önce fotoğrafı kaydedicez.
         StaticVeriables.photoCount--;
-        if (StaticVeriables.photoCount==0){//Tarama bitmiştir
-            Log.e("TARAMA DURUMU","TARAMA BİTMİŞTİR");
+        if (StaticVeriables.photoCount==0){//Tarama bitmiştir taranan resimlerin olduğu sayfaya gönder.
             StaticVeriables.informationText="";
             StaticVeriables.photoCount=20;
-            startActivity(new Intent(this,MainPage.class));
+
+            Intent intent = new Intent(this,MainPage.class);
+            startActivity(intent);
             finish();
         }
         else if (StaticVeriables.photoCount==1){//Kimlik sayfasının arka sayfasını çekmeye git
-            Log.e("TARAMA DURUMU","2. TARAMAYA GİTMESİ LAZIM");
             StaticVeriables.informationText="SCAN THE BACK OF YOUR CARD";
-
             startActivity(intent);
         }
+    }
+
+    private void seekBarsListener(){
+        //Brightness seek bar
+        seekBarBrightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                thread.adjustBrightnessAndSharpness(seekBar.getProgress(),seekBarSharpnes.getProgress());
+                bitmap=thread.temp_bitmap;
+                Log.e("LISTENERPRGBRGHT",String.valueOf(seekBarBrightness.getProgress()));
+                Log.e("LISTENERPRGSHRPN",String.valueOf(seekBarSharpnes.getProgress()));
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+
+        //sharpness seekbar
+        seekBarSharpnes.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                thread.adjustBrightnessAndSharpness(seekBarBrightness.getProgress(),seekBar.getProgress());
+                bitmap=thread.temp_bitmap;
+                Log.e("LISTENERPRGBRGHT",String.valueOf(seekBarBrightness.getProgress()));
+                Log.e("LISTENERPRGSHRPN",String.valueOf(seekBarSharpnes.getProgress()));
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+
     }
 }

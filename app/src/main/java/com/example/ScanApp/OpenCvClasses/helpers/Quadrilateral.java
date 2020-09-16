@@ -1,4 +1,4 @@
-package com.example.ScanApp.newImport.helpers;
+package com.example.ScanApp.OpenCvClasses.helpers;
 
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;

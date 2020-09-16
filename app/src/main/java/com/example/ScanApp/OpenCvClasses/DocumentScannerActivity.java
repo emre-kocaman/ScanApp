@@ -1,4 +1,4 @@
-package com.example.ScanApp.newImport;
+package com.example.ScanApp.OpenCvClasses;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -51,11 +51,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ScanApp.R;
-import com.example.ScanApp.newImport.helpers.DocumentMessage;
-import com.example.ScanApp.newImport.helpers.PreviewFrame;
-import com.example.ScanApp.newImport.views.HUDCanvasView;
+import com.example.ScanApp.OpenCvClasses.helpers.DocumentMessage;
+import com.example.ScanApp.OpenCvClasses.helpers.PreviewFrame;
+import com.example.ScanApp.OpenCvClasses.views.HUDCanvasView;
+import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
 import com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import org.opencv.BuildConfig;
@@ -80,8 +80,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static com.example.ScanApp.newImport.helpers.Utils.addImageToGallery;
-import static com.example.ScanApp.newImport.helpers.Utils.decodeSampledBitmapFromUri;
+import static com.example.ScanApp.OpenCvClasses.helpers.Utils.addImageToGallery;
+import static com.example.ScanApp.OpenCvClasses.helpers.Utils.decodeSampledBitmapFromUri;
 
 public class DocumentScannerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SurfaceHolder.Callback,
@@ -157,6 +157,7 @@ public class DocumentScannerActivity extends AppCompatActivity
     private ImageProcessor mImageProcessor;
     private SurfaceHolder mSurfaceHolder;
     private Camera mCamera;
+    private TextView textViewInfo;
 
     private boolean mFocused;
     private HUDCanvasView mHud;
@@ -209,6 +210,10 @@ public class DocumentScannerActivity extends AppCompatActivity
             mContentView = findViewById(R.id.surfaceView);
             mHud = (HUDCanvasView) findViewById(R.id.hud);
             mWaitSpinner = findViewById(R.id.wait_spinner);
+
+            textViewInfo=findViewById(R.id.textViewInfo);
+            textViewInfo.setText(StaticVeriables.informationText);
+
 
             // Set up the user interaction to manually show or hide the system UI.
             mContentView.setOnClickListener(new View.OnClickListener() {

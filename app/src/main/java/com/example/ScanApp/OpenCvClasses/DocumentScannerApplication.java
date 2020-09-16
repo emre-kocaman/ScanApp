@@ -1,4 +1,4 @@
-package com.example.ScanApp.newImport;
+package com.example.ScanApp.OpenCvClasses;
 
 import android.app.Application;
 import android.content.SharedPreferences;

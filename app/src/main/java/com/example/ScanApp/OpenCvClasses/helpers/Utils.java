@@ -1,4 +1,4 @@
-package com.example.ScanApp.newImport.helpers;
+package com.example.ScanApp.OpenCvClasses.helpers;
 
 import android.content.ContentValues;
 import android.content.Context;

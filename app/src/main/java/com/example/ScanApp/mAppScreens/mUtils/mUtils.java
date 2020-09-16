@@ -13,6 +13,7 @@ import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class mUtils {
 
@@ -45,6 +46,13 @@ public class mUtils {
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
+    }
+
+    public static Bitmap getBitmapFromUri(Uri uri,Bitmap bitmap,Context context) throws IOException {
+        bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
+        return bitmap;
+
+
     }
 
 }

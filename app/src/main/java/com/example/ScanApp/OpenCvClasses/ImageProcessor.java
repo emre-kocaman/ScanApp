@@ -1,4 +1,4 @@
-package com.example.ScanApp.newImport;
+package com.example.ScanApp.OpenCvClasses;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,13 +13,13 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.example.ScanApp.mAppScreens.PhotoEditting.CropingImage;
+import com.example.ScanApp.mAppScreens.PhotoEditting.EditImage;
 import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
-import com.example.ScanApp.newImport.helpers.DocumentMessage;
-import com.example.ScanApp.newImport.helpers.PreviewFrame;
-import com.example.ScanApp.newImport.helpers.Quadrilateral;
-import com.example.ScanApp.newImport.helpers.Utils;
-import com.example.ScanApp.newImport.views.HUDCanvasView;
+import com.example.ScanApp.OpenCvClasses.helpers.DocumentMessage;
+import com.example.ScanApp.OpenCvClasses.helpers.PreviewFrame;
+import com.example.ScanApp.OpenCvClasses.helpers.Quadrilateral;
+import com.example.ScanApp.OpenCvClasses.helpers.Utils;
+import com.example.ScanApp.OpenCvClasses.views.HUDCanvasView;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
 import com.google.zxing.FormatException;
@@ -158,7 +158,7 @@ public class ImageProcessor extends Handler {
         StaticVeriables.scannedDocument=detectDocument(img);
         ScannedDocument doc = detectDocument(img);
         Log.e("IMAGEPROCCESS",img.toString());
-        mMainActivity.startActivity(new Intent(mMainActivity, CropingImage.class));
+        mMainActivity.startActivity(new Intent(mMainActivity, EditImage.class));
         //mMainActivity.saveDocument(doc);
 
 
