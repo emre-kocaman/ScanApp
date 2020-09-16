@@ -1,6 +1,7 @@
 package com.example.ScanApp.mAppScreens;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -10,6 +11,8 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.ScanApp.OpenCvClasses.DocumentScannerActivity;
 import com.example.ScanApp.R;
@@ -24,12 +27,17 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
     //Veriables
     ScannedImageCardAdapter scannedImageCardAdapter;
     ArrayList<ScannedImageModel> scannedImageModelArrayList;
+    ArrayList<ScannedImageModel> selectedScannedImageList;
+
+
     Bitmap bmp;
     //Visual Objects
     RecyclerView recyclerViewScannedImages;
     Button buttonDone;
     FloatingActionButton buttonScanAgain;
-
+    ConstraintLayout whenCheckedLayout;
+    TextView textView;
+    ImageView imageViewClose;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +57,12 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         bmp= BitmapFactory.decodeResource(getResources(),R.drawable.tmp);
         buttonDone=findViewById(R.id.buttonDone);
         buttonScanAgain=findViewById(R.id.buttonScanAgain);
+
+        whenCheckedLayout=findViewById(R.id.whenCheckedLayout);
+        selectedScannedImageList= new ArrayList<>();
+        textView=findViewById(R.id.folderSelected);
+
+        imageViewClose=findViewById(R.id.imageViewClose);
     }
 
     private void clicks(){
@@ -74,7 +88,7 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         scannedImageModelArrayList.add(model);
         scannedImageModelArrayList.add(model);
 
-        scannedImageCardAdapter = new ScannedImageCardAdapter(this,scannedImageModelArrayList);
+        scannedImageCardAdapter = new ScannedImageCardAdapter(this,scannedImageModelArrayList,selectedScannedImageList,whenCheckedLayout,textView);
         recyclerViewScannedImages.setAdapter(scannedImageCardAdapter);
 
     }

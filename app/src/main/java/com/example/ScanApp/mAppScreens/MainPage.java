@@ -1,6 +1,7 @@
 package com.example.ScanApp.mAppScreens;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -8,7 +9,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.addisonelliott.segmentedbutton.SegmentedButtonGroup;
 import com.example.ScanApp.R;
@@ -24,10 +27,14 @@ public class MainPage extends AppCompatActivity {
     //Visual Objects
     ImageView folderImage,scanImage;
     SegmentedButtonGroup segmentedButtonGroup;
+    ConstraintLayout whenCheckedLayout;
+
 
     private RecyclerView recyclerView;
     private ArrayList<PdfDocumentsModel> pdfDocumentsModelArrayList;
+    private ArrayList<PdfDocumentsModel> checkedPdfList;
     private PdfsCardAdapter pdfsCardAdapter;
+    private TextView folderSelected;
     //Veriables
     Intent intent;
     Bitmap temp;
@@ -45,6 +52,7 @@ public class MainPage extends AppCompatActivity {
 
 
     private void defs(){
+        folderSelected=findViewById(R.id.folderSelected);
         folderImage = findViewById(R.id.folderImage);
         scanImage = findViewById(R.id.scanImage);
         folderImage.setImageResource(R.drawable.folder);
@@ -57,6 +65,9 @@ public class MainPage extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));
         pdfDocumentsModelArrayList=new ArrayList<>();
+        checkedPdfList=new ArrayList<>();
+
+        whenCheckedLayout=findViewById(R.id.whenCheckedLayout);
 
     }
 
@@ -91,7 +102,7 @@ public class MainPage extends AppCompatActivity {
         pdfDocumentsModelArrayList.add(pdfDocumentsModel1);
         pdfDocumentsModelArrayList.add(pdfDocumentsModel1);
 
-        pdfsCardAdapter = new PdfsCardAdapter(this,pdfDocumentsModelArrayList);
+        pdfsCardAdapter = new PdfsCardAdapter(this,pdfDocumentsModelArrayList,checkedPdfList,whenCheckedLayout,folderSelected);
         recyclerView.setAdapter(pdfsCardAdapter);
     }
 

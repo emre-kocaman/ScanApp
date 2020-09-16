@@ -1,17 +1,23 @@
 package com.example.ScanApp.mAppScreens.Adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ScanApp.R;
+import com.example.ScanApp.mAppScreens.Models.PdfDocumentsModel;
 import com.example.ScanApp.mAppScreens.Models.ScannedImageModel;
+import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
 
 import java.util.List;
 
@@ -20,10 +26,23 @@ public class ScannedImageCardAdapter extends RecyclerView.Adapter<ScannedImageCa
     private Context context;
     private List<ScannedImageModel> scannedImageModelList;
 
+    private List<ScannedImageModel> selectedScannedImages;
+    private ConstraintLayout whenCheckedLayout;
+    private TextView folderSelected;
 
-    public ScannedImageCardAdapter(Context context, List<ScannedImageModel> scannedImageModelList) {
+
+    public ScannedImageCardAdapter(Context context
+            , List<ScannedImageModel> scannedImageModelList
+            ,List<ScannedImageModel> selectedScannedImages
+            ,ConstraintLayout whenCheckedLayout
+            ,TextView folderSelected) {
+
         this.context = context;
         this.scannedImageModelList = scannedImageModelList;
+        this.selectedScannedImages = selectedScannedImages;
+        this.whenCheckedLayout = whenCheckedLayout;
+        this.folderSelected = folderSelected;
+
     }
 
 
@@ -56,6 +75,31 @@ public class ScannedImageCardAdapter extends RecyclerView.Adapter<ScannedImageCa
         ScannedImageModel scannedImageModel = scannedImageModelList.get(position);
         holder.scannedImage.setImageBitmap(scannedImageModel.getBitmap());
 
+
+
+        holder.checkboxScannedImage.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    selectedScannedImages.add(scannedImageModel);
+                    whenCheckedLayout.setVisibility(View.VISIBLE);
+                    folderSelected.setText(String.valueOf(selectedScannedImages.size()+" folder selected"));
+                    Log.e("PDFSIZE",String.valueOf(StaticVeriables.pdfList.size()));
+                }
+                else{
+                    selectedScannedImages.remove(scannedImageModel);
+                    if(selectedScannedImages.size()==0){
+                        whenCheckedLayout.setVisibility(View.GONE);
+                    }
+                    else{
+                        folderSelected.setText(String.valueOf(selectedScannedImages.size()+" folder selected"));
+                    }
+
+                    Log.e("PDFSIZE",String.valueOf(StaticVeriables.pdfList.size()));
+
+                }
+            }
+        });
 
     }
 
