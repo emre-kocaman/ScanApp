@@ -119,14 +119,14 @@ public class mUtils {
         page = pdfDocument.startPage(pi);
         Canvas canvas = page.getCanvas();
         Bitmap on = Bitmap.createScaledBitmap(scannedImageModelsList.get(0).getBitmap()
-                ,pi.getPageWidth()
-                ,pi.getPageHeight()/2,true);
+                ,scannedImageModelsList.get(0).getBitmap().getWidth()
+                ,scannedImageModelsList.get(0).getBitmap().getHeight(),true);
 
         canvas.drawBitmap(on,0,0,null);
 
         Bitmap arka = Bitmap.createScaledBitmap(scannedImageModelsList.get(1).getBitmap()
-                ,pi.getPageWidth()
-                ,pi.getPageHeight()/2,true);
+                ,scannedImageModelsList.get(1).getBitmap().getWidth()
+                ,scannedImageModelsList.get(1).getBitmap().getHeight(),true);
 
         canvas.drawBitmap(arka,0,scannedImageModelsList.get(0).getBitmap().getHeight(),null);
 
