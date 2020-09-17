@@ -6,17 +6,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ScanApp.OpenCvClasses.DocumentScannerActivity;
 import com.example.ScanApp.R;
@@ -77,7 +83,7 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         floatingActionButtonDelete=findViewById(R.id.floatingActionButtonDelete);
         floatingActionButtonCombine=findViewById(R.id.floatingActionButtonCombine);
 
-        root = new File(Environment.getExternalStorageDirectory(),"PDF dosyaları");
+        root = new File(Environment.getExternalStorageDirectory(),"PDF folders");
         if(!root.exists()){
             root.mkdir();
         }
@@ -129,8 +135,10 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
 
             case R.id.floatingActionButtonCombine:
                 if(selectedScannedImageList.size()!=0){
-                    mUtils.createPdfOfImageFromList(root,selectedScannedImageList,this,false);
-                    //mUtils.createPdfOfImage(root,selectedScannedImageList.get(0).getBitmap(),this);
+                    showAlert(this);
+                }
+                else{
+                    Toast.makeText(this, "You must chose image/images!!!", Toast.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -159,6 +167,47 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
                 textView.setText(selectedScannedImageList.size() + " folder selected");
             }
         }
+    }
+
+
+    public void showAlert(Context context)
+    {
+
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+
+        View tasarim = layoutInflater.inflate(R.layout.alert_design,null);
+
+        final EditText editTextFolderName = tasarim.findViewById(R.id.editTextFolderName);
+
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Folder Name");
+        alert.setView(tasarim);
+        alert.setMessage("\n"+"Write your pdf folder name\n");
+        alert.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                String folderName = editTextFolderName.getText().toString().trim();
+                if (folderName.length()!=0){
+                    mUtils.createPdfOfImageFromList(root,selectedScannedImageList,context,folderName);
+                }
+                else{
+                    Toast.makeText(context, "Name cant be empty", Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+
+        alert.create().show();
     }
 
 

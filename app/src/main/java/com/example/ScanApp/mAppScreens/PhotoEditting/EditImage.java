@@ -3,13 +3,19 @@ package com.example.ScanApp.mAppScreens.PhotoEditting;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Toast;
@@ -31,6 +37,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
+import java.io.File;
 import java.io.IOException;
 
 public class EditImage extends AppCompatActivity implements View.OnClickListener {
@@ -44,6 +51,7 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
     Bitmap bitmap=null;
     Uri uri=null;
     PictureThread thread;
+    File root;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +77,12 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
         imageViewCropped=findViewById(R.id.imageViewCropped);
         intent = new Intent(EditImage.this, DocumentScannerActivity.class);
         saveCropppedImage=findViewById(R.id.saveCropppedImage);
+
+
+        root = new File(Environment.getExternalStorageDirectory(), "PDF folders");
+        if(!root.exists()){
+            root.mkdir();
+        }
     }
 
     private void clicks(){
@@ -155,8 +169,8 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
         }
         else if(StaticVeriables.photoCount==0 && StaticVeriables.userWillScanCard){
             //Kullanıcı kard scan etmiştir ve tarama bitmiştir pdf oluşturup direk ana sayfaya gönder
-            Intent intent = new Intent(this,MainPage.class);
-            startActivity(intent);
+            showAlert(this);
+
         }
         else if (StaticVeriables.photoCount==1){//Kimlik sayfasının arka sayfasını çekmeye git
             StaticVeriables.informationText="SCAN THE BACK OF YOUR CARD";
@@ -216,5 +230,50 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
         });
 
 
+    }
+
+
+    public void showAlert(Context context)
+    {
+
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+
+        View tasarim = layoutInflater.inflate(R.layout.alert_design,null);
+
+        final EditText editTextFolderName = tasarim.findViewById(R.id.editTextFolderName);
+
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Folder Name");
+        alert.setView(tasarim);
+        alert.setMessage("\n"+"Write your pdf folder name\n");
+        alert.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                String folderName = editTextFolderName.getText().toString().trim();
+                if (folderName.length()!=0){
+                    mUtils.createPdfOfCard(root,StaticVeriables.scannedImageModelList,folderName);
+                    Intent intent = new Intent(EditImage.this,MainPage.class);
+                    startActivity(intent);
+                    finish();
+                }
+                else{
+                    Toast.makeText(context, "Name cant be empty", Toast.LENGTH_SHORT).show();
+                    StaticVeriables.photoCount++;
+                }
+
+
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                StaticVeriables.photoCount++;
+            }
+        });
+
+        alert.create().show();
     }
 }

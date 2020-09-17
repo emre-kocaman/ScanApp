@@ -65,29 +65,31 @@ public class mUtils {
     }
 
 
-    public static void createPdfOfImageFromList(File root, ArrayList<ScannedImageModel> scannedImageModelsList, Context context, Boolean iscard)
+    public static void createPdfOfImageFromList(File root, ArrayList<ScannedImageModel> scannedImageModelsList, Context context,String folderName)
     {
-
-        if (iscard){
-
-        }
-        else{
+        PdfDocument.Page page = null;
             PdfDocument pdfDocument = new PdfDocument();
             for (int i = 0 ; i<scannedImageModelsList.size() ; i++){
                 PdfDocument.PageInfo  pi = new PdfDocument.PageInfo.Builder(scannedImageModelsList.get(i).getBitmap().getWidth()
                         ,scannedImageModelsList.get(i).getBitmap().getHeight()
-                        ,i).create();
-                PdfDocument.Page page = pdfDocument.startPage(pi);
+                        ,1).create();
+                page = pdfDocument.startPage(pi);
                 Canvas canvas = page.getCanvas();
-                Bitmap tmp = Bitmap.createScaledBitmap(scannedImageModelsList.get(i).getBitmap(),scannedImageModelsList.get(i).getBitmap().getWidth(),scannedImageModelsList.get(i).getBitmap().getHeight(),true);
+                Bitmap tmp = Bitmap.createScaledBitmap(scannedImageModelsList.get(i).getBitmap()
+                        ,pi.getPageWidth()
+                        ,pi.getPageHeight(),true);
 
                 canvas.drawBitmap(tmp,0,0,null);
+
                 pdfDocument.finishPage(page);
+
             }
+
+
 
             //RESMİ PDF OLARAK KAYDETME
 
-            File file = new File(root,"Created.pdf");
+            File file = new File(root,folderName+"document.pdf");
 
             try {
                 FileOutputStream fileOutputStream = new FileOutputStream(file);
@@ -101,25 +103,36 @@ public class mUtils {
             pdfDocument.close();
         }
 
-    }
 
 
-    public static void createPdfOfImage(File root, Bitmap bitmap, Context context){
+
+    public static void createPdfOfCard(File root ,List<ScannedImageModel> scannedImageModelsList,String folderName){
+        int pageHeight=scannedImageModelsList.get(0).getBitmap().getHeight()+scannedImageModelsList.get(1).getBitmap().getHeight();
+        int pageWidth=(Math.max(scannedImageModelsList.get(0).getBitmap().getWidth(), scannedImageModelsList.get(1).getBitmap().getWidth()));
+
+
+        PdfDocument.Page page = null;
         PdfDocument pdfDocument = new PdfDocument();
-        for (int i = 1 ; i<3 ; i++){
-            PdfDocument.PageInfo  pi = new PdfDocument.PageInfo.Builder(bitmap.getWidth(),bitmap.getHeight(),i).create();
-            PdfDocument.Page page = pdfDocument.startPage(pi);
-            Canvas canvas = page.getCanvas();
-            bitmap = Bitmap.createScaledBitmap(bitmap,bitmap.getWidth(),bitmap.getHeight(),true);
+        PdfDocument.PageInfo  pi = new PdfDocument.PageInfo.Builder(pageWidth
+                ,pageHeight
+                ,1).create();
+        page = pdfDocument.startPage(pi);
+        Canvas canvas = page.getCanvas();
+        Bitmap on = Bitmap.createScaledBitmap(scannedImageModelsList.get(0).getBitmap()
+                ,pi.getPageWidth()
+                ,pi.getPageHeight()/2,true);
 
-            canvas.drawBitmap(bitmap,0,0,null);
-            pdfDocument.finishPage(page);
-        }
+        canvas.drawBitmap(on,0,0,null);
 
-        //RESMİ PDF OLARAK KAYDETME
+        Bitmap arka = Bitmap.createScaledBitmap(scannedImageModelsList.get(1).getBitmap()
+                ,pi.getPageWidth()
+                ,pi.getPageHeight()/2,true);
 
-        File file = new File(root,"picture.pdf");
+        canvas.drawBitmap(arka,0,scannedImageModelsList.get(0).getBitmap().getHeight(),null);
 
+        pdfDocument.finishPage(page);
+
+        File file = new File(root,folderName+"card.pdf");
 
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
@@ -132,7 +145,6 @@ public class mUtils {
 
         pdfDocument.close();
     }
-
 
 
 }

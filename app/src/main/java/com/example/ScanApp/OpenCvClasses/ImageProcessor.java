@@ -158,6 +158,7 @@ public class ImageProcessor extends Handler {
         ScannedDocument doc = detectDocument(img);
         Log.e("IMAGEPROCCESS",img.toString());
         mMainActivity.startActivity(new Intent(mMainActivity, EditImage.class));
+        mMainActivity.finish();
         //mMainActivity.saveDocument(doc);
 
 
