@@ -15,47 +15,52 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ScanApp.R;
+import com.example.ScanApp.mAppScreens.MainPage;
 import com.example.ScanApp.mAppScreens.Models.PdfDocumentsModel;
 import com.example.ScanApp.mAppScreens.Models.ScannedImageModel;
+import com.example.ScanApp.mAppScreens.ScannedImagePage;
 import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ScannedImageCardAdapter extends RecyclerView.Adapter<ScannedImageCardAdapter.CardTasarimTutucu> {
+public class ScannedImageCardAdapter extends RecyclerView.Adapter<ScannedImageCardAdapter.CardTasarimTutucu>  {
 
-    private Context context;
-    private List<ScannedImageModel> scannedImageModelList;
+    List<ScannedImageModel> list = new ArrayList<>();
+    ScannedImagePage activity;
 
-    private List<ScannedImageModel> selectedScannedImages;
-    private ConstraintLayout whenCheckedLayout;
-    private TextView folderSelected;
+    public ScannedImageCardAdapter(List<ScannedImageModel> list, ScannedImagePage activity) {
+        this.list = list;
+        this.activity = activity;
 
+    }
 
-    public ScannedImageCardAdapter(Context context
-            , List<ScannedImageModel> scannedImageModelList
-            ,List<ScannedImageModel> selectedScannedImages
-            ,ConstraintLayout whenCheckedLayout
-            ,TextView folderSelected) {
-
-        this.context = context;
-        this.scannedImageModelList = scannedImageModelList;
-        this.selectedScannedImages = selectedScannedImages;
-        this.whenCheckedLayout = whenCheckedLayout;
-        this.folderSelected = folderSelected;
+    public void RemoveItems(ArrayList<ScannedImageModel> selectedScannedImageList) {
+        for (int i = 0 ; i<selectedScannedImageList.size();i++){
+            list.remove(selectedScannedImageList.get(i));
+            notifyDataSetChanged();
+        }
 
     }
 
 
+    public class CardTasarimTutucu extends RecyclerView.ViewHolder implements View.OnClickListener {
+        ImageView imageView;
+        CheckBox checkBox;
 
-    public class CardTasarimTutucu extends RecyclerView.ViewHolder {
-
-        private ImageView scannedImage;
-        private CheckBox checkboxScannedImage;
-        public CardTasarimTutucu(@NonNull View itemView) {
+        public CardTasarimTutucu(@NonNull View itemView, ScannedImagePage activity) {
             super(itemView);
 
-            scannedImage=itemView.findViewById(R.id.scannedImage);
-            checkboxScannedImage=itemView.findViewById(R.id.checkboxScannedImage);
+            imageView=itemView.findViewById(R.id.scannedImage);
+            checkBox = itemView.findViewById(R.id.checkboxScannedImage);
+            checkBox.setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            activity.MakeSelection(v,getAdapterPosition());
         }
     }
 
@@ -63,48 +68,24 @@ public class ScannedImageCardAdapter extends RecyclerView.Adapter<ScannedImageCa
 
     @NonNull
     @Override
-    public CardTasarimTutucu onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CardTasarimTutucu onCreateViewHolder(@NonNull ViewGroup parent, int viewType)  {
 
-        View v = LayoutInflater.from(context).inflate(R.layout.card_scanned_image_element,parent,false);
+        View v=LayoutInflater.from(parent.getContext()).inflate(R.layout.card_scanned_image_element,parent,false);
 
-        return new CardTasarimTutucu(v);
+        return new CardTasarimTutucu(v,activity);
     }
+
 
     @Override
     public void onBindViewHolder(@NonNull CardTasarimTutucu holder, int position) {
-        ScannedImageModel scannedImageModel = scannedImageModelList.get(position);
-        holder.scannedImage.setImageBitmap(scannedImageModel.getBitmap());
+        holder.imageView.setImageBitmap(list.get(position).getBitmap());
 
-
-
-        holder.checkboxScannedImage.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
-                    selectedScannedImages.add(scannedImageModel);
-                    whenCheckedLayout.setVisibility(View.VISIBLE);
-                    folderSelected.setText(String.valueOf(selectedScannedImages.size()+" folder selected"));
-                    Log.e("PDFSIZE",String.valueOf(StaticVeriables.pdfList.size()));
-                }
-                else{
-                    selectedScannedImages.remove(scannedImageModel);
-                    if(selectedScannedImages.size()==0){
-                        whenCheckedLayout.setVisibility(View.GONE);
-                    }
-                    else{
-                        folderSelected.setText(String.valueOf(selectedScannedImages.size()+" folder selected"));
-                    }
-
-                    Log.e("PDFSIZE",String.valueOf(StaticVeriables.pdfList.size()));
-
-                }
-            }
-        });
 
     }
 
+
     @Override
     public int getItemCount() {
-        return scannedImageModelList.size();
+        return list.size();
     }
 }

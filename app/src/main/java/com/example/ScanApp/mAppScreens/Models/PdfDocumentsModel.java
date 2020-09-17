@@ -1,11 +1,20 @@
 package com.example.ScanApp.mAppScreens.Models;
 
 import android.graphics.Bitmap;
+import android.widget.CheckBox;
 
 public class PdfDocumentsModel {
     private Bitmap bitmap;
     private String pdfTitle;
     private String pdfInfo;
+    private Boolean isChecked;
+
+    public PdfDocumentsModel(Bitmap bitmap, String pdfTitle, String pdfInfo, Boolean isChecked) {
+        this.bitmap = bitmap;
+        this.pdfTitle = pdfTitle;
+        this.pdfInfo = pdfInfo;
+        this.isChecked = isChecked;
+    }
 
     public Bitmap getBitmap() {
         return bitmap;
@@ -31,9 +40,11 @@ public class PdfDocumentsModel {
         this.pdfInfo = pdfInfo;
     }
 
-    public PdfDocumentsModel(Bitmap bitmap, String pdfTitle, String pdfInfo) {
-        this.bitmap = bitmap;
-        this.pdfTitle = pdfTitle;
-        this.pdfInfo = pdfInfo;
+    public Boolean getChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(Boolean checked) {
+        isChecked = checked;
     }
 }

@@ -6,6 +6,15 @@ public class ScannedImageModel {
 
     private Bitmap bitmap;
     private String title,info;
+    private Boolean isChecked;
+
+    public Boolean getChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(Boolean checked) {
+        isChecked = checked;
+    }
 
     public Bitmap getBitmap() {
         return bitmap;
@@ -31,9 +40,10 @@ public class ScannedImageModel {
         this.info = info;
     }
 
-    public ScannedImageModel(Bitmap bitmap, String title, String info) {
+    public ScannedImageModel(Bitmap bitmap, String title, String info, Boolean isChecked) {
         this.bitmap = bitmap;
         this.title = title;
         this.info = info;
+        this.isChecked = isChecked;
     }
 }

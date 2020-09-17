@@ -154,7 +154,6 @@ public class ImageProcessor extends Handler {
         }
 
 
-
         StaticVeriables.scannedDocument=detectDocument(img);
         ScannedDocument doc = detectDocument(img);
         Log.e("IMAGEPROCCESS",img.toString());

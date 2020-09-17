@@ -10,6 +10,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,13 +24,12 @@ import com.example.ScanApp.OpenCvClasses.DocumentScannerActivity;
 
 import java.util.ArrayList;
 
-public class MainPage extends AppCompatActivity {
+public class MainPage extends AppCompatActivity implements View.OnClickListener {
 
     //Visual Objects
-    ImageView folderImage,scanImage;
+    ImageView folderImage,scanImage,imageViewClose;
     SegmentedButtonGroup segmentedButtonGroup;
     ConstraintLayout whenCheckedLayout;
-
 
     private RecyclerView recyclerView;
     private ArrayList<PdfDocumentsModel> pdfDocumentsModelArrayList;
@@ -46,8 +47,9 @@ public class MainPage extends AppCompatActivity {
         setContentView(R.layout.activity_main_page);
         temp = BitmapFactory.decodeResource(getResources(),R.drawable.tmp);
         defs();
+        clicks();
         segmentGroupListener();
-        exampleForMainPage();
+        //exampleForMainPage();
     }
 
 
@@ -68,7 +70,12 @@ public class MainPage extends AppCompatActivity {
         checkedPdfList=new ArrayList<>();
 
         whenCheckedLayout=findViewById(R.id.whenCheckedLayout);
+        imageViewClose=findViewById(R.id.imageViewClose);
+        StaticVeriables.userWillScanCard=false;
+    }
 
+    private void clicks(){
+        imageViewClose.setOnClickListener(this);
     }
 
     private void segmentGroupListener(){
@@ -76,10 +83,14 @@ public class MainPage extends AppCompatActivity {
             @Override
             public void onPositionChanged(int position) {
                 if (position==0){
+                    StaticVeriables.scannedImageModelList=new ArrayList<>();
+                    StaticVeriables.userWillScanCard=true;
                     StaticVeriables.photoCount=2;
                     StaticVeriables.informationText="SCAN THE FRONT OF YOUR CARD";
                 }
                 else{
+                    StaticVeriables.scannedImageModelList=new ArrayList<>();
+                    StaticVeriables.userWillScanCard=false;
                     StaticVeriables.photoCount=1;
                     StaticVeriables.informationText="SCAN YOUR DOCUMENT.";
 
@@ -90,7 +101,7 @@ public class MainPage extends AppCompatActivity {
     }
 
     private void exampleForMainPage(){
-        PdfDocumentsModel pdfDocumentsModel1 = new PdfDocumentsModel(temp,"scanner-app-wireframe","1.9 MB - 13 Eylül, 16:14");
+        PdfDocumentsModel pdfDocumentsModel1 = new PdfDocumentsModel(temp,"scanner-app-wireframe","1.9 MB - 13 Eylül, 16:14",false);
 
         pdfDocumentsModelArrayList.add(pdfDocumentsModel1);
         pdfDocumentsModelArrayList.add(pdfDocumentsModel1);
@@ -102,8 +113,24 @@ public class MainPage extends AppCompatActivity {
         pdfDocumentsModelArrayList.add(pdfDocumentsModel1);
         pdfDocumentsModelArrayList.add(pdfDocumentsModel1);
 
-        pdfsCardAdapter = new PdfsCardAdapter(this,pdfDocumentsModelArrayList,checkedPdfList,whenCheckedLayout,folderSelected);
+        pdfsCardAdapter = new PdfsCardAdapter(this
+                ,pdfDocumentsModelArrayList
+                ,checkedPdfList
+                ,whenCheckedLayout
+                ,folderSelected
+                ,imageViewClose);
         recyclerView.setAdapter(pdfsCardAdapter);
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.imageViewClose:
+                //whenCheckedLayout.setVisibility(View.GONE);
+
+                break;
+        }
     }
 
 }

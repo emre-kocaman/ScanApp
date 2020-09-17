@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.ScanApp.R;
 import com.example.ScanApp.mAppScreens.MainPage;
+import com.example.ScanApp.mAppScreens.Models.ScannedImageModel;
 import com.example.ScanApp.mAppScreens.ScannedImagePage;
 import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
 import com.example.ScanApp.mAppScreens.mUtils.mUtils;
@@ -43,6 +44,7 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
     Bitmap bitmap=null;
     Uri uri=null;
     PictureThread thread;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,6 +137,7 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.saveCropppedImage:
+                saveImageToList();
                 checkIsCard();
                 break;
         }
@@ -142,17 +145,28 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
 
     private void checkIsCard(){
         StaticVeriables.photoCount--;
-        if (StaticVeriables.photoCount==0){//Tarama bitmiştir taranan resimlerin olduğu sayfaya gönder.
+        if (StaticVeriables.photoCount==0 && !StaticVeriables.userWillScanCard){
+            //Kullanıcı döküman scan etmiştir ve tarama bitmiştir taranan resimlerin olduğu sayfaya gönder.
             StaticVeriables.informationText="";
             StaticVeriables.photoCount=20;
             Intent intent = new Intent(this, ScannedImagePage.class);
             startActivity(intent);
             finish();
         }
+        else if(StaticVeriables.photoCount==0 && StaticVeriables.userWillScanCard){
+            //Kullanıcı kard scan etmiştir ve tarama bitmiştir pdf oluşturup direk ana sayfaya gönder
+            Intent intent = new Intent(this,MainPage.class);
+            startActivity(intent);
+        }
         else if (StaticVeriables.photoCount==1){//Kimlik sayfasının arka sayfasını çekmeye git
             StaticVeriables.informationText="SCAN THE BACK OF YOUR CARD";
             startActivity(intent);
         }
+    }
+
+    private void saveImageToList(){
+        ScannedImageModel scannedImageModel = new ScannedImageModel(bitmap,StaticVeriables.photoCount+". image","",false);
+        StaticVeriables.scannedImageModelList.add(scannedImageModel);
     }
 
     private void seekBarsListener(){

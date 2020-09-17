@@ -7,6 +7,7 @@ import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsSpinner;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -23,28 +24,30 @@ import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTasarimTutucu> {
+public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTasarimTutucu>{
     private Context context;
     private List<PdfDocumentsModel> pdfDocumentsList;
 
     private List<PdfDocumentsModel> checkedPdfList;
     private ConstraintLayout whenCheckedLayout;
     private TextView folderSelected;
+    private ImageView close;
 
     public PdfsCardAdapter(Context context
             , List<PdfDocumentsModel> pdfDocumentsList
             ,List<PdfDocumentsModel> checkedPdfList
             ,ConstraintLayout whenCheckedLayout
-            ,TextView folderSelected) {
+            ,TextView folderSelected,ImageView close) {
         this.context = context;
         this.pdfDocumentsList = pdfDocumentsList;
         this.checkedPdfList=checkedPdfList;
         this.whenCheckedLayout=whenCheckedLayout;
         this.folderSelected=folderSelected;
+        this.close=close;
     }
-
     public class CardTasarimTutucu extends RecyclerView.ViewHolder {
 
         private ImageView pdfImage;
@@ -66,8 +69,11 @@ public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTa
     @Override
     public CardTasarimTutucu onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context).inflate(R.layout.card_main_page_pdf_element,parent,false);
+        Log.e("giriyormu", "giriyor");
         return new CardTasarimTutucu(v);
     }
+
+
 
     @Override
     public void onBindViewHolder(@NonNull CardTasarimTutucu holder, int position) {
@@ -75,8 +81,7 @@ public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTa
         holder.pdfImage.setImageBitmap(pdf.getBitmap());
         holder.textViewPdfInfo.setText(pdf.getPdfInfo());
         holder.textViewPdfTitle.setText(pdf.getPdfTitle());
-
-
+        Log.e("cagrildimi","cagrildi");
         holder.checkBoxPdf.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -84,7 +89,6 @@ public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTa
                     checkedPdfList.add(pdf);
                     whenCheckedLayout.setVisibility(View.VISIBLE);
                     folderSelected.setText(String.valueOf(checkedPdfList.size()+" folder selected"));
-                    Log.e("PDFSIZE",String.valueOf(StaticVeriables.pdfList.size()));
                 }
                 else{
                     checkedPdfList.remove(pdf);
@@ -95,8 +99,6 @@ public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTa
                         folderSelected.setText(String.valueOf(checkedPdfList.size()+" folder selected"));
                     }
 
-                    Log.e("PDFSIZE",String.valueOf(StaticVeriables.pdfList.size()));
-
                 }
             }
         });
@@ -106,4 +108,5 @@ public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTa
     public int getItemCount() {
         return pdfDocumentsList.size();
     }
+
 }

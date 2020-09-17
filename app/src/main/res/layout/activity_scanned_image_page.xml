@@ -96,6 +96,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
@@ -109,7 +110,7 @@
             app:srcCompat="@drawable/ic_baseline_close_24" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton6"
+            android:id="@+id/floatingActionButtonCombine"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
@@ -119,19 +120,7 @@
             app:elevation="0dp"
             app:layout_constraintBottom_toTopOf="@+id/textView4"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/floatingActionButton" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            android:clickable="true"
-            android:src="@drawable/ic_baseline_edit_24"
-            app:backgroundTint="#3322A6F2"
-            app:elevation="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/textView4"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.75"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
@@ -142,11 +131,11 @@
             android:text="Combine"
             android:textColor="#9E45AA"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/floatingActionButton6"
-            app:layout_constraintStart_toStartOf="@+id/floatingActionButton6" />
+            app:layout_constraintEnd_toEndOf="@+id/floatingActionButtonCombine"
+            app:layout_constraintStart_toStartOf="@+id/floatingActionButtonCombine" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton3"
+            android:id="@+id/floatingActionButtonDelete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
@@ -155,7 +144,8 @@
             app:backgroundTint="#33F63657"
             app:elevation="0dp"
             app:layout_constraintBottom_toTopOf="@+id/textView4"
-            app:layout_constraintEnd_toStartOf="@+id/floatingActionButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.25"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
@@ -166,19 +156,8 @@
             android:text="Delete"
             android:textColor="#F63657"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/floatingActionButton3"
-            app:layout_constraintStart_toStartOf="@+id/floatingActionButton3" />
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="47dp"
-            android:text="Edit"
-            android:textColor="#22A6F2"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/floatingActionButton"
-            app:layout_constraintStart_toStartOf="@+id/floatingActionButton" />
+            app:layout_constraintEnd_toEndOf="@+id/floatingActionButtonDelete"
+            app:layout_constraintStart_toStartOf="@+id/floatingActionButtonDelete" />
 
         <TextView
             android:id="@+id/folderSelected"
@@ -198,7 +177,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toTopOf="@+id/floatingActionButton3"
+            app:layout_constraintBottom_toTopOf="@+id/floatingActionButtonDelete"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_baseline_checked_circle_24" />
