@@ -52,13 +52,14 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
     //Veriables
     Intent intent;
     Bitmap temp;
+    File root;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
-        temp = BitmapFactory.decodeResource(getResources(),R.drawable.tmp);
+        temp = BitmapFactory.decodeResource(getResources(),R.drawable.sand_watch);
         defs();
         clicks();
         scanButtonsListener();
@@ -93,6 +94,11 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         StaticVeriables.userWillScanCard=false;
         buttonScanDocument = findViewById(R.id.buttonScanDocument);
         buttonScanCard = findViewById(R.id.buttonScanCard);
+
+        root = new File(Environment.getExternalStorageDirectory(),"PDF folders");
+        if(!root.exists()){
+            root.mkdir();
+        }
     }
 
     private void clicks(){
@@ -174,7 +180,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         {
             pdfFile= new File(StaticVeriables.path+"/"+files[i].getName());
             date= new Date(pdfFile.lastModified());
-            PdfDocumentsModel pdfFolderInfos = new PdfDocumentsModel(null
+            PdfDocumentsModel pdfFolderInfos = new PdfDocumentsModel(temp
                     ,files[i].getName()
                     ,String.valueOf(date)
                     ,false,pdfFile.getName());
