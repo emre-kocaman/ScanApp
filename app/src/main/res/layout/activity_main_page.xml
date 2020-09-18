@@ -10,25 +10,12 @@
     tools:context=".mAppScreens.MainPage">
 
     <Button
-        android:id="@+id/buttonScanCard"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/scan_button_background"
-        android:padding="10dp"
-        android:text="Scan Card"
-        android:textColor="#FA8A00"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.15"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
         android:id="@+id/buttonScanDocument"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:background="@drawable/scan_button_background"
+        android:elevation="0dp"
         android:padding="10dp"
         android:text="SCAN DOCUMENT"
         android:textColor="#FA8A00"
@@ -36,16 +23,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.85"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/pdfRv"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:paddingBottom="50dp"
-        app:layout_constraintBottom_toTopOf="@+id/whenCheckedLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -105,12 +82,38 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/pdfRv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:paddingBottom="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/whenCheckedLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
+    <Button
+        android:id="@+id/buttonScanCard"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/scan_button_background"
+        android:elevation="0dp"
+        android:padding="10dp"
+        android:text="Scan Card"
+        android:textColor="#FA8A00"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/whenCheckedLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#FFF"
         android:clickable="true"
+        android:elevation="2dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

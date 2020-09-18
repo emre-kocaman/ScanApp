@@ -42,7 +42,6 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
     //Visual Objects
     ImageView folderImage,scanImage,imageViewClose;
     ConstraintLayout whenCheckedLayout;
-    String path = Environment.getExternalStorageDirectory().toString()+"/PDF folders";
     Button buttonScanDocument,buttonScanCard;
 
     private RecyclerView recyclerView;
@@ -131,7 +130,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
     }
 
     private void exampleForMainPage(){
-        PdfDocumentsModel pdfDocumentsModel1 = new PdfDocumentsModel(temp,"scanner-app-wireframe","1.9 MB - 13 Eylül, 16:14",false);
+        PdfDocumentsModel pdfDocumentsModel1 = new PdfDocumentsModel(temp,"scanner-app-wireframe","1.9 MB - 13 Eylül, 16:14",false,"");
 
         pdfDocumentsModelArrayList.add(pdfDocumentsModel1);
         pdfDocumentsModelArrayList.add(pdfDocumentsModel1);
@@ -164,21 +163,21 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
 
 
     private void getPdfFolderInfos(){
-        Log.d("Files", "Path: " + path);
+        Log.d("Files", "Path: " + StaticVeriables.path);
         File pdfFile;
         Date date;
-        File directory = new File(path);
+        File directory = new File(StaticVeriables.path);
         File[] files = directory.listFiles();
         Log.d("Files", "Size: "+ files.length);
 
         for (int i = 0; i < files.length; i++)
         {
-            pdfFile= new File(path+"/"+files[i].getName());
+            pdfFile= new File(StaticVeriables.path+"/"+files[i].getName());
             date= new Date(pdfFile.lastModified());
-            PdfDocumentsModel pdfFolderInfos = new PdfDocumentsModel(temp
+            PdfDocumentsModel pdfFolderInfos = new PdfDocumentsModel(null
                     ,files[i].getName()
                     ,String.valueOf(date)
-                    ,false);
+                    ,false,pdfFile.getName());
            @SuppressLint("StaticFieldLeak")
            PdfAsyncTask a = new PdfAsyncTask(pdfFolderInfos){
                @Override

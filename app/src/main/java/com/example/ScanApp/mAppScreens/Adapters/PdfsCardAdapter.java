@@ -1,7 +1,10 @@
 package com.example.ScanApp.mAppScreens.Adapters;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
+import android.net.Uri;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -12,9 +15,11 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -25,8 +30,11 @@ import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import static androidx.core.content.FileProvider.getUriForFile;
 
 public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTasarimTutucu>{
     private Context context;
@@ -105,11 +113,41 @@ public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTa
                 }
             }
         });
+
+        holder.pdfImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openPdf(StaticVeriables.path+pdf.getName());
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return pdfDocumentsList.size();
+    }
+
+
+    private void openPdf(String filePath){
+        File pdfFile = new File(filePath);
+        if(pdfFile.exists())
+        {
+            Uri path = getUriForFile(context, "com.example.ScanApp.fileprovider", pdfFile);
+            Intent pdfIntent = new Intent(Intent.ACTION_VIEW);
+            pdfIntent.setDataAndType(path, "application/pdf");
+            pdfIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            pdfIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            try
+            {
+                context.startActivity(pdfIntent);
+            }
+            catch(ActivityNotFoundException e)
+            {
+                Toast.makeText(context, "No Application available to view pdf", Toast.LENGTH_LONG).show();
+            }
+        }
+
     }
 
 }

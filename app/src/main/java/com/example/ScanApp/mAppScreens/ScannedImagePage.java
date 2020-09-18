@@ -183,9 +183,9 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
 
 
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Folder Name");
+        alert.setTitle("File Name");
         alert.setView(tasarim);
-        alert.setMessage("\n"+"Write your pdf folder name\n");
+        alert.setMessage("\n"+"Write your pdf file name\n");
         alert.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -193,6 +193,7 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
                 String folderName = editTextFolderName.getText().toString().trim();
                 if (folderName.length()!=0){
                     mUtils.createPdfOfImageFromList(root,selectedScannedImageList,context,folderName);
+                    whenCheckedSp.setVisibility(View.GONE);
                 }
                 else{
                     Toast.makeText(context, "Name cant be empty", Toast.LENGTH_SHORT).show();

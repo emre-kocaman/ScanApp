@@ -10,12 +10,23 @@ public class PdfDocumentsModel {
     private String pdfTitle;
     private String pdfInfo;
     private Boolean isChecked;
+    private String name;
 
-    public PdfDocumentsModel(Bitmap bitmap, String pdfTitle, String pdfInfo, Boolean isChecked) {
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public PdfDocumentsModel(Bitmap bitmap, String pdfTitle, String pdfInfo, Boolean isChecked, String name) {
         this.bitmap = bitmap;
         this.pdfTitle = pdfTitle;
         this.pdfInfo = pdfInfo;
         this.isChecked = isChecked;
+        this.name = name;
     }
 
     public Bitmap getBitmap() {

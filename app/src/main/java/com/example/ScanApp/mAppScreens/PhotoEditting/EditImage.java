@@ -244,9 +244,9 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
 
 
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Folder Name");
+        alert.setTitle("File Name");
         alert.setView(tasarim);
-        alert.setMessage("\n"+"Write your pdf folder name\n");
+        alert.setMessage("\n"+"Write your pdf file name\n");
         alert.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

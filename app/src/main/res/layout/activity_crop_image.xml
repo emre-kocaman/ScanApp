@@ -4,7 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".mAppScreens.PhotoEditting.EditImage">
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Sharpness"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/seekBarSharpness"
+        app:layout_constraintEnd_toEndOf="@+id/seekBarSharpness"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/seekBarSharpness" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Brightness"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/seekBarBrightness"
+        app:layout_constraintEnd_toEndOf="@+id/seekBarBrightness"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/seekBarBrightness" />
 
     <SeekBar
         android:id="@+id/seekBarBrightness"
@@ -13,6 +38,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="16dp"
+        android:background="#E8E8E8"
         android:max="510"
         android:progress="0"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -25,21 +51,24 @@
         android:layout_height="50dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="16dp"
+        android:background="#E8E8E8"
         android:max="510"
         android:progress="0"
-        app:layout_constraintBottom_toTopOf="@+id/seekBarBrightness"
+        app:layout_constraintBottom_toTopOf="@+id/textView8"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/saveCropppedImage"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/scan_button_background"
+        android:backgroundTint="@color/dark_white_y"
         android:text="Save Image"
+        android:textColor="#FA8A00"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -48,11 +77,9 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="40dp"
-        android:layout_marginTop="40dp"
         android:layout_marginEnd="40dp"
-        android:layout_marginBottom="40dp"
         android:scaleType="fitCenter"
-        app:layout_constraintBottom_toTopOf="@+id/seekBarSharpness"
+        app:layout_constraintBottom_toTopOf="@+id/textView7"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/saveCropppedImage"
