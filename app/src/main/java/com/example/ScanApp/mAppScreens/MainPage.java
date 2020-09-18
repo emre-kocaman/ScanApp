@@ -75,6 +75,13 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
     }
 
     private void defs(){
+
+        root = new File(Environment.getExternalStorageDirectory(),"PDF folders");
+        if(!root.exists()){
+            root.mkdir();
+        }
+
+
         folderSelected=findViewById(R.id.folderSelected);
         folderImage = findViewById(R.id.folderImage);
         scanImage = findViewById(R.id.scanImage);
@@ -95,10 +102,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         buttonScanDocument = findViewById(R.id.buttonScanDocument);
         buttonScanCard = findViewById(R.id.buttonScanCard);
 
-        root = new File(Environment.getExternalStorageDirectory(),"PDF folders");
-        if(!root.exists()){
-            root.mkdir();
-        }
+
     }
 
     private void clicks(){

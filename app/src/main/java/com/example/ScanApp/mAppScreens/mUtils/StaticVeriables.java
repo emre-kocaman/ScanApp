@@ -12,7 +12,7 @@ import java.util.List;
 
 public class StaticVeriables {
 
-    public static String path = Environment.getExternalStorageDirectory().toString()+"/PDF folders/";
+    public static String path = Environment.getExternalStorageDirectory().toString()+"/PDF folders";
 
     public static int photoCount = 20;
     public static String informationText = "";
