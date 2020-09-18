@@ -51,9 +51,9 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
     RecyclerView recyclerViewScannedImages;
     Button buttonDone;
     FloatingActionButton buttonScanAgain;
-    ConstraintLayout whenCheckedLayout;
+    ConstraintLayout whenCheckedSp;
     TextView textView;
-    ImageView imageViewClose;
+    ImageView imageViewCloseSp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,11 +75,11 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         buttonDone=findViewById(R.id.buttonDone);
         buttonScanAgain=findViewById(R.id.buttonScanAgain);
 
-        whenCheckedLayout=findViewById(R.id.whenCheckedLayout);
+        whenCheckedSp=findViewById(R.id.whenCheckedSp);
         selectedScannedImageList= new ArrayList<>();
         textView=findViewById(R.id.folderSelected);
 
-        imageViewClose=findViewById(R.id.imageViewClose);
+        imageViewCloseSp=findViewById(R.id.imageViewCloseSp);
         floatingActionButtonDelete=findViewById(R.id.floatingActionButtonDelete);
         floatingActionButtonCombine=findViewById(R.id.floatingActionButtonCombine);
 
@@ -94,7 +94,8 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         buttonScanAgain.setOnClickListener(this);
         floatingActionButtonDelete.setOnClickListener(this);
         floatingActionButtonCombine.setOnClickListener(this);
-        imageViewClose.setOnClickListener(this);
+        imageViewCloseSp.setOnClickListener(this);
+
 
 
     }
@@ -126,6 +127,7 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
                 Intent intent = new Intent(ScannedImagePage.this,MainPage.class);
                 startActivity(intent);
                 finish();
+                //onBackPressed();
                 break;
             case R.id.buttonScanAgain:
                 //Eğer kullanıcı taranan resimler sayfasından tekrar bir resim scan etmek isterse buradan yönlendirip scan edip tekrar bu sayfaya resim eklenmiş bir şekilde geri dönüyoruz.
@@ -146,22 +148,22 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
                 //scannedImageCardAdapter.RemoveItems(selectedScannedImageList);
                 break;
 
-            case R.id.imageViewClose:
-                checkboxesUnchecked=false;
+            case R.id.imageViewCloseSp:
+                whenCheckedSp.setVisibility(View.GONE);
                 break;
         }
     }
 
     public void MakeSelection(View v, int itemCount) {
         if (((CheckBox)v).isChecked()){
-            whenCheckedLayout.setVisibility(View.VISIBLE);
+            whenCheckedSp.setVisibility(View.VISIBLE);
             selectedScannedImageList.add(StaticVeriables.scannedImageModelList.get(itemCount));
             textView.setText(selectedScannedImageList.size() + " folder selected");
         }
         else{
             selectedScannedImageList.remove(StaticVeriables.scannedImageModelList.get(itemCount));
             if (selectedScannedImageList.size()==0){
-                whenCheckedLayout.setVisibility(View.GONE);
+                whenCheckedSp.setVisibility(View.GONE);
             }
             else{
                 textView.setText(selectedScannedImageList.size() + " folder selected");

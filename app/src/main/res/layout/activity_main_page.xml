@@ -9,54 +9,43 @@
     android:scrollbarSize="10dp"
     tools:context=".mAppScreens.MainPage">
 
+    <Button
+        android:id="@+id/buttonScanCard"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/scan_button_background"
+        android:padding="10dp"
+        android:text="Scan Card"
+        android:textColor="#FA8A00"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/buttonScanDocument"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/scan_button_background"
+        android:padding="10dp"
+        android:text="SCAN DOCUMENT"
+        android:textColor="#FA8A00"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.85"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/pdfRv"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:paddingBottom="50dp"
         app:layout_constraintBottom_toTopOf="@+id/whenCheckedLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
-
-    <com.addisonelliott.segmentedbutton.SegmentedButtonGroup
-        android:id="@+id/segmentedButtonGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="#FFF"
-        android:visibility="visible"
-        app:borderColor="@android:color/holo_orange_dark"
-        app:borderWidth="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:radius="10dp">
-
-        <com.addisonelliott.segmentedbutton.SegmentedButton
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:elevation="0dp"
-            android:padding="10dp"
-            app:text="SCAN CARD"
-            app:textColor="#FA8A00"
-            app:textStyle="bold" />
-
-        <com.addisonelliott.segmentedbutton.SegmentedButton
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:elevation="0dp"
-            android:padding="10dp"
-            app:text="SCAN DOCUMENT"
-            app:textColor="#FA8A00"
-            app:textStyle="bold" />
-
-    </com.addisonelliott.segmentedbutton.SegmentedButtonGroup>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"

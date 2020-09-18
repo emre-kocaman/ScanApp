@@ -17,4 +17,35 @@
     <color name="toolbarcolor">#A02962EE</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
+
+
+    <color name="primary_color">#D81B60</color>
+    <color name="secondary_color">#AF00AF</color>
+    <color name="GoldColor">#FF0000</color>
+
+
+
+
+
+    <color name="colorSlide1">#009688</color>
+    <color name="colorSlide2">#795548</color>
+    <color name="colorSlide3">#8BC34A</color>
+    <color name="colorSlide4">#3F51B5</color>
+
+    <color name="bizimMavi">#10888C</color>
+    <color name="bizimKırmızı">#E01A22</color>
+
+    <color name="bizimKırmızıSemiTransparent">#80E01A22</color>
+    <color name="semiTransparentBlack">#80000000</color>
+
+    <color name="active_dots">#fffafa</color>
+    <color name="dark_white_y">#D8D8D8</color>
+    <color name="inactive_dots">#9283878B</color>
+
+
+
+    <color name="bildirimMesaj">#4a4a4a</color>
+
+    <color name="my_spinner_text_color">#808080</color>
+    <color name="colorTextDeneme">#212121</color>
 </resources>

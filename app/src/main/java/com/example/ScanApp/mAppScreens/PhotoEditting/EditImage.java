@@ -254,6 +254,7 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
                 String folderName = editTextFolderName.getText().toString().trim();
                 if (folderName.length()!=0){
                     mUtils.createPdfOfCard(root,StaticVeriables.scannedImageModelList,folderName);
+                    //mUtils.createPdfOfImageFromList(root,StaticVeriables.scannedImageModelList,context,folderName);
                     Intent intent = new Intent(EditImage.this,MainPage.class);
                     startActivity(intent);
                     finish();

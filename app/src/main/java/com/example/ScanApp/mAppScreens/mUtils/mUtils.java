@@ -65,7 +65,7 @@ public class mUtils {
     }
 
 
-    public static void createPdfOfImageFromList(File root, ArrayList<ScannedImageModel> scannedImageModelsList, Context context,String folderName)
+    public static void createPdfOfImageFromList(File root, List<ScannedImageModel> scannedImageModelsList, Context context,String folderName)
     {
         PdfDocument.Page page = null;
             PdfDocument pdfDocument = new PdfDocument();

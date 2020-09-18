@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.ScanApp.R;
 import com.example.ScanApp.mAppScreens.Models.PdfDocumentsModel;
 import com.example.ScanApp.mAppScreens.ScannedImagePage;
@@ -78,7 +79,9 @@ public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTa
     @Override
     public void onBindViewHolder(@NonNull CardTasarimTutucu holder, int position) {
         PdfDocumentsModel pdf = pdfDocumentsList.get(position);
-        holder.pdfImage.setImageBitmap(pdf.getBitmap());
+
+        Glide.with(context).load(pdf.getBitmap()).centerCrop().into(holder.pdfImage);
+        //holder.pdfImage.setImageBitmap(pdf.getBitmap());
         holder.textViewPdfInfo.setText(pdf.getPdfInfo());
         holder.textViewPdfTitle.setText(pdf.getPdfTitle());
         Log.e("cagrildimi","cagrildi");

@@ -87,7 +87,7 @@
         app:srcCompat="@drawable/qrwht" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/whenCheckedLayout"
+        android:id="@+id/whenCheckedSp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#FFF"
@@ -100,7 +100,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
-            android:id="@+id/imageViewClose"
+            android:id="@+id/imageViewCloseSp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"

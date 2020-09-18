@@ -3,6 +3,8 @@ package com.example.ScanApp.mAppScreens.Models;
 import android.graphics.Bitmap;
 import android.widget.CheckBox;
 
+import java.util.Objects;
+
 public class PdfDocumentsModel {
     private Bitmap bitmap;
     private String pdfTitle;
@@ -46,5 +48,21 @@ public class PdfDocumentsModel {
 
     public void setChecked(Boolean checked) {
         isChecked = checked;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PdfDocumentsModel that = (PdfDocumentsModel) o;
+        return Objects.equals(bitmap, that.bitmap) &&
+                Objects.equals(pdfTitle, that.pdfTitle) &&
+                Objects.equals(pdfInfo, that.pdfInfo) &&
+                Objects.equals(isChecked, that.isChecked);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(bitmap, pdfTitle, pdfInfo, isChecked);
     }
 }
