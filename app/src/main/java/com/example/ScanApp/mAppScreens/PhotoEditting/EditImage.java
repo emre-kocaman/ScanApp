@@ -79,7 +79,7 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
         saveCropppedImage=findViewById(R.id.saveCropppedImage);
 
 
-        root = new File(Environment.getExternalStorageDirectory(), "PDF folders");
+        root = new File(Environment.getExternalStorageDirectory(), "PDF folders/Main Pdfs");
         if(!root.exists()){
             root.mkdir();
         }

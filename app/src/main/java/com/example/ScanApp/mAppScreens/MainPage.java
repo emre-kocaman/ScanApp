@@ -63,7 +63,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         defs();
         clicks();
         scanButtonsListener();
-        getPdfFolderInfos();
+        getPdfFolderInfos("Main Pdfs");
 
 
         //exampleForMainPage();
@@ -172,13 +172,13 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
     }
 
 
-    private void getPdfFolderInfos(){
-        Log.d("Files", "Path: " + StaticVeriables.path);
+    private void getPdfFolderInfos(String fileDirectory){
+        //Log.d("Files", "Path: " + StaticVeriables.path);
         File pdfFile;
         Date date;
         File directory = new File(StaticVeriables.path);
         File[] files = directory.listFiles();
-        Log.d("Files", "Size: "+ files.length);
+       // Log.d("Files", "Size: "+ files.length);
 
         for (int i = 0; i < files.length; i++)
         {

@@ -83,7 +83,7 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         floatingActionButtonDelete=findViewById(R.id.floatingActionButtonDelete);
         floatingActionButtonCombine=findViewById(R.id.floatingActionButtonCombine);
 
-        root = new File(Environment.getExternalStorageDirectory(),"PDF folders");
+        root = new File(Environment.getExternalStorageDirectory(),"PDF folders/Main Pdfs");
         if(!root.exists()){
             root.mkdir();
         }
@@ -190,9 +190,9 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
-                String folderName = editTextFolderName.getText().toString().trim();
-                if (folderName.length()!=0){
-                    mUtils.createPdfOfImageFromList(root,selectedScannedImageList,context,folderName);
+                String fileName = editTextFolderName.getText().toString().trim();
+                if (fileName.length()!=0){
+                    mUtils.createPdfOfImageFromList(root,selectedScannedImageList,context,fileName);
                     whenCheckedSp.setVisibility(View.GONE);
                 }
                 else{
