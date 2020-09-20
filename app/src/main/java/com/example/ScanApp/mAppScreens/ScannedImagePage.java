@@ -171,7 +171,6 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         }
     }
 
-
     public void showAlert(Context context)
     {
 

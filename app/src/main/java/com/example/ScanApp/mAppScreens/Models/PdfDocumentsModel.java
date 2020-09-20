@@ -11,7 +11,15 @@ public class PdfDocumentsModel {
     private String pdfInfo;
     private Boolean isChecked;
     private String name;
+    private String filePath;
 
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
 
     public String getName() {
         return name;
@@ -21,12 +29,13 @@ public class PdfDocumentsModel {
         this.name = name;
     }
 
-    public PdfDocumentsModel(Bitmap bitmap, String pdfTitle, String pdfInfo, Boolean isChecked, String name) {
+    public PdfDocumentsModel(Bitmap bitmap, String pdfTitle, String pdfInfo, Boolean isChecked, String name,String filePath) {
         this.bitmap = bitmap;
         this.pdfTitle = pdfTitle;
         this.pdfInfo = pdfInfo;
         this.isChecked = isChecked;
         this.name = name;
+        this.filePath=filePath;
     }
 
     public Bitmap getBitmap() {

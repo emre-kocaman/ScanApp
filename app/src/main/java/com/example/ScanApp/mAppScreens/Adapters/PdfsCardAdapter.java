@@ -40,19 +40,16 @@ public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTa
     private Context context;
     private List<PdfDocumentsModel> pdfDocumentsList;
 
-    private List<PdfDocumentsModel> checkedPdfList;
     private ConstraintLayout whenCheckedLayout;
     private TextView folderSelected;
     private ImageView close;
 
     public PdfsCardAdapter(Context context
             , List<PdfDocumentsModel> pdfDocumentsList
-            ,List<PdfDocumentsModel> checkedPdfList
             ,ConstraintLayout whenCheckedLayout
             ,TextView folderSelected,ImageView close) {
         this.context = context;
         this.pdfDocumentsList = pdfDocumentsList;
-        this.checkedPdfList=checkedPdfList;
         this.whenCheckedLayout=whenCheckedLayout;
         this.folderSelected=folderSelected;
         this.close=close;
@@ -97,17 +94,17 @@ public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTa
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
-                    checkedPdfList.add(pdf);
+                    StaticVeriables.checkedPdfList.add(pdf);
                     whenCheckedLayout.setVisibility(View.VISIBLE);
-                    folderSelected.setText(String.valueOf(checkedPdfList.size()+" folder selected"));
+                    folderSelected.setText(String.valueOf(StaticVeriables.checkedPdfList.size()+" folder selected"));
                 }
                 else{
-                    checkedPdfList.remove(pdf);
-                    if(checkedPdfList.size()==0){
+                    StaticVeriables.checkedPdfList.remove(pdf);
+                    if(StaticVeriables.checkedPdfList.size()==0){
                         whenCheckedLayout.setVisibility(View.GONE);
                     }
                     else{
-                        folderSelected.setText(String.valueOf(checkedPdfList.size()+" folder selected"));
+                        folderSelected.setText(String.valueOf(StaticVeriables.checkedPdfList.size()+" folder selected"));
                     }
 
                 }
@@ -117,7 +114,8 @@ public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTa
         holder.pdfImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openPdf(StaticVeriables.path+pdf.getName());
+                Log.d("IMAGE E TIKLANIYOR MU","EVET");
+                openPdf(pdf.getFilePath());
             }
         });
     }

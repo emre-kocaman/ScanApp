@@ -19,6 +19,7 @@ public class StaticVeriables {
     public static ScannedDocument scannedDocument=null;
 
     public static List<ScannedImageModel> scannedImageModelList = new ArrayList<>();
+    public static  List<PdfDocumentsModel> checkedPdfList=new ArrayList<>();
     public static boolean userWillScanCard=false;
 
 
