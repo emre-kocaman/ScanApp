@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -47,6 +48,8 @@ import com.example.ScanApp.mAppScreens.mUtils.mUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -61,7 +64,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
 
     private RecyclerView recyclerView;
     private Set<PdfDocumentsModel> pdfDocumentsModelArrayList;
-    private Set<Folder> folderList;
+    private ArrayList<Folder> folderList;
     private FoldersAdapter folderAdapter;
     private TextView folderSelected;
     //Veriables
@@ -128,7 +131,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         recyclerView=findViewById(R.id.pdfRv);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));
-        folderList = new HashSet<>();
+        folderList = new ArrayList<>();
 
         whenCheckedLayout=findViewById(R.id.whenCheckedLayout);
         imageViewClose=findViewById(R.id.imageViewClose);
@@ -230,20 +233,40 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         File[] folders = directory.listFiles();
        // Log.d("Files", "Size: "+ files.length);
 
-        for (int i = 0; i < folders.length; i++)
-        {
-            File [] pdfFileInFolder = folders[i].listFiles();
-            pdfDocumentsModelArrayList=new HashSet<>();
-            for (int k = 0; k<pdfFileInFolder.length;k++){
-                pdfFile= new File(StaticVeriables.path+"/"+folders[i].getName()+"/"+pdfFileInFolder[k].getName());
-                date= new Date(pdfFile.lastModified());
+        if (folders != null && folders.length > 1) {//Oluşturulduğu tarih sırasına göre file listesini sıralıyorum
+            Arrays.sort(folders, new Comparator<File>() {
+                @Override
+                public int compare(File object1, File object2) {
+                    return (int) ((object1.lastModified() > object2.lastModified()) ? object1.lastModified(): object2.lastModified());
+                }
+            });
+        }
+
+
+        for (File file : folders) {
+            File[] pdfFileInFolder = file.listFiles();
+
+            if (pdfFileInFolder != null && pdfFileInFolder.length > 1) {//Oluşturulduğu tarih sırasına göre file listesini sıralıyorum
+                Arrays.sort(pdfFileInFolder, new Comparator<File>() {
+                    @Override
+                    public int compare(File object1, File object2) {
+                        return (int) ((object1.lastModified() > object2.lastModified()) ? object1.lastModified(): object2.lastModified());
+                    }
+                });
+            }
+
+
+            pdfDocumentsModelArrayList = new HashSet<>();
+            for (File value : pdfFileInFolder) {
+                pdfFile = new File(StaticVeriables.path + "/" + file.getName() + "/" + value.getName());
+                date = new Date(pdfFile.lastModified());
                 PdfDocumentsModel pdfFolderInfos = new PdfDocumentsModel(temp
-                        ,pdfFileInFolder[k].getName()
-                        ,String.valueOf(date)
-                        ,false,pdfFile.getName(),pdfFile.getPath());
+                        , value.getName()
+                        , String.valueOf(date)
+                        , false, pdfFile.getName(), pdfFile.getPath());
 
                 @SuppressLint("StaticFieldLeak")
-                PdfAsyncTask a = new PdfAsyncTask(pdfFolderInfos){
+                PdfAsyncTask a = new PdfAsyncTask(pdfFolderInfos) {
                     @Override
                     protected void onPostExecute(Void aVoid) {
                         super.onPostExecute(aVoid);
@@ -255,17 +278,22 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
 
                 pdfDocumentsModelArrayList.add(pdfFolderInfos);
             }
-            Folder folder = new Folder(folders[i].getName(), String.valueOf(Uri.fromFile(folders[i])),new ArrayList<>(pdfDocumentsModelArrayList));
+            Folder folder = new Folder(file.getName(), String.valueOf(Uri.fromFile(file)), new ArrayList<>(pdfDocumentsModelArrayList));
             folderList.add(folder);
 
 
-
         }
-        setAdapter(new ArrayList<>(folderList));
+        if (recyclerView.getAdapter() == null) {
+            setAdapter(folderList);
+        } else{
+            folderAdapter.setFolderList(folderList);
+            folderAdapter.notifyDataSetChanged();
+        }
     }
 
     private void setAdapter(List<Folder> folderList){
         folderAdapter = new FoldersAdapter(whenCheckedLayout,this,folderList,folderSelected,imageViewClose);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this,RecyclerView.VERTICAL,false));
         recyclerView.setAdapter(folderAdapter);
     }
 
@@ -297,11 +325,14 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
                     newFile = new File(StaticVeriables.path+"/"+folderName);
                     if(!newFile.exists()){
                         newFile.mkdir();
-                        Folder newFolder = new Folder(folderName,newFile.getPath(),new ArrayList<>(pdfDocumentsModelArrayList));
-                        folderList.add(newFolder);
+                        Folder newFolder = new Folder(folderName,newFile.getPath(),new ArrayList<>());
+                       // folderList.add(newFolder);
                         Toast.makeText(context, "Folder Created", Toast.LENGTH_SHORT).show();
                         //Toast.makeText(context, String.valueOf(folderList.size()), Toast.LENGTH_SHORT).show();
-                        folderAdapter.notifyItemInserted(folderList.size());
+                       // setAdapter(new ArrayList<>(folderList));
+                       folderList.add(newFolder);
+                       folderAdapter.setFolderList(folderList);
+                       folderAdapter.notifyDataSetChanged();
                     }
                     else{
                         Toast.makeText(context, "Folder is already exist", Toast.LENGTH_SHORT).show();

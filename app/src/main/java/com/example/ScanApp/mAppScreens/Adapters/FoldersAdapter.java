@@ -31,6 +31,10 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.CardTasa
         this.imageViewClose= imageViewClose;
     }
 
+    public void setFolderList(List<Folder> folderList) {
+        this.folderList = folderList;
+    }
+
     public class CardTasarimTutucu extends RecyclerView.ViewHolder {
         ImageView imageViewArrow;
         TextView folderName;
@@ -68,9 +72,11 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.CardTasa
     @NonNull
     @Override
     public CardTasarimTutucu onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(context).inflate(R.layout.card_main_page_folders,parent,false);
-        return new CardTasarimTutucu(v);
+            View v = LayoutInflater.from(context).inflate(R.layout.card_main_page_folders,parent,false);
+            return new CardTasarimTutucu(v); // CarViewHolder
+
     }
+
 
     @Override
     public void onBindViewHolder(@NonNull CardTasarimTutucu holder, int position) {

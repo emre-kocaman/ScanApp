@@ -1,5 +1,6 @@
 package com.example.ScanApp.mAppScreens.Models;
 
+import java.io.File;
 import java.util.List;
 
 public class Folder {
@@ -7,9 +8,13 @@ public class Folder {
     String folderUri;
     private Boolean isExpanded;
     private List<PdfDocumentsModel> pdfDocumentsModels;
-
+    private File file;
     public String getFolderName() {
         return folderName;
+    }
+
+    public File getFile() {
+        return file;
     }
 
     public void setFolderName(String folderName) {
