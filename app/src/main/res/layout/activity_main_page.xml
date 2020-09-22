@@ -85,6 +85,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:paddingBottom="50dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/whenCheckedLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -128,7 +129,7 @@
             app:srcCompat="@drawable/ic_baseline_close_24" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton6"
+            android:id="@+id/fabShare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
@@ -138,10 +139,10 @@
             app:elevation="0dp"
             app:layout_constraintBottom_toTopOf="@+id/textView4"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/floatingActionButton" />
+            app:layout_constraintStart_toEndOf="@+id/fabEdit" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton"
+            android:id="@+id/fabEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
@@ -161,11 +162,11 @@
             android:text="Share"
             android:textColor="#50CA5F"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/floatingActionButton6"
-            app:layout_constraintStart_toStartOf="@+id/floatingActionButton6" />
+            app:layout_constraintEnd_toEndOf="@+id/fabShare"
+            app:layout_constraintStart_toStartOf="@+id/fabShare" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton3"
+            android:id="@+id/fabDelete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
@@ -174,7 +175,7 @@
             app:backgroundTint="#33F63657"
             app:elevation="0dp"
             app:layout_constraintBottom_toTopOf="@+id/textView4"
-            app:layout_constraintEnd_toStartOf="@+id/floatingActionButton"
+            app:layout_constraintEnd_toStartOf="@+id/fabEdit"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
@@ -185,8 +186,8 @@
             android:text="Delete"
             android:textColor="#F63657"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/floatingActionButton3"
-            app:layout_constraintStart_toStartOf="@+id/floatingActionButton3" />
+            app:layout_constraintEnd_toEndOf="@+id/fabDelete"
+            app:layout_constraintStart_toStartOf="@+id/fabDelete" />
 
         <TextView
             android:id="@+id/textView3"
@@ -196,8 +197,8 @@
             android:text="Edit"
             android:textColor="#22A6F2"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/floatingActionButton"
-            app:layout_constraintStart_toStartOf="@+id/floatingActionButton" />
+            app:layout_constraintEnd_toEndOf="@+id/fabEdit"
+            app:layout_constraintStart_toStartOf="@+id/fabEdit" />
 
         <TextView
             android:id="@+id/folderSelected"
@@ -217,7 +218,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toTopOf="@+id/floatingActionButton3"
+            app:layout_constraintBottom_toTopOf="@+id/fabDelete"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_baseline_checked_circle_24" />

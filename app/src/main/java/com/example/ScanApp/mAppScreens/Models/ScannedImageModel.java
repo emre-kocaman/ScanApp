@@ -2,7 +2,9 @@ package com.example.ScanApp.mAppScreens.Models;
 
 import android.graphics.Bitmap;
 
-public class ScannedImageModel {
+import com.example.ScanApp.interfaces.HasName;
+
+public class ScannedImageModel implements HasName {
 
     private Bitmap bitmap;
     private String title,info;
@@ -45,5 +47,10 @@ public class ScannedImageModel {
         this.title = title;
         this.info = info;
         this.isChecked = isChecked;
+    }
+
+    @Override
+    public String getNameText() {
+        return getInfo() + getTitle();
     }
 }

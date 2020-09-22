@@ -1,6 +1,7 @@
 package com.example.ScanApp.mAppScreens;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,16 +11,21 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +42,10 @@ import com.itextpdf.kernel.geom.Line;
 import java.io.File;
 import java.util.ArrayList;
 
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
+import uk.co.samuelwall.materialtaptargetprompt.extras.focals.CirclePromptFocal;
+import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFocal;
+
 public class ScannedImagePage extends AppCompatActivity implements View.OnClickListener {
 
     //Veriables
@@ -47,6 +57,8 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
 
     Bitmap bmp;
     //Visual Objects
+    View viewItem;
+    View icon ;
     FloatingActionButton floatingActionButtonDelete,floatingActionButtonCombine;
     RecyclerView recyclerViewScannedImages;
     Button buttonDone;
@@ -55,6 +67,9 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
     TextView textView;
     ImageView imageViewCloseSp;
 
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,13 +77,12 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         def();
         clicks();
         getScannedImagesFromList();
+
         //exampleForScannedImagePage();
     }
 
     private void def(){
         recyclerViewScannedImages=findViewById(R.id.recyclerViewScannedImages);
-        recyclerViewScannedImages.setHasFixedSize(true);
-        recyclerViewScannedImages.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
         //recyclerViewScannedImages.setLayoutManager(new LinearLayoutManager(this));
         scannedImageModelArrayList=new ArrayList<>();
         bmp= BitmapFactory.decodeResource(getResources(),R.drawable.tmp);
@@ -83,10 +97,12 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         floatingActionButtonDelete=findViewById(R.id.floatingActionButtonDelete);
         floatingActionButtonCombine=findViewById(R.id.floatingActionButtonCombine);
 
-        root = new File(Environment.getExternalStorageDirectory(),"PDF folders/Main Pdfs");
+        root = new File(Environment.getExternalStorageDirectory(),"PDF folders/Default Pdf Folder");
         if(!root.exists()){
             root.mkdir();
         }
+
+        sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     private void clicks(){
@@ -102,8 +118,12 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
 
 
     private void getScannedImagesFromList(){
-        scannedImageCardAdapter = new ScannedImageCardAdapter(StaticVeriables.scannedImageModelList,this);
+        scannedImageCardAdapter = new ScannedImageCardAdapter(StaticVeriables.scannedImageModelList);
+        recyclerViewScannedImages.setHasFixedSize(true);
+        recyclerViewScannedImages.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
         recyclerViewScannedImages.setAdapter(scannedImageCardAdapter);
+        //startMainPageTutorial1();
+        new Handler().postDelayed(this::startMainPageTutorial1,1000);
     }
 
     private void exampleForScannedImagePage(){
@@ -113,9 +133,8 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         scannedImageModelArrayList.add(model);
         scannedImageModelArrayList.add(model);
 
-        scannedImageCardAdapter = new ScannedImageCardAdapter(scannedImageModelArrayList,ScannedImagePage.this);
+        scannedImageCardAdapter = new ScannedImageCardAdapter(scannedImageModelArrayList);
         recyclerViewScannedImages.setAdapter(scannedImageCardAdapter);
-
     }
 
     @Override
@@ -210,6 +229,120 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         });
 
         alert.create().show();
+    }
+
+    public void startMainPageTutorial1() {
+        //sharedPreferences.getBoolean("isFirstTimeScannedImagePage",true)
+        if (recyclerViewScannedImages.getAdapter() != null && sharedPreferences.getBoolean("isFirstTimeScannedImagePage",true)){
+            View targetItem = ((ScannedImageCardAdapter) recyclerViewScannedImages.getAdapter()).focusItem;
+
+            new MaterialTapTargetPrompt.Builder(ScannedImagePage.this)
+                    .setTarget(targetItem)
+                    .setCaptureTouchEventOnFocal(true)
+                    .setBackButtonDismissEnabled(true)
+                    .setBackgroundColour(Color.parseColor("#FA8A00"))
+                    .setPrimaryText("Scanned Images")
+                    .setSecondaryText(R.string.ScannedImage1)
+                    .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
+                    {
+                        @Override
+                        public void onPromptStateChanged(MaterialTapTargetPrompt prompt, int state)
+                        {
+                            if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state==MaterialTapTargetPrompt.STATE_NON_FOCAL_PRESSED)
+                            {
+                                editor=sharedPreferences.edit().putBoolean("isFirstTimeScannedImagePage",false);
+                                editor.apply();
+                                whenCheckedSp.setVisibility(View.VISIBLE);
+                                startMainPageTutorial2();
+                            }
+                        }
+                    })
+                    .show();
+        }
+
+
+
+    }
+
+    public void startMainPageTutorial2() {
+
+            new MaterialTapTargetPrompt.Builder(ScannedImagePage.this)
+                    .setTarget(floatingActionButtonCombine)
+                    .setCaptureTouchEventOnFocal(true)
+                    .setBackButtonDismissEnabled(true)
+                    .setBackgroundColour(Color.parseColor("#FA8A00"))
+                    .setPromptFocal(new RectanglePromptFocal())
+                    .setPrimaryText("Convert scanned images to pdf")
+                    .setSecondaryText(R.string.ScannedImage2)
+                    .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
+                    {
+                        @Override
+                        public void onPromptStateChanged(MaterialTapTargetPrompt prompt, int state)
+                        {
+                            if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state==MaterialTapTargetPrompt.STATE_NON_FOCAL_PRESSED)
+                            {
+                                whenCheckedSp.setVisibility(View.GONE);
+                                startMainPageTutorial3();
+                            }
+                        }
+                    })
+                    .show();
+
+
+    }
+
+    public void startMainPageTutorial3() {
+
+        new MaterialTapTargetPrompt.Builder(ScannedImagePage.this)
+                .setTarget(buttonScanAgain)
+                .setCaptureTouchEventOnFocal(true)
+                .setBackButtonDismissEnabled(true)
+                .setBackgroundColour(Color.parseColor("#FA8A00"))
+                .setPromptFocal(new RectanglePromptFocal())
+                .setPrimaryText("Scan again")
+                .setSecondaryText(R.string.ScannedImage3)
+                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
+                {
+                    @Override
+                    public void onPromptStateChanged(MaterialTapTargetPrompt prompt, int state)
+                    {
+                        if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state==MaterialTapTargetPrompt.STATE_NON_FOCAL_PRESSED)
+                        {
+                            startMainPageTutorial4();
+
+                        }
+                    }
+                })
+                .show();
+
+
+    }
+
+    public void startMainPageTutorial4() {
+
+        new MaterialTapTargetPrompt.Builder(ScannedImagePage.this)
+                .setTarget(buttonDone)
+                .setCaptureTouchEventOnFocal(true)
+                .setBackButtonDismissEnabled(true)
+                .setBackgroundColour(Color.parseColor("#FA8A00"))
+                .setPromptFocal(new RectanglePromptFocal())
+                .setPrimaryText("Go to Main page")
+                .setSecondaryText(R.string.ScannedImage4)
+                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
+                {
+                    @Override
+                    public void onPromptStateChanged(MaterialTapTargetPrompt prompt, int state)
+                    {
+                        if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state==MaterialTapTargetPrompt.STATE_NON_FOCAL_PRESSED)
+                        {
+
+
+                        }
+                    }
+                })
+                .show();
+
+
     }
 
 

@@ -16,6 +16,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.hardware.Camera;
 import android.media.AudioManager;
@@ -54,6 +55,7 @@ import com.example.ScanApp.R;
 import com.example.ScanApp.OpenCvClasses.helpers.DocumentMessage;
 import com.example.ScanApp.OpenCvClasses.helpers.PreviewFrame;
 import com.example.ScanApp.OpenCvClasses.views.HUDCanvasView;
+import com.example.ScanApp.mAppScreens.MainPage;
 import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
 import com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout;
 import com.google.android.material.navigation.NavigationView;
@@ -79,6 +81,9 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
+import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFocal;
 
 import static com.example.ScanApp.OpenCvClasses.helpers.Utils.addImageToGallery;
 import static com.example.ScanApp.OpenCvClasses.helpers.Utils.decodeSampledBitmapFromUri;
@@ -190,6 +195,8 @@ public class DocumentScannerActivity extends AppCompatActivity
         }
     }
 
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try {
@@ -230,7 +237,8 @@ public class DocumentScannerActivity extends AppCompatActivity
             display.getRealSize(size);
 
             scanDocButton = (Button) findViewById(R.id.scanDocButton);
-
+            sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
+            startMainPageTutorial1();
             scanDocButton.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -720,6 +728,36 @@ public class DocumentScannerActivity extends AppCompatActivity
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         refreshCamera();
     }
+
+    public void startMainPageTutorial1() {
+
+//
+        if (sharedPreferences.getBoolean("isFirstTimeDocumentScanPage",true)){
+            new MaterialTapTargetPrompt.Builder(DocumentScannerActivity.this)
+                    .setTarget(scanDocButton)
+                    .setCaptureTouchEventOnFocal(true)
+                    .setBackButtonDismissEnabled(true)
+                    .setBackgroundColour(Color.parseColor("#FA8A00"))
+                    .setPromptFocal(new RectanglePromptFocal())
+                    .setPrimaryText("Scanning")
+                    .setSecondaryText(R.string.ImageScanner)
+                    .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
+                    {
+                        @Override
+                        public void onPromptStateChanged(MaterialTapTargetPrompt prompt, int state)
+                        {
+                            if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state==MaterialTapTargetPrompt.STATE_NON_FOCAL_PRESSED)
+                            {
+                                editor=sharedPreferences.edit().putBoolean("isFirstTimeDocumentScanPage",false);
+                                editor.apply();
+                            }
+                        }
+                    })
+                    .show();
+        }
+
+    }
+
 
     private void refreshCamera() {
         try {

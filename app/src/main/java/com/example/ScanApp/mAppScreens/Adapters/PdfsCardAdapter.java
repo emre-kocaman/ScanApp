@@ -130,7 +130,7 @@ public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTa
         File pdfFile = new File(filePath);
         if(pdfFile.exists())
         {
-            Uri path = getUriForFile(context, "com.example.ScanApp.fileprovider", pdfFile);
+            Uri path = Uri.fromFile(pdfFile);
             Intent pdfIntent = new Intent(Intent.ACTION_VIEW);
             pdfIntent.setDataAndType(path, "application/pdf");
             pdfIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

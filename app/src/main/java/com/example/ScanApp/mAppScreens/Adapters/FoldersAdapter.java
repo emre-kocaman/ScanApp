@@ -1,10 +1,12 @@
 package com.example.ScanApp.mAppScreens.Adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -39,8 +41,8 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.CardTasa
         ImageView imageViewArrow;
         TextView folderName;
         RecyclerView pdfFiles;
-        ConstraintLayout expendableLayout;
-
+        ConstraintLayout expendableLayout,constraintLayout2;
+        LinearLayout linearLayout;
 
 
 
@@ -50,6 +52,8 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.CardTasa
             folderName=itemView.findViewById(R.id.folderName);
             pdfFiles=itemView.findViewById(R.id.pdfFiles);
             expendableLayout=itemView.findViewById(R.id.expendableLayout);
+            constraintLayout2=itemView.findViewById(R.id.constraintLayout2);
+            linearLayout = itemView.findViewById(R.id.mainLayout);
 
             imageViewArrow.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -97,6 +101,16 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.CardTasa
         }
         else{
             holder.expendableLayout.setVisibility(View.GONE);
+        }
+
+        if (folder.getFolderName().equals("Default Pdf Folder")){
+            Log.e("GIRDIMISADFD","EVET");
+            holder.expendableLayout.setVisibility(View.VISIBLE);
+            holder.constraintLayout2.setVisibility(View.GONE);
+            PdfsCardAdapter pdfAdapter= new PdfsCardAdapter(context,folder.getPdfDocumentsModels(),whenCheckedLayout,folderSelected,imageViewClose);
+            holder.pdfFiles.setLayoutManager(new LinearLayoutManager(context));
+            holder.pdfFiles.setAdapter(pdfAdapter);
+            holder.linearLayout.setPadding(0,0,0,0);
         }
 
 

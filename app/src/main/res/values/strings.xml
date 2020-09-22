@@ -92,4 +92,19 @@
     <string name="privacy_policy_link">https://github.com/Aniruddha-Tapas/Document-Scanner/blob/master/PrivacyPolicy.md</string>
 
 
+
+    <string name="mainPageInfo1">Scan Card buttonuna tıklayarak kartınızın ilk önce ön sonrasında arka sayfasını tarayıp düzenleyip kaydettiğinizde pdf olarak bu sayfada gözükecektir.</string>
+    <string name="mainPageInfo2">Scan Document buttonuna tıkladığınızda istediğiniz sayıda döküman scan edip pdf e dönüştürebilirsiniz.Dönüştürdüğünüz pdfler burada gözükecektir.</string>
+    <string name="mainPageInfo3">Dosya oluştur buttonuna tıklayarak yeni bir dosya oluşturabilirsiniz.</string>
+    <string name="ScannedImagePageInfoSelect">Pdf e dönüştürmek istediğiniz resimleri sırasıyla tıklayarak seçebilirsiniz.</string>
+    <string name="ScannedImagePageInfoCombine">Seçtiğiniz resimleri combine buttonuna tıklayarak pdfe dönüştürebilirsiniz.</string>
+    <string name="ScannedImagePageScanAgain">Scan buttonuna tıklayarak bu ekrana daha fazla resim ekleyebilirsiniz.</string>
+    <string name="ScannedImagePageDone">Done buttonuna tıklayarak ana sayfaya gidebilirsiniz.</string>
+    <string name="ImageScanner">Buttona ilk bastığınızda auto detect arar. Eğer auto detect bulursa otomatik fotoğraf çeker. Eğer bulamazsa fotoğraf çekmek için sizin 2. kez dokunmanızı bekler.</string>
+    <string name="ScannedImage1"> Scan edilen resimler bu sayfada gözükür. Resmin sağ üstünde bulunan checbkox ı işaretlerseniz resmi seçmiş olursunuz. </string>
+    <string name="ScannedImage2"> Scan edip seçtiğiniz resimleri combine buttonuna basarak pdf e çevirip kaydedebilirsiniz. </string>
+    <string name="ScannedImage3"> Eğer çok sayfalı pdf oluşturmak istiyorsanız bu buttona basıp daha fazla resim scan edebilirsiniz.</string>
+    <string name="ScannedImage4"> Bu sayfada işiniz bittikten sorna bu buttona basıp ana sayfaya dönebilirsiniz</string>
+
+
 </resources>

@@ -1,6 +1,7 @@
 package com.example.ScanApp.mAppScreens.Models;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.widget.CheckBox;
 
 import java.util.Objects;
@@ -12,6 +13,7 @@ public class PdfDocumentsModel {
     private Boolean isChecked;
     private String name;
     private String filePath;
+    private Uri uri;
 
     public String getFilePath() {
         return filePath;
@@ -29,13 +31,22 @@ public class PdfDocumentsModel {
         this.name = name;
     }
 
-    public PdfDocumentsModel(Bitmap bitmap, String pdfTitle, String pdfInfo, Boolean isChecked, String name,String filePath) {
+    public Uri getUri() {
+        return uri;
+    }
+
+    public void setUri(Uri uri) {
+        this.uri = uri;
+    }
+
+    public PdfDocumentsModel(Bitmap bitmap, String pdfTitle, String pdfInfo, Boolean isChecked, String name, String filePath, Uri uri) {
         this.bitmap = bitmap;
         this.pdfTitle = pdfTitle;
         this.pdfInfo = pdfInfo;
         this.isChecked = isChecked;
         this.name = name;
-        this.filePath=filePath;
+        this.filePath = filePath;
+        this.uri = uri;
     }
 
     public Bitmap getBitmap() {

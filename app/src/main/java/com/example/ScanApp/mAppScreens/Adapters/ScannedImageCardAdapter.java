@@ -1,39 +1,34 @@
 package com.example.ScanApp.mAppScreens.Adapters;
 
-import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ScanApp.R;
-import com.example.ScanApp.mAppScreens.MainPage;
-import com.example.ScanApp.mAppScreens.Models.PdfDocumentsModel;
 import com.example.ScanApp.mAppScreens.Models.ScannedImageModel;
 import com.example.ScanApp.mAppScreens.ScannedImagePage;
-import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScannedImageCardAdapter extends RecyclerView.Adapter<ScannedImageCardAdapter.CardTasarimTutucu>  {
+public class ScannedImageCardAdapter extends RecyclerView.Adapter<CardTasarimTutucu> implements Filterable {
+
 
     List<ScannedImageModel> list = new ArrayList<>();
-    ScannedImagePage activity;
+    List<ScannedImageModel> original = new ArrayList<>();
 
-    public ScannedImageCardAdapter(List<ScannedImageModel> list, ScannedImagePage activity) {
+   public View focusItem;
+
+    public ScannedImageCardAdapter(List<ScannedImageModel> list) {
         this.list = list;
-        this.activity = activity;
-
+        original = list;
     }
 
     public void RemoveItems(ArrayList<ScannedImageModel> selectedScannedImageList) {
@@ -44,48 +39,76 @@ public class ScannedImageCardAdapter extends RecyclerView.Adapter<ScannedImageCa
 
     }
 
-
-    public class CardTasarimTutucu extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ImageView imageView;
-        CheckBox checkBox;
-
-        public CardTasarimTutucu(@NonNull View itemView, ScannedImagePage activity) {
-            super(itemView);
-
-            imageView=itemView.findViewById(R.id.scannedImage);
-            checkBox = itemView.findViewById(R.id.checkboxScannedImage);
-            checkBox.setOnClickListener(this);
-
-        }
-
-        @Override
-        public void onClick(View v) {
-            activity.MakeSelection(v,getAdapterPosition());
-        }
-    }
-
-
-
     @NonNull
     @Override
     public CardTasarimTutucu onCreateViewHolder(@NonNull ViewGroup parent, int viewType)  {
-
         View v=LayoutInflater.from(parent.getContext()).inflate(R.layout.card_scanned_image_element,parent,false);
-
-        return new CardTasarimTutucu(v,activity);
+        return new CardTasarimTutucu(v);
     }
 
 
     @Override
     public void onBindViewHolder(@NonNull CardTasarimTutucu holder, int position) {
-        holder.imageView.setImageBitmap(list.get(position).getBitmap());
-
+        holder.bind(list.get(position));
+        if (position == 0){
+            focusItem = holder.checkBox;
+        }
 
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                List<ScannedImageModel> foundObject = new ArrayList<>();
+                for (ScannedImageModel scannedImageModel : original) {
+
+                    if (constraint.toString().contains(scannedImageModel.getNameText()))
+                        foundObject.add(scannedImageModel);
+                }
+
+                FilterResults results = new FilterResults();
+                results.values = foundObject;
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                list = (List<ScannedImageModel>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+}
+ class CardTasarimTutucu extends RecyclerView.ViewHolder implements View.OnClickListener {
+   private ImageView imageView;
+   public CheckBox checkBox;
+
+    public CardTasarimTutucu(@NonNull View itemView) {
+        super(itemView);
+        imageView=itemView.findViewById(R.id.scannedImage);
+        checkBox = itemView.findViewById(R.id.checkboxScannedImage);
+        checkBox.setOnClickListener(this);
+    }
+
+    public void bind(ScannedImageModel model){
+        imageView.setImageBitmap(model.getBitmap());
+    }
+
+    @Override
+    public void onClick(View v) {
+        ((ScannedImagePage) v.getContext()).MakeSelection(v,getAdapterPosition());
     }
 }
