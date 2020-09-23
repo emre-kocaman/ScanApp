@@ -55,9 +55,6 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.CardTasa
     }
 
     public void setFolderList(List<Folder> folderList) {
-        for (int i = 0; i <folderList.size() ; i++) {
-            Log.e("SettingFolderList",folderList.get(i).getFolderName());
-        }
         this.folderList = folderList;
     }
 
@@ -88,7 +85,7 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.CardTasa
                         ,StaticVeriables.path+"/"+v.getTag().toString());
                 new File(StaticVeriables.movingPdfModel.getFilePath()).delete();
                 if (context instanceof MainPage) {
-                    ((MainPage)context).defs();
+                    ((MainPage)context).folderList.clear();
                     ((MainPage)context).getPdfFolderInfos();
                 }
                 return true;
@@ -153,12 +150,8 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.CardTasa
         holder.folderName.setText(folder.getFolderName());
         boolean isExpanded;
 
-        if (position==0){
-            isExpanded= true;
-        }
-        else{
-            isExpanded= folderList.get(position).getExpanded();
-        }
+        isExpanded= folderList.get(position).getExpanded();
+
 
         holder.imageViewArrow.setImageResource(isExpanded ? R.drawable.ic_baseline_keyboard_arrow_up_24 : R.drawable.ic_baseline_keyboard_arrow_down_24);
 

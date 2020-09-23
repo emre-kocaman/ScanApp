@@ -169,7 +169,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         fabEdit=findViewById(R.id.fabEdit);
         fabShare=findViewById(R.id.fabShare);
 
-        newF = new File(Environment.getExternalStorageDirectory(),"PDF dosyaları");
+        newF = new File(root,"Default Pdf Folder");
         if(!newF.exists()){
             newF.mkdir();
         }
@@ -261,7 +261,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
                addFolder();
                 break;
             case R.id.fabDelete:
-                deletepdf();
+                deleteSelectedItems();
                 break;
             case R.id.fabEdit:
                 editPdf();
@@ -339,7 +339,15 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
                     assert attrs2 != null;
                     FileTime time2 = attrs2.creationTime();
 
-                    return Long.compare(time2.toMillis(), time1.toMillis());
+
+                    if (time1.toMillis() < time2.toMillis()) {
+                        return -1;
+                    } else if (time1.toMillis() > time2.toMillis()) {
+                        return +1;
+                    } else {
+                        return 0;
+                    }
+
                 }
 
             });
@@ -420,7 +428,6 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         View tasarim = layoutInflater.inflate(R.layout.alert_design,null);
 
         final EditText editTextFolderName = tasarim.findViewById(R.id.editTextFolderName);
-
 
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Create Folder");
@@ -554,6 +561,18 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
 
 
 
+    }
+
+    private void deleteSelectedItems(){
+
+        for (int i = 0; i <StaticVeriables.checkedPdfList.size() ; i++) {
+            new File(StaticVeriables.checkedPdfList.get(i).getFilePath()).delete();
+        }
+        StaticVeriables.checkedPdfList.clear();
+        Log.e("DIZIUZUNLUGU",String.valueOf(StaticVeriables.checkedPdfList.size()));
+        folderList=new ArrayList<>();
+        getPdfFolderInfos();
+        whenCheckedLayout.setVisibility(View.GONE);
     }
 
 }

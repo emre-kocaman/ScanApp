@@ -207,7 +207,6 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         alert.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
                 String fileName = editTextFolderName.getText().toString().trim();
                 if (fileName.length()!=0){
                     mUtils.createPdfOfImageFromList(root,selectedScannedImageList,context,fileName);
@@ -216,8 +215,6 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
                 else{
                     Toast.makeText(context, "Name cant be empty", Toast.LENGTH_SHORT).show();
                 }
-
-
             }
         });
 
