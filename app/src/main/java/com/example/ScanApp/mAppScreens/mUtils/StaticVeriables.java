@@ -22,5 +22,7 @@ public class StaticVeriables {
     public static  List<PdfDocumentsModel> checkedPdfList=new ArrayList<>();
     public static boolean userWillScanCard=false;
 
+    public static PdfDocumentsModel movingPdfModel=null;
+
 
 }

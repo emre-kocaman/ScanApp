@@ -1,10 +1,13 @@
 package com.example.ScanApp.mAppScreens.Adapters;
 
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Context;
 import android.content.Intent;
 import android.media.Image;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -18,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,6 +47,7 @@ public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTa
     private ConstraintLayout whenCheckedLayout;
     private TextView folderSelected;
     private ImageView close;
+    private static final String ETIKET = "YAZI";
 
     public PdfsCardAdapter(Context context
             , List<PdfDocumentsModel> pdfDocumentsList
@@ -59,6 +64,7 @@ public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTa
         private ImageView pdfImage;
         private TextView textViewPdfTitle,textViewPdfInfo;
         private CheckBox checkBoxPdf;
+        private ConstraintLayout movableLayout,cardMainLayout;
 
         public CardTasarimTutucu(@NonNull View itemView) {
             super(itemView);
@@ -67,6 +73,8 @@ public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTa
             textViewPdfTitle = itemView.findViewById(R.id.textViewPdfTitle);
             textViewPdfInfo = itemView.findViewById(R.id.textViewPdfInfo);
             checkBoxPdf = itemView.findViewById(R.id.checkBoxPdf);
+            movableLayout=itemView.findViewById(R.id.movableLayout);
+            cardMainLayout=itemView.findViewById(R.id.cardMainLayout);
         }
     }
 
@@ -83,6 +91,7 @@ public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTa
 
     @Override
     public void onBindViewHolder(@NonNull CardTasarimTutucu holder, int position) {
+        Log.e("OKABASILDI","DENEME");
         PdfDocumentsModel pdf = pdfDocumentsList.get(position);
 
         Glide.with(context).load(pdf.getBitmap()).centerCrop().into(holder.pdfImage);
@@ -90,6 +99,7 @@ public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTa
         holder.textViewPdfInfo.setText(pdf.getPdfInfo());
         holder.textViewPdfTitle.setText(pdf.getPdfTitle());
         Log.e("cagrildimi","cagrildi");
+        holder.checkBoxPdf.setChecked(pdf.getChecked());
         holder.checkBoxPdf.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -97,8 +107,10 @@ public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTa
                     StaticVeriables.checkedPdfList.add(pdf);
                     whenCheckedLayout.setVisibility(View.VISIBLE);
                     folderSelected.setText(String.valueOf(StaticVeriables.checkedPdfList.size()+" folder selected"));
+                    pdf.setChecked(true);
                 }
                 else{
+                    pdf.setChecked(false);
                     StaticVeriables.checkedPdfList.remove(pdf);
                     if(StaticVeriables.checkedPdfList.size()==0){
                         whenCheckedLayout.setVisibility(View.GONE);
@@ -108,6 +120,22 @@ public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTa
                     }
 
                 }
+            }
+        });
+        holder.movableLayout.setTag(ETIKET);
+        holder.movableLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public boolean onLongClick(View v) {
+
+                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+
+                v.startDrag(null,shadowBuilder,v,0);
+
+                StaticVeriables.movingPdfModel=pdf;
+
+                //v.setVisibility(View.INVISIBLE);
+                return true;
             }
         });
 
@@ -146,6 +174,11 @@ public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTa
             }
         }
 
+    }
+
+    public void removeItem(PdfDocumentsModel pdfDocumentsModel){
+        pdfDocumentsList.remove(pdfDocumentsModel);
+        notifyDataSetChanged();
     }
 
 }

@@ -49,6 +49,6 @@ public class Folder {
         this.folderName = folderName;
         this.folderUri = folderUri;
         this.pdfDocumentsModels = pdfDocumentsModels;
-        isExpanded=false;
+        isExpanded=true;
     }
 }

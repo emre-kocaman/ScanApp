@@ -1,6 +1,7 @@
 package com.example.ScanApp.mAppScreens;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
@@ -27,6 +28,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
@@ -54,6 +56,10 @@ import com.example.ScanApp.mAppScreens.mUtils.mUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -79,7 +85,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
 
     private RecyclerView recyclerView;
     private Set<PdfDocumentsModel> pdfDocumentsModelArrayList;
-    private ArrayList<Folder> folderList;
+    public ArrayList<Folder> folderList;
     private FoldersAdapter folderAdapter;
     private TextView folderSelected;
     //Veriables
@@ -125,7 +131,8 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         }
     }
 
-    private void defs(){
+    public void defs(){
+        StaticVeriables.checkedPdfList=new ArrayList<>();
 
         ActivityCompat.requestPermissions(MainPage.this,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE},
@@ -262,6 +269,9 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
             case R.id.fabShare:
                 sharePdf(uriList());
                 break;
+            case R.id.scanImage:
+                folderAdapter.notifyDataSetChanged();
+                break;
         }
     }
 
@@ -297,7 +307,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
     }
 
 
-    private void getPdfFolderInfos(){
+    public void getPdfFolderInfos(){
         //Log.d("Files", "Path: " + StaticVeriables.path);
         File pdfFile;
         Date date;
@@ -305,17 +315,31 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         File[] folders = directory.listFiles();
        // Log.d("Files", "Size: "+ files.length);
 
+
+
         if (folders != null && folders.length > 1) {//Oluşturulduğu tarih sırasına göre file listesini sıralıyorum
             Arrays.sort(folders, new Comparator() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
                 public int compare(Object o1, Object o2) {
-
-                    if (((File)o1).lastModified() > ((File)o2).lastModified()) {
-                        return -1;
-                    } else if (((File)o1).lastModified() < ((File)o2).lastModified()) {
-                        return +1;
-                    } else {
-                        return 0;
+                    BasicFileAttributes attrs1 = null;
+                    try {
+                        attrs1 = Files.readAttributes(((File)o1).toPath(), BasicFileAttributes.class);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
+                    assert attrs1 != null;
+                    FileTime time1 = attrs1.creationTime();
+
+                    BasicFileAttributes attrs2 = null;
+                    try {
+                        attrs2 = Files.readAttributes(((File)o2).toPath(), BasicFileAttributes.class);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    assert attrs2 != null;
+                    FileTime time2 = attrs2.creationTime();
+
+                    return Long.compare(time2.toMillis(), time1.toMillis());
                 }
 
             });
@@ -324,7 +348,6 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
 
         for (File file : folders) {
             File[] pdfFileInFolder = file.listFiles();
-
             if (pdfFileInFolder != null && pdfFileInFolder.length > 1) {//Oluşturulduğu tarih sırasına göre file listesini sıralıyorum
                 Arrays.sort(pdfFileInFolder, new Comparator() {
                     public int compare(Object o1, Object o2) {
@@ -356,8 +379,9 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
                     @Override
                     protected void onPostExecute(Void aVoid) {
                         super.onPostExecute(aVoid);
-                        if (recyclerView.getAdapter() != null)
+                        if (recyclerView.getAdapter() != null){
                             recyclerView.getAdapter().notifyDataSetChanged();
+                        }
                     }
                 };
                 a.execute(pdfFile);
@@ -365,9 +389,8 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
                 pdfDocumentsModelArrayList.add(pdfFolderInfos);
             }
             Folder folder = new Folder(file.getName(), String.valueOf(Uri.fromFile(file)), new ArrayList<>(pdfDocumentsModelArrayList));
+            Log.e("FOLDERNAME",folder.getFolderName());
             folderList.add(folder);
-
-
         }
         if (recyclerView.getAdapter() == null) {
             setAdapter(folderList);

@@ -1,7 +1,15 @@
 package com.example.ScanApp.mAppScreens.Adapters;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,21 +18,34 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ScanApp.R;
+import com.example.ScanApp.mAppScreens.MainPage;
 import com.example.ScanApp.mAppScreens.Models.Folder;
+import com.example.ScanApp.mAppScreens.Models.PdfDocumentsModel;
+import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
+import com.example.ScanApp.mAppScreens.mUtils.mUtils;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
-public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.CardTasarimTutucu> {
+public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.CardTasarimTutucu> implements View.OnDragListener {
     ConstraintLayout whenCheckedLayout;
     Context context;
     List<Folder> folderList;
     TextView folderSelected;
     ImageView imageViewClose;
+
+
+    Boolean isFolderNameMovingFrom=true;
+    String folderNameMovingFrom="";
+    PdfsCardAdapter pdfAdapter;
+
     public FoldersAdapter(ConstraintLayout whenCheckedLayout, Context context, List<Folder> folderList, TextView folderSelected,ImageView imageViewClose) {
         this.whenCheckedLayout = whenCheckedLayout;
         this.context = context;
@@ -34,7 +55,49 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.CardTasa
     }
 
     public void setFolderList(List<Folder> folderList) {
+        for (int i = 0; i <folderList.size() ; i++) {
+            Log.e("SettingFolderList",folderList.get(i).getFolderName());
+        }
         this.folderList = folderList;
+    }
+
+    @SuppressLint("ResourceAsColor")
+    @Override
+    public boolean onDrag(View v, DragEvent event) {
+        if (isFolderNameMovingFrom){
+            folderNameMovingFrom=String.valueOf(v.getTag());
+            isFolderNameMovingFrom=false;
+        }
+        switch (event.getAction()){
+            case DragEvent.ACTION_DRAG_STARTED:
+                Log.e("ACTION_DRAG_STARTED",String.valueOf(v.getTag()));
+                return true;
+            case DragEvent.ACTION_DRAG_ENTERED:
+                Log.e("Back", String.valueOf(v.getTag()));
+                v.setBackgroundColor(Color.parseColor("#41F27100"));
+                return true;
+            case DragEvent.ACTION_DRAG_LOCATION:
+                Log.e("ACTION_DRAG_LOCATION",String.valueOf(v.getTag()));
+                return true;
+            case DragEvent.ACTION_DRAG_EXITED:
+                v.setBackgroundColor(Color.parseColor("#00FFFFFF"));
+                Log.e("ACTION_DRAG_EXITED",String.valueOf(v.getTag()));
+                return true;
+            case DragEvent.ACTION_DROP:
+                mUtils.copyFileOrDirectory(StaticVeriables.movingPdfModel.getFilePath()
+                        ,StaticVeriables.path+"/"+v.getTag().toString());
+                new File(StaticVeriables.movingPdfModel.getFilePath()).delete();
+                if (context instanceof MainPage) {
+                    ((MainPage)context).defs();
+                    ((MainPage)context).getPdfFolderInfos();
+                }
+                return true;
+            case DragEvent.ACTION_DRAG_ENDED:
+                v.setBackgroundColor(Color.parseColor("#00FFFFFF"));
+                return true;
+            default:break;
+        }
+        return false;
     }
 
     public class CardTasarimTutucu extends RecyclerView.ViewHolder {
@@ -55,6 +118,8 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.CardTasa
             constraintLayout2=itemView.findViewById(R.id.constraintLayout2);
             linearLayout = itemView.findViewById(R.id.mainLayout);
 
+
+
             imageViewArrow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -70,31 +135,40 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.CardTasa
         }
     }
 
-
-
-
     @NonNull
     @Override
     public CardTasarimTutucu onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(context).inflate(R.layout.card_main_page_folders,parent,false);
-            return new CardTasarimTutucu(v); // CarViewHolder
 
+        View v = LayoutInflater.from(context).inflate(R.layout.card_main_page_folders,parent,false);
+            return new CardTasarimTutucu(v);
     }
 
 
     @Override
     public void onBindViewHolder(@NonNull CardTasarimTutucu holder, int position) {
+        Log.e("Cagirildi",String.valueOf(position));
+
         Folder folder = folderList.get(position);
 
         holder.folderName.setText(folder.getFolderName());
+        boolean isExpanded;
 
-        boolean isExpanded= folderList.get(position).getExpanded();
+        if (position==0){
+            isExpanded= true;
+        }
+        else{
+            isExpanded= folderList.get(position).getExpanded();
+        }
 
         holder.imageViewArrow.setImageResource(isExpanded ? R.drawable.ic_baseline_keyboard_arrow_up_24 : R.drawable.ic_baseline_keyboard_arrow_down_24);
 
+        holder.constraintLayout2.setTag(holder.folderName.getText().toString().trim());
+
+        holder.constraintLayout2.setOnDragListener(this);
 
         if (isExpanded){
             holder.expendableLayout.setVisibility(View.VISIBLE);
+            holder.pdfFiles.setTag("Deneme");
             PdfsCardAdapter pdfAdapter= new PdfsCardAdapter(context,folder.getPdfDocumentsModels(),whenCheckedLayout,folderSelected,imageViewClose);
             holder.pdfFiles.setLayoutManager(new LinearLayoutManager(context));
             holder.pdfFiles.setAdapter(pdfAdapter);
@@ -103,19 +177,21 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.CardTasa
             holder.expendableLayout.setVisibility(View.GONE);
         }
 
-        if (folder.getFolderName().equals("Default Pdf Folder")){
-            Log.e("GIRDIMISADFD","EVET");
+        /*if (folder.getFolderName().equals("Default Pdf Folder")){
+            Log.e("GIRDIMIdefF","EVET");
             holder.expendableLayout.setVisibility(View.VISIBLE);
             holder.constraintLayout2.setVisibility(View.GONE);
-            PdfsCardAdapter pdfAdapter= new PdfsCardAdapter(context,folder.getPdfDocumentsModels(),whenCheckedLayout,folderSelected,imageViewClose);
+
+            pdfAdapter= new PdfsCardAdapter(context,folder.getPdfDocumentsModels(),whenCheckedLayout,folderSelected,imageViewClose);
             holder.pdfFiles.setLayoutManager(new LinearLayoutManager(context));
             holder.pdfFiles.setAdapter(pdfAdapter);
             holder.linearLayout.setPadding(0,0,0,0);
-        }
+        }*/
 
 
 
     }
+
 
     @Override
     public int getItemCount() {
