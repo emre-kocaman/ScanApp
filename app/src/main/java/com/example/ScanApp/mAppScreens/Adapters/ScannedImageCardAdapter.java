@@ -42,7 +42,7 @@ public class ScannedImageCardAdapter extends RecyclerView.Adapter<CardTasarimTut
     @NonNull
     @Override
     public CardTasarimTutucu onCreateViewHolder(@NonNull ViewGroup parent, int viewType)  {
-        View v=LayoutInflater.from(parent.getContext()).inflate(R.layout.card_scanned_image_element,parent,false);
+        View v =LayoutInflater.from(parent.getContext()).inflate(R.layout.card_scanned_image_element,parent,false);
         return new CardTasarimTutucu(v);
     }
 
@@ -92,18 +92,19 @@ public class ScannedImageCardAdapter extends RecyclerView.Adapter<CardTasarimTut
         };
     }
 }
- class CardTasarimTutucu extends RecyclerView.ViewHolder implements View.OnClickListener {
+  class CardTasarimTutucu extends RecyclerView.ViewHolder implements View.OnClickListener {
    private ImageView imageView;
    public CheckBox checkBox;
 
-    public CardTasarimTutucu(@NonNull View itemView) {
-        super(itemView);
-        imageView=itemView.findViewById(R.id.scannedImage);
-        checkBox = itemView.findViewById(R.id.checkboxScannedImage);
-        checkBox.setOnClickListener(this);
-    }
+      public CardTasarimTutucu(@NonNull View itemView) {
+          super(itemView);
+          imageView=itemView.findViewById(R.id.scannedImage);
+          checkBox = itemView.findViewById(R.id.checkboxScannedImage);
+          checkBox.setOnClickListener(this);
+      }
 
-    public void bind(ScannedImageModel model){
+
+      public void bind(ScannedImageModel model){
         imageView.setImageBitmap(model.getBitmap());
     }
 

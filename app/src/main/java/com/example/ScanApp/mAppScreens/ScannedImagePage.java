@@ -122,7 +122,7 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         recyclerViewScannedImages.setHasFixedSize(true);
         recyclerViewScannedImages.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
         recyclerViewScannedImages.setAdapter(scannedImageCardAdapter);
-        //startMainPageTutorial1();
+        startMainPageTutorial1();
         new Handler().postDelayed(this::startMainPageTutorial1,1000);
     }
 

@@ -186,15 +186,6 @@ public class DocumentScannerActivity extends AppCompatActivity
 
     private static final int RC_OCR_CAPTURE = 9003;
 
-    //Static OpenCV init
-    static {
-        if (!OpenCVLoader.initDebug()) {
-            Log.d("OpenCV", "OpenCV initialization Failed");
-        } else {
-            Log.d("OpenCV", "OpenCV initialization Succeeded");
-        }
-    }
-
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     @Override
@@ -205,10 +196,7 @@ public class DocumentScannerActivity extends AppCompatActivity
 
             mSharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
-            if (mSharedPref.getBoolean("isFirstRun", true) && !mSharedPref.getBoolean("usage_stats", false)) {
-                statsOptInDialog();
-            }
-            DocumentScannerApplication.getInstance().trackScreenView("Document Scanner Activity");
+            DocumentScannerApplication.getInstance().trackScreenView("Scanner App");
 
             setContentView(R.layout.activity_document_scanner);
 
@@ -307,18 +295,6 @@ public class DocumentScannerActivity extends AppCompatActivity
         }
     }
 
-
-    public boolean setFlash(boolean stateFlash) {
-        PackageManager pm = getPackageManager();
-        if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
-            Camera.Parameters par = mCamera.getParameters();
-            par.setFlashMode(stateFlash ? Camera.Parameters.FLASH_MODE_TORCH : Camera.Parameters.FLASH_MODE_OFF);
-            mCamera.setParameters(par);
-            Log.d(TAG, "flash: " + (stateFlash ? "on" : "off"));
-            return stateFlash;
-        }
-        return false;
-    }
 
     private void checkResumePermissions() {
         if (ContextCompat.checkSelfPermission(this,
@@ -1118,40 +1094,6 @@ public class DocumentScannerActivity extends AppCompatActivity
         return false;
     }
 
-
-    private void statsOptInDialog() {
-        AlertDialog.Builder statsOptInDialog = new AlertDialog.Builder(this);
-
-        statsOptInDialog.setTitle(getString(R.string.stats_optin_title));
-        statsOptInDialog.setMessage(getString(R.string.stats_optin_text));
-
-        statsOptInDialog.setPositiveButton(R.string.answer_yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                mSharedPref.edit().putBoolean("usage_stats", true).commit();
-                mSharedPref.edit().putBoolean("isFirstRun", false).commit();
-                dialog.dismiss();
-            }
-        });
-
-        statsOptInDialog.setNegativeButton(R.string.answer_no, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                mSharedPref.edit().putBoolean("usage_stats", false).commit();
-                mSharedPref.edit().putBoolean("isFirstRun", false).commit();
-                dialog.dismiss();
-            }
-        });
-
-        statsOptInDialog.setNeutralButton(R.string.answer_later, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        statsOptInDialog.create().show();
-    }
 
 
 

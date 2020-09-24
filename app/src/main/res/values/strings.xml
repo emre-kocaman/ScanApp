@@ -32,7 +32,6 @@
     <string name="send_message">Send Message</string>
     <string name="send_message_summary">Send message to developer</string>
     <string name="stats_optin_title">Usage Stats</string>
-    <string name="stats_optin_text">Do you want to enable ConText Scanner to send anonymous usage statistics to the developer?\n\nYou can change this anytime on the settings screen.</string>
     <string name="answer_later">Later</string>
     <string name="activateunknown">Go to Settings</string>
     <string name="feedback">Feedback</string>

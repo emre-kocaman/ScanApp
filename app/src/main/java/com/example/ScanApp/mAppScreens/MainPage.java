@@ -91,9 +91,11 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
     //Veriables
     Intent intent;
     Bitmap temp;
-    File root,newF;
+    File root,defPdfFolder;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -123,25 +125,33 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
+
         int MyVersion = Build.VERSION.SDK_INT;
         if (MyVersion > Build.VERSION_CODES.LOLLIPOP_MR1) {
             if (!checkIfAlreadyhavePermission()) {
                 requestForSpecificPermission();
             }
         }
+
     }
 
     public void defs(){
         StaticVeriables.checkedPdfList=new ArrayList<>();
 
-        ActivityCompat.requestPermissions(MainPage.this,
+        /*ActivityCompat.requestPermissions(MainPage.this,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                1);
+                1);*/
 
 
         root = new File(Environment.getExternalStorageDirectory(),"PDF folders");
         if(!root.exists()){
             root.mkdir();
+        }
+
+        defPdfFolder = new File(root,"Default Pdf Folder");
+        if (!defPdfFolder.exists()){
+            Log.e("GIRDIMI","EVET");
+            defPdfFolder.mkdir();
         }
 
 
@@ -168,11 +178,6 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         fabDelete=findViewById(R.id.fabDelete);
         fabEdit=findViewById(R.id.fabEdit);
         fabShare=findViewById(R.id.fabShare);
-
-        newF = new File(root,"Default Pdf Folder");
-        if(!newF.exists()){
-            newF.mkdir();
-        }
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -258,7 +263,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
                 StaticVeriables.scannedImageModelList.clear();
                 break;
             case R.id.addFolder:
-               addFolder();
+                addFolder();
                 break;
             case R.id.fabDelete:
                 deleteSelectedItems();
@@ -302,22 +307,20 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         return pathsList;
     }
 
-    private void deletepdf() {
-        Toast.makeText(this, "Deletion is coming soon", Toast.LENGTH_SHORT).show();
-    }
-
-
     public void getPdfFolderInfos(){
         //Log.d("Files", "Path: " + StaticVeriables.path);
         File pdfFile;
         Date date;
         File directory = new File(StaticVeriables.path);
+        Log.e("FOLDERNAMESDF",directory.getName());
         File[] folders = directory.listFiles();
-       // Log.d("Files", "Size: "+ files.length);
+        Log.e("FOLDERNAMESDF",String.valueOf(folders.length));
+
+        // Log.d("Files", "Size: "+ files.length);
 
 
 
-        if (folders != null && folders.length > 1) {//Oluşturulduğu tarih sırasına göre file listesini sıralıyorum
+        /*if (folders != null && folders.length > 1) {//Oluşturulduğu tarih sırasına göre file listesini sıralıyorum
             Arrays.sort(folders, new Comparator() {
                 @RequiresApi(api = Build.VERSION_CODES.O)
                 public int compare(Object o1, Object o2) {
@@ -351,7 +354,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
                 }
 
             });
-        }
+        }*/
 
 
         for (File file : folders) {
