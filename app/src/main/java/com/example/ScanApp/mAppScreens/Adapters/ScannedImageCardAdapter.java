@@ -18,7 +18,7 @@ import com.example.ScanApp.mAppScreens.ScannedImagePage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScannedImageCardAdapter extends RecyclerView.Adapter<CardTasarimTutucu> implements Filterable {
+public class ScannedImageCardAdapter extends RecyclerView.Adapter<CardTasarimTutucu> {
 
 
     List<ScannedImageModel> list = new ArrayList<>();
@@ -66,31 +66,6 @@ public class ScannedImageCardAdapter extends RecyclerView.Adapter<CardTasarimTut
         return list.size();
     }
 
-
-    @Override
-    public Filter getFilter() {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                List<ScannedImageModel> foundObject = new ArrayList<>();
-                for (ScannedImageModel scannedImageModel : original) {
-
-                    if (constraint.toString().contains(scannedImageModel.getNameText()))
-                        foundObject.add(scannedImageModel);
-                }
-
-                FilterResults results = new FilterResults();
-                results.values = foundObject;
-                return results;
-            }
-
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-                list = (List<ScannedImageModel>) results.values;
-                notifyDataSetChanged();
-            }
-        };
-    }
 }
   class CardTasarimTutucu extends RecyclerView.ViewHolder implements View.OnClickListener {
    private ImageView imageView;

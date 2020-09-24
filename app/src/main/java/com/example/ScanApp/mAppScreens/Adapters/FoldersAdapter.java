@@ -88,6 +88,8 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.CardTasa
                     ((MainPage)context).folderList.clear();
                     ((MainPage)context).getPdfFolderInfos();
                 }
+                StaticVeriables.checkedPdfList.clear();
+                whenCheckedLayout.setVisibility(View.GONE);
                 return true;
             case DragEvent.ACTION_DRAG_ENDED:
                 v.setBackgroundColor(Color.parseColor("#00FFFFFF"));

@@ -121,6 +121,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
 
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,7 +133,6 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
                 requestForSpecificPermission();
             }
         }
-
     }
 
     public void defs(){

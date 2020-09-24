@@ -88,6 +88,7 @@
     <string name="enter_text">Enter text</string>
     <string name="textfilename">Filename:</string>
     <string name="privacy_policy">Privacy Policy</string>
+    <string name="stats_optin_text"> </string>
     <string name="privacy_policy_link">https://github.com/Aniruddha-Tapas/Document-Scanner/blob/master/PrivacyPolicy.md</string>
 
 
