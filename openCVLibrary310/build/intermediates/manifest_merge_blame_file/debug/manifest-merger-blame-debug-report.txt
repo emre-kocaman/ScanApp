@@ -4,11 +4,7 @@
 4    android:versionCode="3100"
 5    android:versionName="3.1.0" >
 6
-7    <uses-sdk
-7-->C:\Users\emre_\AndroidStudioProjects\ScanApp\openCVLibrary310\src\main\AndroidManifest.xml:7:5-47
-8        android:minSdkVersion="21"
-8-->C:\Users\emre_\AndroidStudioProjects\ScanApp\openCVLibrary310\src\main\AndroidManifest.xml:7:5-47
-9        android:targetSdkVersion="29" />
-9-->C:\Users\emre_\AndroidStudioProjects\ScanApp\openCVLibrary310\src\main\AndroidManifest.xml:7:15-44
-10
-11</manifest>
+7    <uses-sdk android:minSdkVersion="21" />
+7-->C:\Users\emre_\AndroidStudioProjects\ScanApp\openCVLibrary310\src\main\AndroidManifest.xml
+8
+9</manifest>

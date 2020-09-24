@@ -52,7 +52,6 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
     ScannedImageCardAdapter scannedImageCardAdapter;
     ArrayList<ScannedImageModel> scannedImageModelArrayList;
     ArrayList<ScannedImageModel> selectedScannedImageList;
-    public Boolean checkboxesUnchecked=false;
     File root;
 
     Bitmap bmp;
@@ -164,13 +163,26 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
                 break;
 
             case R.id.floatingActionButtonDelete:
-                //scannedImageCardAdapter.RemoveItems(selectedScannedImageList);
+                RemoveItems(selectedScannedImageList);
                 break;
 
             case R.id.imageViewCloseSp:
                 whenCheckedSp.setVisibility(View.GONE);
                 break;
         }
+    }
+
+    public void RemoveItems(ArrayList<ScannedImageModel> selectedScannedImageList) {
+        Log.e("SELECTEDSIZE",String.valueOf(selectedScannedImageList.size()));
+        for (int i = 0 ; i<selectedScannedImageList.size();i++){
+            StaticVeriables.scannedImageModelList.remove(selectedScannedImageList.get(i));
+
+        }
+        scannedImageCardAdapter.notifyDataSetChanged();
+        whenCheckedSp.setVisibility(View.GONE);
+        selectedScannedImageList.clear();
+
+
     }
 
     public void MakeSelection(View v, int itemCount) {

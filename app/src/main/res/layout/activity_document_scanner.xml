@@ -145,7 +145,7 @@
                 android:layout_height="263dp"
                 android:gravity="center"
                 android:text="TextView"
-                android:textColor="#005EFF"
+                android:textColor="#FA8A00"
                 android:textSize="14sp" />
 
         </com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout>
@@ -162,7 +162,9 @@
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:indeterminate="true" />
+            android:backgroundTint="#FA8A00"
+            android:indeterminate="true"
+            android:progressBackgroundTint="#FA8A00" />
 
     </RelativeLayout>
 
@@ -178,11 +180,10 @@
 
         <Button
             android:id="@+id/scanDocButton"
-            android:layout_width="@dimen/seventydp"
-            android:layout_height="@dimen/seventydp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="center|center_horizontal|center_vertical"
-            android:background="@drawable/scan"
-            android:backgroundTint="#19FF00"
+            android:background="@drawable/button"
             android:elevation="@dimen/gap"
             android:enabled="true"
             android:gravity="center_horizontal|center_vertical"

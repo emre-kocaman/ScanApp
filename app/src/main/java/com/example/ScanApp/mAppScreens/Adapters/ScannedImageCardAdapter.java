@@ -18,37 +18,29 @@ import com.example.ScanApp.mAppScreens.ScannedImagePage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScannedImageCardAdapter extends RecyclerView.Adapter<CardTasarimTutucu> {
+public class ScannedImageCardAdapter extends RecyclerView.Adapter<ScannedCardHolder> {
 
 
     List<ScannedImageModel> list = new ArrayList<>();
-    List<ScannedImageModel> original = new ArrayList<>();
 
    public View focusItem;
 
     public ScannedImageCardAdapter(List<ScannedImageModel> list) {
         this.list = list;
-        original = list;
     }
 
-    public void RemoveItems(ArrayList<ScannedImageModel> selectedScannedImageList) {
-        for (int i = 0 ; i<selectedScannedImageList.size();i++){
-            list.remove(selectedScannedImageList.get(i));
-            notifyDataSetChanged();
-        }
 
-    }
 
     @NonNull
     @Override
-    public CardTasarimTutucu onCreateViewHolder(@NonNull ViewGroup parent, int viewType)  {
+    public ScannedCardHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)  {
         View v =LayoutInflater.from(parent.getContext()).inflate(R.layout.card_scanned_image_element,parent,false);
-        return new CardTasarimTutucu(v);
+        return new ScannedCardHolder(v);
     }
 
 
     @Override
-    public void onBindViewHolder(@NonNull CardTasarimTutucu holder, int position) {
+    public void onBindViewHolder(@NonNull ScannedCardHolder holder, int position) {
         holder.bind(list.get(position));
         if (position == 0){
             focusItem = holder.checkBox;
@@ -56,31 +48,33 @@ public class ScannedImageCardAdapter extends RecyclerView.Adapter<CardTasarimTut
 
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
-
-    @Override
-    public int getItemCount() {
-        return list.size();
-    }
-
-}
-  class CardTasarimTutucu extends RecyclerView.ViewHolder implements View.OnClickListener {
-   private ImageView imageView;
-   public CheckBox checkBox;
-
-      public CardTasarimTutucu(@NonNull View itemView) {
-          super(itemView);
-          imageView=itemView.findViewById(R.id.scannedImage);
-          checkBox = itemView.findViewById(R.id.checkboxScannedImage);
-          checkBox.setOnClickListener(this);
+      @Override
+      public int getItemViewType(int position) {
+          return position;
       }
 
+      @Override
+      public int getItemCount() {
+          return list.size();
+      }
 
-      public void bind(ScannedImageModel model){
+  }
+class ScannedCardHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private ImageView imageView;
+    public CheckBox checkBox;
+
+    public ScannedCardHolder(@NonNull View itemView) {
+        super(itemView);
+        imageView=itemView.findViewById(R.id.scannedImage);
+        checkBox = itemView.findViewById(R.id.checkboxScannedImage);
+        checkBox.setOnClickListener(this);
+
+    }
+
+
+    public void bind(ScannedImageModel model){
         imageView.setImageBitmap(model.getBitmap());
+        checkBox.setChecked(model.getChecked());
     }
 
     @Override

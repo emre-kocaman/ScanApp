@@ -257,7 +257,6 @@ public class DocumentScannerActivity extends AppCompatActivity
                             } else {
                                 scanClicked = true;
                                 Toast.makeText(getApplicationContext(), R.string.scanningToast, Toast.LENGTH_LONG).show();
-                                view.setBackgroundTintList(ColorStateList.valueOf(0xFF82B1FF));
                             }
                         }
                         case MotionEvent.ACTION_CANCEL: {
@@ -816,10 +815,11 @@ public class DocumentScannerActivity extends AppCompatActivity
         });
     }
 
+
     private class ResetShutterColor implements Runnable {
         @Override
         public void run() {
-            scanDocButton.setBackgroundTintList(null);
+            //scanDocButton.setBackgroundTintList(null);
         }
     }
 
@@ -827,7 +827,7 @@ public class DocumentScannerActivity extends AppCompatActivity
 
     public boolean requestPicture() {
         if (safeToTakePicture) {
-            runOnUiThread(resetShutterColor);
+            //runOnUiThread(resetShutterColor);
             safeToTakePicture = false;
             mCamera.takePicture(null, null, this);
             return true;
