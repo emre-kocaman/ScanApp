@@ -112,7 +112,7 @@
         android:layout_height="wrap_content"
         android:background="#FFF"
         android:clickable="true"
-        android:elevation="2dp"
+        android:elevation="10dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
