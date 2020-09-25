@@ -60,27 +60,28 @@
             android:id="@+id/nw_angle"
             android:layout_width="@dimen/angleside"
             android:layout_height="@dimen/angleside"
-            android:rotation="270"
+            android:rotation="90"
             android:src="@drawable/angle" />
 
         <ImageView
             android:id="@+id/se_angle"
             android:layout_width="@dimen/angleside"
             android:layout_height="@dimen/angleside"
-            android:rotation="90"
+            android:rotation="270"
             android:src="@drawable/angle" />
 
         <ImageView
             android:id="@+id/sw_angle"
             android:layout_width="@dimen/angleside"
             android:layout_height="@dimen/angleside"
-            android:rotation="180"
+            android:rotation="0"
             android:src="@drawable/angle" />
 
         <ImageView
             android:id="@+id/ne_angle"
             android:layout_width="@dimen/angleside"
             android:layout_height="@dimen/angleside"
+            android:rotation="180"
             android:src="@drawable/angle" />
 
 

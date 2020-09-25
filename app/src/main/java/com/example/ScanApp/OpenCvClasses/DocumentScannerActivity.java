@@ -208,6 +208,8 @@ public class DocumentScannerActivity extends AppCompatActivity
             if (mSharedPref.getBoolean("isFirstRun", true) && !mSharedPref.getBoolean("usage_stats", false)) {
                 //statsOptInDialog();
             }
+
+
             DocumentScannerApplication.getInstance().trackScreenView("Document Scanner Activity");
 
             setContentView(R.layout.activity_document_scanner);

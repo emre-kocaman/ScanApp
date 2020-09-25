@@ -30,7 +30,6 @@
         <activity android:name=".mAppScreens.ScannedImagePage">
 
         </activity>
-        <activity android:name=".mAppScreens.ScannedImagesActivity" />
         <activity android:name=".OpenCvClasses.DocumentScannerActivity" />
         <activity android:name=".mAppScreens.PhotoEditting.EditImage" />
         <activity android:name=".mAppScreens.MainPage">

@@ -53,6 +53,7 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
     ArrayList<ScannedImageModel> scannedImageModelArrayList;
     ArrayList<ScannedImageModel> selectedScannedImageList;
     File root;
+    Boolean isPdfCreated=false;
 
     Bitmap bmp;
     //Visual Objects
@@ -117,6 +118,7 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
 
 
     private void getScannedImagesFromList(){
+
         scannedImageCardAdapter = new ScannedImageCardAdapter(StaticVeriables.scannedImageModelList);
         recyclerViewScannedImages.setHasFixedSize(true);
         recyclerViewScannedImages.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
@@ -136,16 +138,27 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         recyclerViewScannedImages.setAdapter(scannedImageCardAdapter);
     }
 
+    private void goToMainPage(){
+        if (isPdfCreated){//Eğer kullanıcı zaten pdf combine ettiyse done buttonuna basınca bir daha combine etmesine gerek kalmadan direk ana sayfaya git
+            //Seçilen resimleri pdf olarak sırasıyla kayıt edeceğimiz nokta burası.
+            StaticVeriables.scannedImageModelList= new ArrayList<>();
+            Intent intent = new Intent(ScannedImagePage.this,MainPage.class);
+            startActivity(intent);
+            finish();
+        }
+        else{
+            showWhenPressDone(this);
+
+//            mUtils.createPdfOfImageFromList(root,StaticVeriables.scannedImageModelList,this,);
+//            whenCheckedSp.setVisibility(View.GONE);
+
+        }
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.buttonDone:
-                //Seçilen resimleri pdf olarak sırasıyla kayıt edeceğimiz nokta burası.
-                StaticVeriables.scannedImageModelList= new ArrayList<>();
-                Intent intent = new Intent(ScannedImagePage.this,MainPage.class);
-                startActivity(intent);
-                finish();
-                //onBackPressed();
+                goToMainPage();
                 break;
             case R.id.buttonScanAgain:
                 //Eğer kullanıcı taranan resimler sayfasından tekrar bir resim scan etmek isterse buradan yönlendirip scan edip tekrar bu sayfaya resim eklenmiş bir şekilde geri dönüyoruz.
@@ -202,6 +215,50 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         }
     }
 
+
+    public void showWhenPressDone(Context context)
+    {
+
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+
+        View tasarim = layoutInflater.inflate(R.layout.alert_design,null);
+
+        final EditText editTextFolderName = tasarim.findViewById(R.id.editTextFolderName);
+
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("File Name");
+        alert.setView(tasarim);
+        alert.setMessage("\n"+"Write your pdf file name\n");
+        alert.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String fileName = editTextFolderName.getText().toString().trim();
+                if (fileName.length()!=0){
+                    mUtils.createPdfOfImageFromList(root,StaticVeriables.scannedImageModelList,context,fileName);
+                    whenCheckedSp.setVisibility(View.GONE);
+                    StaticVeriables.scannedImageModelList= new ArrayList<>();
+                    Intent intent = new Intent(ScannedImagePage.this,MainPage.class);
+                    startActivity(intent);
+                    finish();
+                }
+                else{
+                    Toast.makeText(context, "Name cant be empty", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+
+        alert.create().show();
+    }
+
+
     public void showAlert(Context context)
     {
 
@@ -221,8 +278,10 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
             public void onClick(DialogInterface dialogInterface, int i) {
                 String fileName = editTextFolderName.getText().toString().trim();
                 if (fileName.length()!=0){
+                    Log.e("SIZEOFSCANNED",String.valueOf(StaticVeriables.scannedImageModelList.size()));
                     mUtils.createPdfOfImageFromList(root,selectedScannedImageList,context,fileName);
                     whenCheckedSp.setVisibility(View.GONE);
+                    isPdfCreated=true;
                 }
                 else{
                     Toast.makeText(context, "Name cant be empty", Toast.LENGTH_SHORT).show();
@@ -272,6 +331,8 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
 
 
     }
+
+
 
     public void startMainPageTutorial2() {
 

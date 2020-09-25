@@ -395,62 +395,33 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
 
 
     private void editPdf() {
-        for (PdfDocumentsModel pdfDocumentsModel:StaticVeriables.checkedPdfList){
-
-            alertDialog("Edit"
-                    ,"Edit your pdf filename"
-                    ,"Edit name"
-                    ,"Edit file"
-                    ,false
-                    ,pdfDocumentsModel.getName(),pdfDocumentsModel.getFilePath());
-
-
-
+        if (StaticVeriables.checkedPdfList.size()==1){
+            alertDialogEdit(StaticVeriables.checkedPdfList.get(0).getFilePath(),StaticVeriables.checkedPdfList.get(0).getName());
         }
-        folderList.clear();
-        getPdfFolderInfos();
+        else{
+            Toast.makeText(this, "Please select only 1 file to edit", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
-
-    private void addFolder(){
-        alertDialog("Create"
-                ,"Create Your folder"
-                ,"Add Folder"
-                ,"Folder Name"
-                ,true,"","");
-    }
-
-    public void alertDialog(String possitiveButtonMessage,String message,String title,String editTextName,boolean isAddFolder,String fileName,String path)
-    {
+    private void alertDialogEdit(String path,String filename) {
 
         LayoutInflater layoutInflater = LayoutInflater.from(this);
 
         View tasarim = layoutInflater.inflate(R.layout.alert_design,null);
 
-        final EditText editTextFolderName = tasarim.findViewById(R.id.editTextFolderName);
-
-        if (isAddFolder){
-            editTextFolderName.setHint(editTextName);
-        }
-        else {
-            editTextFolderName.setText(fileName);
-        }
+        final EditText editName = tasarim.findViewById(R.id.editTextFolderName);
+        editName.setHint("Edit file name");
+        //editName.setText(fileName);
 
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle(title);
+        alert.setTitle("Edit File Name");
         alert.setView(tasarim);
-        alert.setMessage("\n"+message+"\n");
-
-        alert.setPositiveButton(possitiveButtonMessage, new DialogInterface.OnClickListener() {
+        alert.setMessage("\n"+"Edit your file name\n");
+        alert.setPositiveButton("Edit", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                if (isAddFolder){
-
-                    creatingFolder(editTextFolderName.getText().toString().trim());
-                }
-                else{
-                 editFileName(editTextFolderName.getText().toString().trim(),path);
-                }
+            editFileName(editName.getText().toString().trim(),path,filename);
             }
         });
 
@@ -464,37 +435,85 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         alert.create().show();
     }
 
-    private void editFileName(String newFileName,String path) {
-        File file = new File(path);
-        File file2 = new File(newFileName);
-        file.renameTo(file2);
+
+    private void addFolder(){
+        alertOfAddFolder(this);
     }
 
-    private void creatingFolder(String folderName){
-        if (folderName.length()!=0){
-            File newFile;
-            newFile = new File(StaticVeriables.path+"/"+folderName);
-            if(!newFile.exists()){
-                newFile.mkdir();
-                Folder newFolder = new Folder(folderName,newFile.getPath(),new ArrayList<>());
-                // folderList.add(newFolder);
-                Toast.makeText(MainPage.this, "Folder Created", Toast.LENGTH_SHORT).show();
-                //Toast.makeText(context, String.valueOf(folderList.size()), Toast.LENGTH_SHORT).show();
-                // setAdapter(new ArrayList<>(folderList));
-                folderList.add(newFolder);
-                folderAdapter.setFolderList(folderList);
-                folderAdapter.notifyDataSetChanged();
-            }
-            else{
-                Toast.makeText(MainPage.this, "Folder is already exist", Toast.LENGTH_SHORT).show();
+    public void alertOfAddFolder(Context context)
+    {
+
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+
+        View tasarim = layoutInflater.inflate(R.layout.alert_design,null);
+
+        final EditText editTextFolderName = tasarim.findViewById(R.id.editTextFolderName);
+
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Create Folder");
+        alert.setView(tasarim);
+        alert.setMessage("\n"+"Write your folder name\n");
+        alert.setPositiveButton("CREATE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String folderName = editTextFolderName.getText().toString().trim();
+                if (folderName.length()!=0){
+                    File newFile;
+                    newFile = new File(StaticVeriables.path+"/"+folderName);
+                    if(!newFile.exists()){
+                        newFile.mkdir();
+                        Folder newFolder = new Folder(folderName,newFile.getPath(),new ArrayList<>());
+                        // folderList.add(newFolder);
+                        Toast.makeText(context, "Folder Created", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(context, String.valueOf(folderList.size()), Toast.LENGTH_SHORT).show();
+                        // setAdapter(new ArrayList<>(folderList));
+                        folderList.add(newFolder);
+                        folderAdapter.setFolderList(folderList);
+                        folderAdapter.notifyDataSetChanged();
+                    }
+                    else{
+                        Toast.makeText(context, "Folder is already exist", Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+                else{
+                    Toast.makeText(context, "Name cant be empty", Toast.LENGTH_SHORT).show();
+                }
+
 
             }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+
+        alert.create().show();
+    }
+
+    private void editFileName(String newFileName,String path,String fileName) {
+        File fileItself = new File(path);
+        File dir = new File(Objects.requireNonNull(fileItself.getParent()));
+        File from = new File(dir,fileName);
+        File to = new File(dir,newFileName+".pdf");
+        boolean deleted = from.renameTo(to);
+        Log.e("DEGISTIMI",String.valueOf(deleted));
+        if (deleted){
+            Toast.makeText(this, "Başarılı", Toast.LENGTH_SHORT).show();
+            StaticVeriables.checkedPdfList.clear();
+            Log.e("DIZIUZUNLUGU",String.valueOf(StaticVeriables.checkedPdfList.size()));
+            folderList=new ArrayList<>();
+            getPdfFolderInfos();
+            whenCheckedLayout.setVisibility(View.GONE);
         }
         else{
-            Toast.makeText(MainPage.this, "Name cant be empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "İşlem başarısız", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     private void requestForSpecificPermission() {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
