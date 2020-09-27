@@ -87,7 +87,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
     //Visual Objects
     ImageView addFolder,scanImage,imageViewClose;
     ConstraintLayout whenCheckedLayout;
-    Button buttonScanDocument,buttonScanCard,buttonGallery;
+    Button buttonScanDocument,buttonScanCard;
     FloatingActionButton fabDelete,fabEdit,fabShare;
     private RecyclerView recyclerView;
     private Set<PdfDocumentsModel> pdfDocumentsModelArrayList;
@@ -181,7 +181,6 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         StaticVeriables.userWillScanCard=false;
         buttonScanDocument = findViewById(R.id.buttonScanDocument);
         buttonScanCard = findViewById(R.id.buttonScanCard);
-        buttonGallery=findViewById(R.id.buttonGallery);
 
         fabDelete=findViewById(R.id.fabDelete);
         fabEdit=findViewById(R.id.fabEdit);
@@ -209,13 +208,17 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
             @Override
             public void onClick(View v) {
                 ArrayList<String> other = new ArrayList<>();
-                other.add("Select image from gallery");
-                other.add("Take picture from camera");
                 other.add("Cancel");
+
+                ArrayList<String> des = new ArrayList<>();
+                des.add("Select image from gallery");
+                des.add("Take picture from camera");
+
 
                 CustomAlertDialogue.Builder alert = new CustomAlertDialogue.Builder(MainPage.this)
                         .setStyle(CustomAlertDialogue.Style.SELECTOR)
                         .setOthers(other)
+                        .setDestructive(des)
                         .setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
