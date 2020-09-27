@@ -893,7 +893,7 @@ public class DocumentScannerActivity extends AppCompatActivity
     public void onPictureTaken(byte[] data, Camera camera) {
 
         shootSound();
-        Log.e("DATANEDEMEK",data.toString());
+
         android.hardware.Camera.Size pictureSize = camera.getParameters().getPictureSize();
 
         Log.d(TAG, "onPictureTaken - received image " + pictureSize.width + "x" + pictureSize.height);
@@ -901,7 +901,8 @@ public class DocumentScannerActivity extends AppCompatActivity
         Mat mat = new Mat(new Size(pictureSize.width, pictureSize.height), CvType.CV_8U);
         mat.put(0, 0, data);
 
-        mImageProcessor.enhanceDocument(mat);
+        setImageProcessorBusy(true);
+        sendImageProcessorMessage("pictureTaken", mat);
 
         scanClicked = false;
         safeToTakePicture = true;

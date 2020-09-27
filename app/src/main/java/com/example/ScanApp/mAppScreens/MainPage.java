@@ -33,11 +33,13 @@ import android.os.HandlerThread;
 import android.os.Message;
 import android.os.ParcelFileDescriptor;
 import android.os.StrictMode;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -74,6 +76,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import stream.customalert.CustomAlertDialogue;
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
 import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFocal;
 
@@ -205,32 +208,49 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         buttonScanDocument.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StaticVeriables.scannedImageModelList=new ArrayList<>();
-                StaticVeriables.userWillScanCard=false;
-                StaticVeriables.willScanFromGallery=false;
-                StaticVeriables.photoCount=1;
-                StaticVeriables.informationText="SCAN YOUR DOCUMENT.";
-                startActivity(intent);
+                ArrayList<String> other = new ArrayList<>();
+                other.add("Select image from gallery");
+                other.add("Take picture from camera");
+                other.add("Cancel");
+
+                CustomAlertDialogue.Builder alert = new CustomAlertDialogue.Builder(MainPage.this)
+                        .setStyle(CustomAlertDialogue.Style.SELECTOR)
+                        .setOthers(other)
+                        .setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                switch (i){
+                                    case 0:
+                                        StaticVeriables.scannedImageModelList=new ArrayList<>();
+                                        StaticVeriables.userWillScanCard=false;
+                                        StaticVeriables.willScanFromGallery=true;
+                                        StaticVeriables.photoCount=1;
+                                        StaticVeriables.informationText="SCAN FROM GALLERY.";
+                                        startActivity(intent);
+                                        break;
+                                    case 1:
+                                        StaticVeriables.scannedImageModelList=new ArrayList<>();
+                                        StaticVeriables.userWillScanCard=false;
+                                        StaticVeriables.willScanFromGallery=false;
+                                        StaticVeriables.photoCount=1;
+                                        StaticVeriables.informationText="SCAN YOUR DOCUMENT.";
+                                        startActivity(intent);
+                                        break;
+                                    case 2:
+                                        CustomAlertDialogue.getInstance().dismiss();
+                                        break;
+                                }
+                            }
+                        })
+                        .setDecorView(getWindow().getDecorView())
+                        .build();
+                alert.show();
+                Vibrator vibe = (Vibrator) MainPage.this.getSystemService(Context.VIBRATOR_SERVICE);
+                vibe.vibrate(30);
+
 
             }
         });
-
-
-        buttonGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                StaticVeriables.scannedImageModelList=new ArrayList<>();
-                StaticVeriables.userWillScanCard=false;
-                StaticVeriables.willScanFromGallery=true;
-                StaticVeriables.photoCount=1;
-                StaticVeriables.informationText="SCAN FROM GALLERY.";
-                startActivity(intent);
-
-            }
-        });
-
-
-
 
         buttonScanCard.setOnClickListener(new View.OnClickListener() {
             @Override
