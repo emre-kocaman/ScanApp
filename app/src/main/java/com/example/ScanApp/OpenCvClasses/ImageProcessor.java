@@ -85,7 +85,10 @@ public class ImageProcessor extends Handler {
                 processPreviewFrame((PreviewFrame) obj.getObj());
             } else if ( command.equals("pictureTaken")) {
                 processPicture((Mat) obj.getObj());
-            } else if ( command.equals("colorMode")) {
+            }else if (command.equals("fromGallery")) {
+                processPicture((Mat) obj.getObj());
+            }
+            else if ( command.equals("colorMode")) {
                 colorMode=(Boolean) obj.getObj();
             } else if ( command.equals("filterMode")) {
                 filterMode=(Boolean) obj.getObj();
@@ -154,14 +157,13 @@ public class ImageProcessor extends Handler {
         }
 
 
-        StaticVeriables.scannedDocument=detectDocument(img);
+
         ScannedDocument doc = detectDocument(img);
+        StaticVeriables.scannedDocument=detectDocument(img);
         Log.e("IMAGEPROCCESS",img.toString());
-        mMainActivity.startActivity(new Intent(mMainActivity, EditImage.class));
+        mMainActivity.startActivity(new Intent(mMainActivity, EditImage.class).putExtra("isGallery",false));
         mMainActivity.finish();
         //mMainActivity.saveDocument(doc);
-
-
 
         doc.release();
         picture.release();
@@ -364,7 +366,7 @@ public class ImageProcessor extends Handler {
         );
     }
 
-    private void enhanceDocument( Mat src ) {
+    public void enhanceDocument( Mat src ) {
         if (colorMode && filterMode) {
             src.convertTo(src,-1, colorGain , colorBias);
             Mat mask = new Mat(src.size(), CvType.CV_8UC1);
@@ -516,8 +518,6 @@ public class ImageProcessor extends Handler {
     }
 
     private QRCodeMultiReader qrCodeMultiReader = new QRCodeMultiReader();
-
-
 
     public Result[] zxing( Mat inputImage ) throws ChecksumException, FormatException {
 

@@ -67,6 +67,10 @@ public class PictureThread extends Thread{
                 0, amountSharpness+1, 0, 0, amountBrightness,
                 0, 0, amountSharpness+1, 0, amountBrightness,
                 0, 0, 0, 1, 0
+/*                0, 0, amountSharpness, 0, amountBrightness,
+                0,0 , 0, amountSharpness/2, amountBrightness,
+                0, 0,0 , amountSharpness/4, amountBrightness,
+                0, 0, 0, 1, 0*/
         });
 
         colorMatrixColorFilterBrightness = new ColorMatrixColorFilter(colorMatrixBrightness);
@@ -83,6 +87,7 @@ public class PictureThread extends Thread{
                     @Override
                     public void run() {
                         imageView.setImageBitmap(temp_bitmap);
+
                         running=false;
                     }
                 });

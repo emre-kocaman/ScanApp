@@ -1,5 +1,6 @@
 package com.example.ScanApp.OpenCvClasses;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -16,6 +17,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.hardware.Camera;
@@ -56,7 +58,9 @@ import com.example.ScanApp.OpenCvClasses.helpers.DocumentMessage;
 import com.example.ScanApp.OpenCvClasses.helpers.PreviewFrame;
 import com.example.ScanApp.OpenCvClasses.views.HUDCanvasView;
 import com.example.ScanApp.mAppScreens.MainPage;
+import com.example.ScanApp.mAppScreens.PhotoEditting.EditImage;
 import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
+import com.example.ScanApp.mAppScreens.mUtils.mUtils;
 import com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout;
 import com.google.android.material.navigation.NavigationView;
 
@@ -64,6 +68,7 @@ import org.opencv.BuildConfig;
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -163,7 +168,6 @@ public class DocumentScannerActivity extends AppCompatActivity
     private SurfaceHolder mSurfaceHolder;
     private Camera mCamera;
     private TextView textViewInfo;
-
     private boolean mFocused;
     private HUDCanvasView mHud;
     private View mWaitSpinner;
@@ -171,6 +175,8 @@ public class DocumentScannerActivity extends AppCompatActivity
     private boolean mBugRotate = false;
     private SharedPreferences mSharedPref;
     private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+    private static final int SELECT_PHOTO=100;
+
 
     public HUDCanvasView getHUD() {
         return mHud;
@@ -199,115 +205,159 @@ public class DocumentScannerActivity extends AppCompatActivity
     SharedPreferences.Editor editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        try {
+        super.onCreate(savedInstanceState);
 
-            super.onCreate(savedInstanceState);
+        mSharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
-            mSharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-
-            if (mSharedPref.getBoolean("isFirstRun", true) && !mSharedPref.getBoolean("usage_stats", false)) {
-                //statsOptInDialog();
-            }
+        if (mSharedPref.getBoolean("isFirstRun", true) && !mSharedPref.getBoolean("usage_stats", false)) {
+            //statsOptInDialog();
+        }
 
 
-            DocumentScannerApplication.getInstance().trackScreenView("Document Scanner Activity");
+        DocumentScannerApplication.getInstance().trackScreenView("Document Scanner Activity");
 
-            setContentView(R.layout.activity_document_scanner);
+        setContentView(R.layout.activity_document_scanner);
 
-            mVisible = true;
-            mControlsView = findViewById(R.id.fullscreen_content_controls);
-            mContentView = findViewById(R.id.surfaceView);
-            mHud = (HUDCanvasView) findViewById(R.id.hud);
-            mWaitSpinner = findViewById(R.id.wait_spinner);
+            try {
+                mVisible = true;
+                mControlsView = findViewById(R.id.fullscreen_content_controls);
+                mContentView = findViewById(R.id.surfaceView);
+                mHud = (HUDCanvasView) findViewById(R.id.hud);
+                mWaitSpinner = findViewById(R.id.wait_spinner);
+                textViewInfo=findViewById(R.id.textViewInfo);
+                textViewInfo.setText(StaticVeriables.informationText);
 
-            textViewInfo=findViewById(R.id.textViewInfo);
-            textViewInfo.setText(StaticVeriables.informationText);
 
+                // Set up the user interaction to manually show or hide the system UI.
+                mContentView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        toggle();
+                    }
+                });
 
-            // Set up the user interaction to manually show or hide the system UI.
-            mContentView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    toggle();
-                }
-            });
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                Display display = getWindowManager().getDefaultDisplay();
+                android.graphics.Point size = new android.graphics.Point();
+                display.getRealSize(size);
 
-            Display display = getWindowManager().getDefaultDisplay();
-            android.graphics.Point size = new android.graphics.Point();
-            display.getRealSize(size);
-
-            scanDocButton = (Button) findViewById(R.id.scanDocButton);
-            sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
-            startMainPageTutorial1();
-            scanDocButton.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    switch (motionEvent.getAction()) {
-                        case MotionEvent.ACTION_DOWN: {
-                            Button b = (Button) view;
-                            b.getBackground().setColorFilter(0x77000000, PorterDuff.Mode.SRC_ATOP);
-                            view.invalidate();
-                            break;
-                        }
-                        case MotionEvent.ACTION_UP: {
-                            if (scanClicked) {
-                                requestPicture();
-                                view.setBackgroundTintList(null);
-                                waitSpinnerVisible();
-                            } else {
-                                scanClicked = true;
-                                Toast.makeText(getApplicationContext(), R.string.scanningToast, Toast.LENGTH_LONG).show();
+                scanDocButton = (Button) findViewById(R.id.scanDocButton);
+                sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
+                startMainPageTutorial1();
+                scanDocButton.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        switch (motionEvent.getAction()) {
+                            case MotionEvent.ACTION_DOWN: {
+                                Button b = (Button) view;
+                                b.getBackground().setColorFilter(0x77000000, PorterDuff.Mode.SRC_ATOP);
+                                view.invalidate();
+                                break;
+                            }
+                            case MotionEvent.ACTION_UP: {
+                                if (scanClicked) {
+                                    requestPicture();
+                                    view.setBackgroundTintList(null);
+                                    waitSpinnerVisible();
+                                } else {
+                                    scanClicked = true;
+                                    Toast.makeText(getApplicationContext(), R.string.scanningToast, Toast.LENGTH_LONG).show();
+                                }
+                            }
+                            case MotionEvent.ACTION_CANCEL: {
+                                Button b = (Button) view;
+                                b.getBackground().clearColorFilter();
+                                view.invalidate();
+                                break;
                             }
                         }
-                        case MotionEvent.ACTION_CANCEL: {
-                            Button b = (Button) view;
-                            b.getBackground().clearColorFilter();
-                            view.invalidate();
-                            break;
-                        }
+                        return true;
                     }
-                    return true;
+                });
+
+
+
+
+
+
+                widgetCameraIntent = getIntent().getBooleanExtra(WidgetCameraIntent, false);
+
+
+                if (widgetOCRIntent) {
+                    Intent widgetOCRData = getIntent();
+                    if (widgetOCRData != null) {
+                        statusMessage.setText(R.string.ocr_success);
+                    }else {
+                        statusMessage.setText(R.string.ocr_failure);
+                        Log.d(TAG, "No Text captured, intent data is null");
+                    }
                 }
-            });
 
-
-
-
-
-
-            widgetCameraIntent = getIntent().getBooleanExtra(WidgetCameraIntent, false);
-
-
-            if (widgetOCRIntent) {
-                Intent widgetOCRData = getIntent();
-                if (widgetOCRData != null) {
-                    statusMessage.setText(R.string.ocr_success);
-                }else {
-                    statusMessage.setText(R.string.ocr_failure);
-                    Log.d(TAG, "No Text captured, intent data is null");
+                if (widgetCameraIntent || widgetOCRIntent) {
+                    Intent i = new Intent();
+                    i.setAction(Intent.ACTION_MAIN);
+                    i.addCategory(Intent.CATEGORY_LAUNCHER);
+                    i.setComponent(getIntent().getComponent());
+                    setIntent(i);
                 }
+
+            } catch (Exception e) {
+                Dialog d = new Dialog(this);
+                d.setTitle(R.string.error_dsa);
+                TextView tv = new TextView(this);
+                tv.setText(e.toString());
+                d.setContentView(tv);
+                d.show();
             }
 
-            if (widgetCameraIntent || widgetOCRIntent) {
-                Intent i = new Intent();
-                i.setAction(Intent.ACTION_MAIN);
-                i.addCategory(Intent.CATEGORY_LAUNCHER);
-                i.setComponent(getIntent().getComponent());
-                setIntent(i);
-            }
 
-        } catch (Exception e) {
-            Dialog d = new Dialog(this);
-            d.setTitle(R.string.error_dsa);
-            TextView tv = new TextView(this);
-            tv.setText(e.toString());
-            d.setContentView(tv);
-            d.show();
+        if(StaticVeriables.willScanFromGallery){
+            findViewById(R.id.viewForPickImage).setVisibility(View.VISIBLE);
+            Intent intent= new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            startActivityForResult(intent,SELECT_PHOTO);
         }
     }
+    private Bitmap applyThreshold(Mat src) {
+        Imgproc.cvtColor(src, src, Imgproc.COLOR_BGR2GRAY);
 
+        // Some other approaches
+//        Imgproc.adaptiveThreshold(src, src, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 15, 15);
+//        Imgproc.threshold(src, src, 0, 255, Imgproc.THRESH_BINARY + Imgproc.THRESH_OTSU);
+
+        Imgproc.GaussianBlur(src, src, new Size(5, 5), 0);
+        Imgproc.adaptiveThreshold(src, src, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 11, 2);
+
+        Bitmap bm = Bitmap.createBitmap(src.width(), src.height(), Bitmap.Config.ARGB_8888);
+        org.opencv.android.Utils.matToBitmap(src, bm);
+
+        return bm;
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode==SELECT_PHOTO && resultCode==RESULT_OK){
+
+            Uri selectImage = data.getData();
+            Bitmap bitmap=null;
+            try {
+                bitmap = mUtils.getBitmapFromUri(selectImage,bitmap,this);
+                Log.e("BITMAPGELDIMI",String.valueOf(bitmap));
+                Bitmap bmp32 = bitmap.copy(Bitmap.Config.ARGB_8888,true);
+                Mat madt = new Mat(500,500,CvType.CV_8U);
+                Utils.bitmapToMat(bmp32,madt);
+                StaticVeriables.getScannedFromGallery=applyThreshold(madt);
+                Intent gallery = new Intent(DocumentScannerActivity.this,EditImage.class);
+                gallery.putExtra("isGallery",true);
+                startActivity(gallery);
+                finish();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public boolean setFlash(boolean stateFlash) {
         PackageManager pm = getPackageManager();
@@ -462,35 +512,37 @@ public class DocumentScannerActivity extends AppCompatActivity
     public void onResume() {
         super.onResume();
 
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-        );
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            );
 
-        Log.d(TAG, "resuming");
+            Log.d(TAG, "resuming");
 
-        for (String build : Build.SUPPORTED_ABIS) {
-            Log.d(TAG, "myBuild " + build);
+            for (String build : Build.SUPPORTED_ABIS) {
+                Log.d(TAG, "myBuild " + build);
+            }
+
+            checkCreatePermissions();
+
+            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+            //CustomOpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_1_0, this, mLoaderCallback);
+
+            if (mImageThread == null) {
+                mImageThread = new HandlerThread("Worker Thread");
+                mImageThread.start();
+            }
+            if (mImageProcessor == null) {
+                mImageProcessor = new ImageProcessor(mImageThread.getLooper(), new Handler(), this);
+            }
+            this.setImageProcessorBusy(false);
+        if (StaticVeriables.willScanFromGallery){
+            findViewById(R.id.viewForPickImage).setVisibility(View.VISIBLE);
         }
-
-        checkCreatePermissions();
-
-        mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
-        //CustomOpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_1_0, this, mLoaderCallback);
-
-        if (mImageThread == null) {
-            mImageThread = new HandlerThread("Worker Thread");
-            mImageThread.start();
-        }
-
-        if (mImageProcessor == null) {
-            mImageProcessor = new ImageProcessor(mImageThread.getLooper(), new Handler(), this);
-        }
-        this.setImageProcessorBusy(false);
     }
 
     public void waitSpinnerVisible() {
@@ -829,7 +881,7 @@ public class DocumentScannerActivity extends AppCompatActivity
 
     public boolean requestPicture() {
         if (safeToTakePicture) {
-            //runOnUiThread(resetShutterColor);
+            runOnUiThread(resetShutterColor);
             safeToTakePicture = false;
             mCamera.takePicture(null, null, this);
             return true;
@@ -841,7 +893,7 @@ public class DocumentScannerActivity extends AppCompatActivity
     public void onPictureTaken(byte[] data, Camera camera) {
 
         shootSound();
-
+        Log.e("DATANEDEMEK",data.toString());
         android.hardware.Camera.Size pictureSize = camera.getParameters().getPictureSize();
 
         Log.d(TAG, "onPictureTaken - received image " + pictureSize.width + "x" + pictureSize.height);
@@ -849,8 +901,7 @@ public class DocumentScannerActivity extends AppCompatActivity
         Mat mat = new Mat(new Size(pictureSize.width, pictureSize.height), CvType.CV_8U);
         mat.put(0, 0, data);
 
-        setImageProcessorBusy(true);
-        sendImageProcessorMessage("pictureTaken", mat);
+        mImageProcessor.enhanceDocument(mat);
 
         scanClicked = false;
         safeToTakePicture = true;
@@ -869,110 +920,6 @@ public class DocumentScannerActivity extends AppCompatActivity
         super.onNewIntent(intent);
         setIntent(intent);
 
-    }
-
-    public void saveDocument(ScannedDocument scannedDocument) {
-
-        Mat doc = (scannedDocument.processed != null) ? scannedDocument.processed : scannedDocument.original;
-        Intent intent = getIntent();
-        String intentText = intent.toString();
-        Log.d(TAG, "intent text: " + intentText);
-        if (intent.getAction() != null) {
-
-            String fileName;
-            boolean isIntent = false;
-            Uri fileUri = null;
-            if (intent.getAction().equals("android.media.action.IMAGE_CAPTURE")) {
-                fileUri = ((Uri) intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT));
-                Log.d(TAG, "intent uri: " + fileUri.toString());
-                try {
-                    fileName = File.createTempFile("onsFile", ".jpg", this.getCacheDir()).getPath();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return;
-                }
-                isIntent = true;
-            } else {
-                File folder = new File(Environment.getExternalStorageDirectory().toString()
-                        + "/ConTextScanner");
-                if (!folder.exists()) {
-                    folder.mkdir();
-                    Log.d(TAG, "wrote: created folder " + folder.getPath());
-                }
-                fileName = Environment.getExternalStorageDirectory().toString()
-                        + "/ConTextScanner/DOC-"
-                        + new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date())
-                        + ".jpg";
-            }
-
-            Mat endDoc = new Mat(Double.valueOf(doc.size().width).intValue(),
-                    Double.valueOf(doc.size().height).intValue(), CvType.CV_8UC4);
-
-            Core.flip(doc.t(), endDoc, 1);
-
-            Imgcodecs.imwrite(fileName, endDoc);
-            endDoc.release();
-
-            try {
-                ExifInterface exif = new ExifInterface(fileName);
-                exif.setAttribute("UserComment", "Generated using ConTextScanner");
-                String nowFormatted = mDateFormat.format(new Date().getTime());
-                exif.setAttribute(ExifInterface.TAG_DATETIME, nowFormatted);
-                exif.setAttribute(ExifInterface.TAG_DATETIME_DIGITIZED, nowFormatted);
-                exif.setAttribute("Software", "ConTextScanner " + BuildConfig.VERSION_NAME);
-                exif.saveAttributes();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if (isIntent) {
-                InputStream inputStream = null;
-                OutputStream realOutputStream = null;
-                try {
-                    inputStream = new FileInputStream(fileName);
-                    realOutputStream = this.getContentResolver().openOutputStream(fileUri);
-                    // Transfer bytes from in to out
-                    byte[] buffer = new byte[1024];
-                    int len;
-                    while ((len = inputStream.read(buffer)) > 0) {
-                        realOutputStream.write(buffer, 0, len);
-                    }
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    return;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return;
-                } finally {
-                    try {
-                        inputStream.close();
-                        realOutputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            animateDocument(fileName, scannedDocument);
-
-            Log.d(TAG, "wrote: " + fileName);
-
-            if (isIntent) {
-                new File(fileName).delete();
-                setResult(RESULT_OK, intent);
-                finish();
-            } else {
-                addImageToGallery(fileName, this);
-            }
-
-            // Record goal "PictureTaken"
-            DocumentScannerApplication.getInstance().trackEvent("Event", "Picture Taken", "Document Scanner Activity");
-
-            refreshCamera();
-        } else {
-            intent.setAction("android.media.action.IMAGE_CAPTURE");
-            saveDocument(scannedDocument);
-        }
     }
 
     class AnimationRunnable implements Runnable {

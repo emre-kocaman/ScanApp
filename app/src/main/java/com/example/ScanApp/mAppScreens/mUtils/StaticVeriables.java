@@ -1,6 +1,7 @@
 package com.example.ScanApp.mAppScreens.mUtils;
 
 
+import android.graphics.Bitmap;
 import android.os.Environment;
 
 import com.example.ScanApp.OpenCvClasses.ScannedDocument;
@@ -21,6 +22,8 @@ public class StaticVeriables {
     public static List<ScannedImageModel> scannedImageModelList = new ArrayList<>();
     public static  List<PdfDocumentsModel> checkedPdfList=new ArrayList<>();
     public static boolean userWillScanCard=false;
+    public static boolean willScanFromGallery=false;
+    public static Bitmap getScannedFromGallery=null;
 
     public static PdfDocumentsModel movingPdfModel=null;
 

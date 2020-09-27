@@ -29,6 +29,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.os.ParcelFileDescriptor;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
@@ -45,6 +47,8 @@ import android.widget.Toast;
 
 import com.addisonelliott.segmentedbutton.SegmentedButtonGroup;
 import com.example.ScanApp.BuildConfig;
+import com.example.ScanApp.OpenCvClasses.ImageProcessor;
+import com.example.ScanApp.OpenCvClasses.helpers.DocumentMessage;
 import com.example.ScanApp.R;
 import com.example.ScanApp.mAppScreens.Adapters.FoldersAdapter;
 import com.example.ScanApp.mAppScreens.Adapters.PdfsCardAdapter;
@@ -80,14 +84,15 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
     //Visual Objects
     ImageView addFolder,scanImage,imageViewClose;
     ConstraintLayout whenCheckedLayout;
-    Button buttonScanDocument,buttonScanCard;
+    Button buttonScanDocument,buttonScanCard,buttonGallery;
     FloatingActionButton fabDelete,fabEdit,fabShare;
-
     private RecyclerView recyclerView;
     private Set<PdfDocumentsModel> pdfDocumentsModelArrayList;
     public ArrayList<Folder> folderList;
     private FoldersAdapter folderAdapter;
     private TextView folderSelected;
+
+
     //Veriables
     Intent intent;
     Bitmap temp;
@@ -173,7 +178,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         StaticVeriables.userWillScanCard=false;
         buttonScanDocument = findViewById(R.id.buttonScanDocument);
         buttonScanCard = findViewById(R.id.buttonScanCard);
-
+        buttonGallery=findViewById(R.id.buttonGallery);
 
         fabDelete=findViewById(R.id.fabDelete);
         fabEdit=findViewById(R.id.fabEdit);
@@ -202,6 +207,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
             public void onClick(View v) {
                 StaticVeriables.scannedImageModelList=new ArrayList<>();
                 StaticVeriables.userWillScanCard=false;
+                StaticVeriables.willScanFromGallery=false;
                 StaticVeriables.photoCount=1;
                 StaticVeriables.informationText="SCAN YOUR DOCUMENT.";
                 startActivity(intent);
@@ -209,13 +215,29 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
             }
         });
 
+
+        buttonGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StaticVeriables.scannedImageModelList=new ArrayList<>();
+                StaticVeriables.userWillScanCard=false;
+                StaticVeriables.willScanFromGallery=true;
+                StaticVeriables.photoCount=1;
+                StaticVeriables.informationText="SCAN FROM GALLERY.";
+                startActivity(intent);
+
+            }
+        });
+
+
+
+
         buttonScanCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 StaticVeriables.scannedImageModelList=new ArrayList<>();
                 StaticVeriables.userWillScanCard=true;
+                StaticVeriables.willScanFromGallery=false;
                 StaticVeriables.photoCount=2;
                 StaticVeriables.informationText="SCAN THE FRONT OF YOUR CARD";
                 startActivity(intent);
@@ -386,6 +408,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         }
     }
 
+
     private void setAdapter(List<Folder> folderList){
         folderAdapter = new FoldersAdapter(whenCheckedLayout,this,folderList,folderSelected,imageViewClose);
         recyclerView.setLayoutManager(new LinearLayoutManager(this,RecyclerView.VERTICAL,false));
@@ -403,6 +426,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         }
 
     }
+
 
     private void alertDialogEdit(String path,String filename) {
 
@@ -602,6 +626,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
 
 
     }
+
 
     private void deleteSelectedItems(){
 

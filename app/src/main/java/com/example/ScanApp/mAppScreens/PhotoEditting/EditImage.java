@@ -126,21 +126,31 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
 
 
     private void pickMatImgAndConvertToBitmap(){
-        if(StaticVeriables.scannedDocument!=null){
-            Mat seedsImage = StaticVeriables.scannedDocument.processed;
-            Mat tmp = new Mat (seedsImage.rows(),seedsImage.cols(), CvType.CV_8U, new Scalar(4));
-            try {
-                //Imgproc.cvtColor(seedsImage, tmp, Imgproc.COLOR_RGB2BGRA);
-                Imgproc.cvtColor(seedsImage, tmp, Imgproc.COLOR_GRAY2RGBA, 4);
-                bitmap = Bitmap.createBitmap(tmp.cols(), tmp.rows(), Bitmap.Config.ARGB_8888);
-                Utils.matToBitmap(tmp, bitmap);
-            }
-            catch (CvException e){
-                Log.d("Exception",e.getMessage());}
-
-
+        if(getIntent().getBooleanExtra("isGallery",false))
+        {
+            bitmap=StaticVeriables.getScannedFromGallery;
             bitmap = mUtils.RotateBitmap(bitmap,90);
         }
+        else{
+            Log.e("HANGISINEGIRDI","KAMERA");
+
+            if(StaticVeriables.scannedDocument!=null){
+                Mat seedsImage = StaticVeriables.scannedDocument.processed;
+                Mat tmp = new Mat (seedsImage.rows(),seedsImage.cols(), CvType.CV_8U, new Scalar(4));
+                try {
+                    //Imgproc.cvtColor(seedsImage, tmp, Imgproc.COLOR_RGB2BGRA);
+                    Imgproc.cvtColor(seedsImage, tmp, Imgproc.COLOR_GRAY2RGBA, 4);
+                    bitmap = Bitmap.createBitmap(tmp.cols(), tmp.rows(), Bitmap.Config.ARGB_8888);
+                    Utils.matToBitmap(tmp, bitmap);
+                }
+                catch (CvException e){
+                    Log.d("Exception",e.getMessage());}
+
+
+                bitmap = mUtils.RotateBitmap(bitmap,90);
+            }
+        }
+
 
 
     }

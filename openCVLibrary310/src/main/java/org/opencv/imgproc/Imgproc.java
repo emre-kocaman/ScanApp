@@ -2712,9 +2712,7 @@ public class Imgproc {
     //javadoc: resize(src, dst, dsize)
     public static void resize(Mat src, Mat dst, Size dsize)
     {
-        
         resize_1(src.nativeObj, dst.nativeObj, dsize.width, dsize.height);
-        
         return;
     }
 

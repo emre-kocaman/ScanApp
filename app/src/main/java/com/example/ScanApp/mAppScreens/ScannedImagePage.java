@@ -258,7 +258,6 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         alert.create().show();
     }
 
-
     public void showAlert(Context context)
     {
 
