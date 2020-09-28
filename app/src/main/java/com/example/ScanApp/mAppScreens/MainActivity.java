@@ -75,6 +75,7 @@ import stream.customalert.CustomAlertDialogue;
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
 import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFocal;
 
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //Visual Objects
@@ -88,10 +89,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FoldersAdapter folderAdapter;
     private TextView folderSelected;
 
-
     //Veriables
     Intent intent;
-    Bitmap temp;
+    Bitmap temp,bitmap;
     File root,defPdfFolder;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void defs(){
         StaticVeriables.checkedPdfList=new ArrayList<>();
-
+        bitmap=null;
         /*ActivityCompat.requestPermissions(MainPage.this,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 1);*/
@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fabDelete.setOnClickListener(this);
 
 }
-    private Bitmap applyThreshold(Mat src) {
+    private void applyThreshold(Mat src) {
         Imgproc.cvtColor(src, src, Imgproc.COLOR_BGR2GRAY);
 
         // Some other approaches
@@ -214,10 +214,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Imgproc.GaussianBlur(src, src, new Size(5, 5), 0);
         Imgproc.adaptiveThreshold(src, src, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 11, 2);
 
-        Bitmap bm = Bitmap.createBitmap(src.width(), src.height(), Bitmap.Config.ARGB_8888);
-        org.opencv.android.Utils.matToBitmap(src, bm);
-
-        return bm;
+        org.opencv.android.Utils.matToBitmap(src, bitmap);
+        StaticVeriables.getScannedFromGallery=bitmap;
     }
 
     @Override
@@ -228,17 +226,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (requestCode==SELECT_PHOTO && resultCode==RESULT_OK){
 
             Uri selectImage = data.getData();
-            Bitmap bitmap=null;
             try {
                 bitmap = mUtils.getBitmapFromUri(selectImage,bitmap,this);
                 Log.e("BITMAPGELDIMI",String.valueOf(bitmap));
-                Bitmap bmp32 = bitmap.copy(Bitmap.Config.ARGB_8888,true);
                 madt = new Mat(200,300, CvType.CV_8U);
-                Utils.bitmapToMat(bmp32,madt);
-                StaticVeriables.getScannedFromGallery=applyThreshold(madt);
+                Utils.bitmapToMat(bitmap,madt);
+                applyThreshold(madt);
                 Intent gallery1 = new Intent(MainActivity.this, EditImage.class);
                 gallery1.putExtra("isGallery",true);
                 startActivity(gallery1);
+                madt.release();
                 finish();
             } catch (IOException e) {
                 e.printStackTrace();

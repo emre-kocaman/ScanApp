@@ -52,7 +52,7 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
     SeekBar seekBarConstrat,seekBarBrightness,seekBarSharpness;
     //Veriables
     Intent intent;
-    Bitmap bitmap=null,original=null;
+    Bitmap bitmapEdit=null,original=null;
     Uri uri=null;
     PictureThread thread;
     File root;
@@ -61,17 +61,15 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crop_image);
-
         //getSupportActionBar().show();
+
         defs();
         clicks();
         pickMatImgAndConvertToBitmap();
-        startCrop(mUtils.getImageUriFromBitmap(this,bitmap));
+        startCrop(mUtils.getImageUriFromBitmap(this,bitmapEdit));
         seekBarsListener();
-
         Log.e("CREATEPRGBRGHT",String.valueOf(seekBarBrightness.getProgress()));
         Log.e("CREATEPRGSHRPN",String.valueOf(seekBarConstrat.getProgress()));
-
     }
 
     private void defs(){
@@ -104,15 +102,15 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
             if (resultCode == RESULT_OK) {
                 uri=result.getUri();
                 try {
-                    bitmap=mUtils.getBitmapFromUri(uri,bitmap,this);
+                    bitmapEdit=mUtils.getBitmapFromUri(uri,bitmapEdit,this);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 try {
-                    imageViewCropped.setImageBitmap(mUtils.getBitmapFromUri(uri,bitmap,this));
-                    thread = new PictureThread(imageViewCropped,bitmap);
+                    imageViewCropped.setImageBitmap(mUtils.getBitmapFromUri(uri,bitmapEdit,this));
+                    thread = new PictureThread(imageViewCropped,bitmapEdit);
                     thread.start();
-                    original = bitmap.copy(bitmap.getConfig(),true);
+                    original = bitmapEdit.copy(bitmapEdit.getConfig(),true);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -134,8 +132,8 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
     private void pickMatImgAndConvertToBitmap(){
         if(getIntent().getBooleanExtra("isGallery",false))
         {
-            bitmap=StaticVeriables.getScannedFromGallery;
-            bitmap = mUtils.RotateBitmap(bitmap,90);
+            bitmapEdit=StaticVeriables.getScannedFromGallery;
+            bitmapEdit = mUtils.RotateBitmap(bitmapEdit,90);
         }
         else{
             Log.e("HANGISINEGIRDI","KAMERA");
@@ -146,14 +144,16 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
                 try {
                     //Imgproc.cvtColor(seedsImage, tmp, Imgproc.COLOR_RGB2BGRA);
                     Imgproc.cvtColor(seedsImage, tmp, Imgproc.COLOR_GRAY2RGBA, 4);
-                    bitmap = Bitmap.createBitmap(tmp.cols(), tmp.rows(), Bitmap.Config.ARGB_8888);
-                    Utils.matToBitmap(tmp, bitmap);
+                    bitmapEdit = Bitmap.createBitmap(tmp.cols(), tmp.rows(), Bitmap.Config.ARGB_8888);
+                    Utils.matToBitmap(tmp, bitmapEdit);
+                    seedsImage.release();
+                    tmp.release();
                 }
                 catch (CvException e){
                     Log.d("Exception",e.getMessage());}
 
 
-                bitmap = mUtils.RotateBitmap(bitmap,90);
+                bitmapEdit = mUtils.RotateBitmap(bitmapEdit,90);
             }
         }
 
@@ -179,6 +179,8 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
             //Kullanıcı döküman scan etmiştir ve tarama bitmiştir taranan resimlerin olduğu sayfaya gönder.
             StaticVeriables.informationText="";
             StaticVeriables.photoCount=20;
+//            bitmapEdit.recycle();
+//            original.recycle();
             Intent intent = new Intent(this, ScannedImagePage.class);
             startActivity(intent);
             finish();
@@ -190,12 +192,14 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
         }
         else if (StaticVeriables.photoCount==1){//Kimlik sayfasının arka sayfasını çekmeye git
             StaticVeriables.informationText="SCAN THE BACK OF YOUR CARD";
+//            bitmapEdit.recycle();
+//            original.recycle();
             startActivity(intent);
         }
     }
 
     private void saveImageToList(){
-        ScannedImageModel scannedImageModel = new ScannedImageModel(bitmap,StaticVeriables.photoCount+". image","",false);
+        ScannedImageModel scannedImageModel = new ScannedImageModel(bitmapEdit,StaticVeriables.photoCount+". image","",false);
         StaticVeriables.scannedImageModelList.add(scannedImageModel);
     }
 
@@ -205,8 +209,8 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 thread.adjustBrightnessAndSharpness(seekBar.getProgress(),seekBarConstrat.getProgress());
-                bitmap=thread.temp_bitmap;
-                original = bitmap.copy(bitmap.getConfig(),true);
+                bitmapEdit=thread.temp_bitmap;
+                original = bitmapEdit.copy(bitmapEdit.getConfig(),true);
                 Log.e("LISTENERPRGBRGHT",String.valueOf(seekBarBrightness.getProgress()));
                 Log.e("LISTENERPRGSHRPN",String.valueOf(seekBarConstrat.getProgress()));
 
@@ -229,8 +233,8 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 thread.adjustBrightnessAndSharpness(seekBarBrightness.getProgress(),seekBar.getProgress());
-                bitmap=thread.temp_bitmap;
-                original = bitmap.copy(bitmap.getConfig(),true);
+                bitmapEdit=thread.temp_bitmap;
+                original = bitmapEdit.copy(bitmapEdit.getConfig(),true);
 
                 Log.e("LISTENERPRGBRGHT",String.valueOf(seekBarBrightness.getProgress()));
                 Log.e("LISTENERPRGSHRPN",String.valueOf(seekBarConstrat.getProgress()));
@@ -253,21 +257,21 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 switch (progress){
                     case 0:
-                        bitmap= original.copy(original.getConfig(),true);
-                        imageViewCropped.setImageBitmap(bitmap);
+                        bitmapEdit= original.copy(original.getConfig(),true);
+                        imageViewCropped.setImageBitmap(bitmapEdit);
 
                         break;
                     case 1:
                         loadBitmapSharp2();
-                        imageViewCropped.setImageBitmap(bitmap);
+                        imageViewCropped.setImageBitmap(bitmapEdit);
                         break;
                     case 2:
                         loadBitmapSharp1();
-                        imageViewCropped.setImageBitmap(bitmap);
+                        imageViewCropped.setImageBitmap(bitmapEdit);
                         break;
                     case 3:
                         loadBitmapSharp();
-                        imageViewCropped.setImageBitmap(bitmap);
+                        imageViewCropped.setImageBitmap(bitmapEdit);
                         break;
                 }
             }
@@ -309,9 +313,12 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
                 if (folderName.length()!=0){
                     mUtils.createPdfOfCard(root,StaticVeriables.scannedImageModelList,folderName);
                     //mUtils.createPdfOfImageFromList(root,StaticVeriables.scannedImageModelList,context,folderName);
+//                    bitmapEdit.recycle();
+//                    original.recycle();
                     Intent intent = new Intent(EditImage.this, MainActivity.class);
                     startActivity(intent);
                     finish();
+
                 }
                 else{
                     Toast.makeText(context, "Name cant be empty", Toast.LENGTH_SHORT).show();
@@ -339,14 +346,14 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
             Log.e("DIZI ELEMANLARI",String.valueOf(sayi));
         }
         //original = temp_bitmap.copy(temp_bitmap.getConfig(),false);
-        Bitmap bitmap = Bitmap.createBitmap(
+        Bitmap bitmapEdit = Bitmap.createBitmap(
                 original.getWidth(), original.getHeight(),
                 Bitmap.Config.ARGB_8888);
 
         RenderScript rs = RenderScript.create(context);
 
         Allocation allocIn = Allocation.createFromBitmap(rs, original);
-        Allocation allocOut = Allocation.createFromBitmap(rs, bitmap);
+        Allocation allocOut = Allocation.createFromBitmap(rs, bitmapEdit);
 
         ScriptIntrinsicConvolve3x3 convolution
                 = ScriptIntrinsicConvolve3x3.create(rs, Element.U8_4(rs));
@@ -354,10 +361,10 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
         convolution.setCoefficients(radius);
         convolution.forEach(allocOut);
 
-        allocOut.copyTo(bitmap);
+        allocOut.copyTo(bitmapEdit);
         rs.destroy();
 
-        return bitmap;
+        return bitmapEdit;
 
     }
 
@@ -367,8 +374,8 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
         float[] sharp = { -0.60f, -0.60f, -0.60f,
                 -0.60f, 5.81f, -0.60f,
                 -0.60f, -0.60f, -0.60f };
-//you call the method above and just paste the bitmap you want to apply it and the float of above
-        bitmap = doSharpen(original, sharp,this);
+//you call the method above and just paste the bitmapEdit you want to apply it and the float of above
+        bitmapEdit = doSharpen(original, sharp,this);
     }
 
     // medium
@@ -378,8 +385,8 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
                 0.0f, -1.0f, 0.0f
 
         };
-//you call the method above and just paste the bitmap you want to apply it and the float of above
-        bitmap = doSharpen(original, sharp,this);
+//you call the method above and just paste the bitmapEdit you want to apply it and the float of above
+        bitmapEdit = doSharpen(original, sharp,this);
     }
 
     // high
@@ -388,8 +395,8 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
                 -0.15f, 2.2f, -0.15f,
                 -0.15f, -0.15f, -0.15f
         };
-        //you call the method above and just paste the bitmap you want to apply it and the float of above
-        bitmap = doSharpen(original, sharp,this);
+        //you call the method above and just paste the bitmapEdit you want to apply it and the float of above
+        bitmapEdit = doSharpen(original, sharp,this);
     }
 
 }

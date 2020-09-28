@@ -2,6 +2,7 @@ package com.example.ScanApp.mAppScreens.mUtils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.pdf.PdfDocument;
@@ -22,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +64,14 @@ public class mUtils {
     public static Bitmap getBitmapFromUri(Uri uri,Bitmap bitmap,Context context) throws IOException {
         bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
         return bitmap;
+    }
 
 
+
+    private static int getPowerOfTwoForSampleRatio(double ratio){
+        int k = Integer.highestOneBit((int)Math.floor(ratio));
+        if(k==0) return 1;
+        else return k;
     }
 
 

@@ -113,7 +113,7 @@
         android:background="#FFF"
         android:clickable="true"
         android:elevation="10dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -135,7 +135,7 @@
             android:layout_marginBottom="3dp"
             android:clickable="true"
             android:src="@drawable/ic_baseline_share_24"
-            app:backgroundTint="#CBFFD1"
+            app:backgroundTint="#C2FFC9"
             app:elevation="0dp"
             app:layout_constraintBottom_toTopOf="@+id/textView4"
             app:layout_constraintEnd_toEndOf="parent"
@@ -145,13 +145,14 @@
             android:id="@+id/fabEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="4dp"
             android:clickable="true"
             android:src="@drawable/ic_baseline_edit_24"
-            app:backgroundTint="#BAE6D1"
+            app:backgroundTint="#BBE9FF"
             app:elevation="0dp"
             app:layout_constraintBottom_toTopOf="@+id/textView4"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
@@ -172,7 +173,7 @@
             android:layout_marginBottom="3dp"
             android:clickable="true"
             android:src="@drawable/ic_baseline_delete_24"
-            app:backgroundTint="#FFC8D1"
+            app:backgroundTint="#FFC8D7"
             app:elevation="0dp"
             app:layout_constraintBottom_toTopOf="@+id/textView4"
             app:layout_constraintEnd_toStartOf="@+id/fabEdit"
