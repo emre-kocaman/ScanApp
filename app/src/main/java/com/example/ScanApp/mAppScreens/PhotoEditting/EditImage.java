@@ -11,6 +11,10 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicConvolve3x3;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +25,7 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.example.ScanApp.R;
-import com.example.ScanApp.mAppScreens.MainPage;
+import com.example.ScanApp.mAppScreens.MainActivity;
 import com.example.ScanApp.mAppScreens.Models.ScannedImageModel;
 import com.example.ScanApp.mAppScreens.ScannedImagePage;
 import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
@@ -45,10 +49,10 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
     //Visual Objects
     ImageView imageViewCropped;
     Button saveCropppedImage;
-    SeekBar seekBarSharpnes,seekBarBrightness;
+    SeekBar seekBarConstrat,seekBarBrightness,seekBarSharpness;
     //Veriables
     Intent intent;
-    Bitmap bitmap=null;
+    Bitmap bitmap=null,original=null;
     Uri uri=null;
     PictureThread thread;
     File root;
@@ -66,14 +70,16 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
         seekBarsListener();
 
         Log.e("CREATEPRGBRGHT",String.valueOf(seekBarBrightness.getProgress()));
-        Log.e("CREATEPRGSHRPN",String.valueOf(seekBarSharpnes.getProgress()));
+        Log.e("CREATEPRGSHRPN",String.valueOf(seekBarConstrat.getProgress()));
 
     }
 
     private void defs(){
 
-        seekBarSharpnes=findViewById(R.id.seekBarSharpness);
+        seekBarConstrat=findViewById(R.id.seeekBarContrast);
         seekBarBrightness=findViewById(R.id.seekBarBrightness);
+        seekBarSharpness=findViewById(R.id.seekBarSharpness);
+
         imageViewCropped=findViewById(R.id.imageViewCropped);
         intent = new Intent(EditImage.this, DocumentScannerActivity.class);
         saveCropppedImage=findViewById(R.id.saveCropppedImage);
@@ -106,7 +112,7 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
                     imageViewCropped.setImageBitmap(mUtils.getBitmapFromUri(uri,bitmap,this));
                     thread = new PictureThread(imageViewCropped,bitmap);
                     thread.start();
-
+                    original = bitmap.copy(bitmap.getConfig(),true);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -198,10 +204,11 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
         seekBarBrightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                thread.adjustBrightnessAndSharpness(seekBar.getProgress(),seekBarSharpnes.getProgress());
+                thread.adjustBrightnessAndSharpness(seekBar.getProgress(),seekBarConstrat.getProgress());
                 bitmap=thread.temp_bitmap;
+                original = bitmap.copy(bitmap.getConfig(),true);
                 Log.e("LISTENERPRGBRGHT",String.valueOf(seekBarBrightness.getProgress()));
-                Log.e("LISTENERPRGSHRPN",String.valueOf(seekBarSharpnes.getProgress()));
+                Log.e("LISTENERPRGSHRPN",String.valueOf(seekBarConstrat.getProgress()));
 
             }
 
@@ -218,14 +225,51 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
 
 
         //sharpness seekbar
-        seekBarSharpnes.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        seekBarConstrat.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 thread.adjustBrightnessAndSharpness(seekBarBrightness.getProgress(),seekBar.getProgress());
                 bitmap=thread.temp_bitmap;
-                Log.e("LISTENERPRGBRGHT",String.valueOf(seekBarBrightness.getProgress()));
-                Log.e("LISTENERPRGSHRPN",String.valueOf(seekBarSharpnes.getProgress()));
+                original = bitmap.copy(bitmap.getConfig(),true);
 
+                Log.e("LISTENERPRGBRGHT",String.valueOf(seekBarBrightness.getProgress()));
+                Log.e("LISTENERPRGSHRPN",String.valueOf(seekBarConstrat.getProgress()));
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        seekBarSharpness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                switch (progress){
+                    case 0:
+                        bitmap= original.copy(original.getConfig(),true);
+                        imageViewCropped.setImageBitmap(bitmap);
+
+                        break;
+                    case 1:
+                        loadBitmapSharp2();
+                        imageViewCropped.setImageBitmap(bitmap);
+                        break;
+                    case 2:
+                        loadBitmapSharp1();
+                        imageViewCropped.setImageBitmap(bitmap);
+                        break;
+                    case 3:
+                        loadBitmapSharp();
+                        imageViewCropped.setImageBitmap(bitmap);
+                        break;
+                }
             }
 
             @Override
@@ -265,7 +309,7 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
                 if (folderName.length()!=0){
                     mUtils.createPdfOfCard(root,StaticVeriables.scannedImageModelList,folderName);
                     //mUtils.createPdfOfImageFromList(root,StaticVeriables.scannedImageModelList,context,folderName);
-                    Intent intent = new Intent(EditImage.this,MainPage.class);
+                    Intent intent = new Intent(EditImage.this, MainActivity.class);
                     startActivity(intent);
                     finish();
                 }
@@ -287,4 +331,65 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
 
         alert.create().show();
     }
+
+    public Bitmap doSharpen(Bitmap original, float[] radius, Context context) {
+
+        for (float sayi:radius
+        ) {
+            Log.e("DIZI ELEMANLARI",String.valueOf(sayi));
+        }
+        //original = temp_bitmap.copy(temp_bitmap.getConfig(),false);
+        Bitmap bitmap = Bitmap.createBitmap(
+                original.getWidth(), original.getHeight(),
+                Bitmap.Config.ARGB_8888);
+
+        RenderScript rs = RenderScript.create(context);
+
+        Allocation allocIn = Allocation.createFromBitmap(rs, original);
+        Allocation allocOut = Allocation.createFromBitmap(rs, bitmap);
+
+        ScriptIntrinsicConvolve3x3 convolution
+                = ScriptIntrinsicConvolve3x3.create(rs, Element.U8_4(rs));
+        convolution.setInput(allocIn);
+        convolution.setCoefficients(radius);
+        convolution.forEach(allocOut);
+
+        allocOut.copyTo(bitmap);
+        rs.destroy();
+
+        return bitmap;
+
+    }
+
+
+    // low
+    private  void loadBitmapSharp() {
+        float[] sharp = { -0.60f, -0.60f, -0.60f,
+                -0.60f, 5.81f, -0.60f,
+                -0.60f, -0.60f, -0.60f };
+//you call the method above and just paste the bitmap you want to apply it and the float of above
+        bitmap = doSharpen(original, sharp,this);
+    }
+
+    // medium
+    private  void loadBitmapSharp1() {
+        float[] sharp = { 0.0f, -1.0f, 0.0f,
+                -1.0f, 5.0f, -1.0f,
+                0.0f, -1.0f, 0.0f
+
+        };
+//you call the method above and just paste the bitmap you want to apply it and the float of above
+        bitmap = doSharpen(original, sharp,this);
+    }
+
+    // high
+    private  void loadBitmapSharp2() {
+        float[] sharp = { -0.15f, -0.15f, -0.15f,
+                -0.15f, 2.2f, -0.15f,
+                -0.15f, -0.15f, -0.15f
+        };
+        //you call the method above and just paste the bitmap you want to apply it and the float of above
+        bitmap = doSharpen(original, sharp,this);
+    }
+
 }

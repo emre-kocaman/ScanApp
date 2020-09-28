@@ -1,12 +1,11 @@
 package com.example.ScanApp.mAppScreens;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -28,9 +27,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Message;
 import android.os.ParcelFileDescriptor;
 import android.os.StrictMode;
 import android.os.Vibrator;
@@ -38,37 +34,36 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.addisonelliott.segmentedbutton.SegmentedButtonGroup;
-import com.example.ScanApp.BuildConfig;
-import com.example.ScanApp.OpenCvClasses.ImageProcessor;
-import com.example.ScanApp.OpenCvClasses.helpers.DocumentMessage;
 import com.example.ScanApp.R;
 import com.example.ScanApp.mAppScreens.Adapters.FoldersAdapter;
-import com.example.ScanApp.mAppScreens.Adapters.PdfsCardAdapter;
 import com.example.ScanApp.mAppScreens.Models.Folder;
 import com.example.ScanApp.mAppScreens.Models.PdfDocumentsModel;
+import com.example.ScanApp.mAppScreens.PhotoEditting.EditImage;
 import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
 import com.example.ScanApp.OpenCvClasses.DocumentScannerActivity;
 import com.example.ScanApp.mAppScreens.mUtils.mUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
+import org.opencv.android.Utils;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
+
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
@@ -80,9 +75,7 @@ import stream.customalert.CustomAlertDialogue;
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
 import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFocal;
 
-import static android.provider.MediaStore.Video.VideoColumns.CATEGORY;
-
-public class MainPage extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //Visual Objects
     ImageView addFolder,scanImage,imageViewClose;
@@ -102,10 +95,12 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
     File root,defPdfFolder;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
-
+    private static final int SELECT_PHOTO=100;
+    Mat madt;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.e("GIRDI","Permission");
         switch (requestCode) {
             case 101:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -135,6 +130,13 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
 
+//        temp = BitmapFactory.decodeResource(getResources(),R.drawable.sand_watch);
+//        defs();
+//        clicks();
+//        scanButtonsListener();
+//        getPdfFolderInfos();
+//        startMainPageTutorial1();
+//        //exampleForMainPage()
         int MyVersion = Build.VERSION.SDK_INT;
         if (MyVersion > Build.VERSION_CODES.LOLLIPOP_MR1) {
             if (!checkIfAlreadyhavePermission()) {
@@ -169,7 +171,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         addFolder.setImageResource(R.drawable.folder);
         scanImage.setImageResource(R.drawable.scan);
 
-        intent=new Intent(MainPage.this, DocumentScannerActivity.class);
+        intent=new Intent(MainActivity.this, DocumentScannerActivity.class);
 
         recyclerView=findViewById(R.id.pdfRv);
         recyclerView.setHasFixedSize(true);
@@ -200,7 +202,77 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         fabEdit.setOnClickListener(this);
         fabShare.setOnClickListener(this);
         fabDelete.setOnClickListener(this);
+
 }
+    private Bitmap applyThreshold(Mat src) {
+        Imgproc.cvtColor(src, src, Imgproc.COLOR_BGR2GRAY);
+
+        // Some other approaches
+//        Imgproc.adaptiveThreshold(src, src, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 15, 15);
+//        Imgproc.threshold(src, src, 0, 255, Imgproc.THRESH_BINARY + Imgproc.THRESH_OTSU);
+
+        Imgproc.GaussianBlur(src, src, new Size(5, 5), 0);
+        Imgproc.adaptiveThreshold(src, src, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 11, 2);
+
+        Bitmap bm = Bitmap.createBitmap(src.width(), src.height(), Bitmap.Config.ARGB_8888);
+        org.opencv.android.Utils.matToBitmap(src, bm);
+
+        return bm;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e("GIRDI","RESULT");
+        Log.e("GIRDICOD",String.valueOf(requestCode) + " "+String.valueOf(resultCode));
+        if (requestCode==SELECT_PHOTO && resultCode==RESULT_OK){
+
+            Uri selectImage = data.getData();
+            Bitmap bitmap=null;
+            try {
+                bitmap = mUtils.getBitmapFromUri(selectImage,bitmap,this);
+                Log.e("BITMAPGELDIMI",String.valueOf(bitmap));
+                Bitmap bmp32 = bitmap.copy(Bitmap.Config.ARGB_8888,true);
+                madt = new Mat(200,300, CvType.CV_8U);
+                Utils.bitmapToMat(bmp32,madt);
+                StaticVeriables.getScannedFromGallery=applyThreshold(madt);
+                Intent gallery1 = new Intent(MainActivity.this, EditImage.class);
+                gallery1.putExtra("isGallery",true);
+                startActivity(gallery1);
+                finish();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
+        @Override
+        public void onManagerConnected(int status) {
+            switch (status) {
+                case LoaderCallbackInterface.SUCCESS:
+                {
+                    Log.i("OpenCV", "OpenCV loaded successfully");
+                    madt=new Mat();
+                } break;
+                default:
+                {
+                    super.onManagerConnected(status);
+                } break;
+            }
+        }
+    };
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (!OpenCVLoader.initDebug()) {
+            Log.d("OpenCV", "Internal OpenCV library not found. Using OpenCV Manager for initialization");
+            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
+        } else {
+            Log.d("OpenCV", "OpenCV library found inside package. Using it!");
+            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+        }
+    }
 
     private void scanButtonsListener(){
 
@@ -215,7 +287,7 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
                 des.add("Take picture from camera");
 
 
-                CustomAlertDialogue.Builder alert = new CustomAlertDialogue.Builder(MainPage.this)
+                CustomAlertDialogue.Builder alert = new CustomAlertDialogue.Builder(MainActivity.this)
                         .setStyle(CustomAlertDialogue.Style.SELECTOR)
                         .setOthers(other)
                         .setDestructive(des)
@@ -229,7 +301,10 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
                                         StaticVeriables.willScanFromGallery=true;
                                         StaticVeriables.photoCount=1;
                                         StaticVeriables.informationText="SCAN FROM GALLERY.";
-                                        startActivity(intent);
+
+                                        Intent pickFromGallery= new Intent(Intent.ACTION_PICK);
+                                        pickFromGallery.setType("image/*");
+                                        startActivityForResult(pickFromGallery,SELECT_PHOTO);
                                         break;
                                     case 1:
                                         StaticVeriables.scannedImageModelList=new ArrayList<>();
@@ -248,8 +323,10 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
                         .setDecorView(getWindow().getDecorView())
                         .build();
                 alert.show();
-                Vibrator vibe = (Vibrator) MainPage.this.getSystemService(Context.VIBRATOR_SERVICE);
+                Vibrator vibe = (Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
                 vibe.vibrate(30);
+
+
 
 
             }
@@ -576,10 +653,8 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
     }
 
     public void startMainPageTutorial1() {
-
-//
         if (sharedPreferences.getBoolean("isFirstTimeMainPage",true)){
-            new MaterialTapTargetPrompt.Builder(MainPage.this)
+            new MaterialTapTargetPrompt.Builder(MainActivity.this)
                     .setTarget(buttonScanCard)
                     .setCaptureTouchEventOnFocal(true)
                     .setBackButtonDismissEnabled(true)
@@ -662,6 +737,8 @@ public class MainPage extends AppCompatActivity implements View.OnClickListener 
         getPdfFolderInfos();
         whenCheckedLayout.setVisibility(View.GONE);
     }
+
+
 
 }
 

@@ -15,24 +15,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.hardware.Camera;
 import android.media.AudioManager;
-import android.media.ExifInterface;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
@@ -57,40 +52,29 @@ import com.example.ScanApp.R;
 import com.example.ScanApp.OpenCvClasses.helpers.DocumentMessage;
 import com.example.ScanApp.OpenCvClasses.helpers.PreviewFrame;
 import com.example.ScanApp.OpenCvClasses.views.HUDCanvasView;
-import com.example.ScanApp.mAppScreens.MainPage;
 import com.example.ScanApp.mAppScreens.PhotoEditting.EditImage;
 import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
 import com.example.ScanApp.mAppScreens.mUtils.mUtils;
 import com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout;
 import com.google.android.material.navigation.NavigationView;
 
-import org.opencv.BuildConfig;
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
-import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Size;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
 import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFocal;
 
-import static com.example.ScanApp.OpenCvClasses.helpers.Utils.addImageToGallery;
 import static com.example.ScanApp.OpenCvClasses.helpers.Utils.decodeSampledBitmapFromUri;
 
 public class DocumentScannerActivity extends AppCompatActivity
@@ -245,6 +229,9 @@ public class DocumentScannerActivity extends AppCompatActivity
                 scanDocButton = (Button) findViewById(R.id.scanDocButton);
                 sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
                 startMainPageTutorial1();
+
+
+
                 scanDocButton.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -312,12 +299,12 @@ public class DocumentScannerActivity extends AppCompatActivity
             }
 
 
-        if(StaticVeriables.willScanFromGallery){
-            findViewById(R.id.viewForPickImage).setVisibility(View.VISIBLE);
-            Intent intent= new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            startActivityForResult(intent,SELECT_PHOTO);
-        }
+//        if(StaticVeriables.willScanFromGallery){
+//            findViewById(R.id.viewForPickImage).setVisibility(View.VISIBLE);
+//            Intent intent= new Intent(Intent.ACTION_PICK);
+//            intent.setType("image/*");
+//            startActivityForResult(intent,SELECT_PHOTO);
+//        }
     }
     private Bitmap applyThreshold(Mat src) {
         Imgproc.cvtColor(src, src, Imgproc.COLOR_BGR2GRAY);
@@ -357,18 +344,6 @@ public class DocumentScannerActivity extends AppCompatActivity
                 e.printStackTrace();
             }
         }
-    }
-
-    public boolean setFlash(boolean stateFlash) {
-        PackageManager pm = getPackageManager();
-        if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
-            Camera.Parameters par = mCamera.getParameters();
-            par.setFlashMode(stateFlash ? Camera.Parameters.FLASH_MODE_TORCH : Camera.Parameters.FLASH_MODE_OFF);
-            mCamera.setParameters(par);
-            Log.d(TAG, "flash: " + (stateFlash ? "on" : "off"));
-            return stateFlash;
-        }
-        return false;
     }
 
     private void checkResumePermissions() {
@@ -540,9 +515,9 @@ public class DocumentScannerActivity extends AppCompatActivity
                 mImageProcessor = new ImageProcessor(mImageThread.getLooper(), new Handler(), this);
             }
             this.setImageProcessorBusy(false);
-        if (StaticVeriables.willScanFromGallery){
-            findViewById(R.id.viewForPickImage).setVisibility(View.VISIBLE);
-        }
+//        if (StaticVeriables.willScanFromGallery){
+//            findViewById(R.id.viewForPickImage).setVisibility(View.VISIBLE);
+//        }
     }
 
     public void waitSpinnerVisible() {

@@ -1,13 +1,8 @@
 package com.example.ScanApp.mAppScreens.Adapters;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipDescription;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -18,20 +13,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ScanApp.R;
-import com.example.ScanApp.mAppScreens.MainPage;
+import com.example.ScanApp.mAppScreens.MainActivity;
 import com.example.ScanApp.mAppScreens.Models.Folder;
-import com.example.ScanApp.mAppScreens.Models.PdfDocumentsModel;
 import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
 import com.example.ScanApp.mAppScreens.mUtils.mUtils;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.CardTasarimTutucu> implements View.OnDragListener {
@@ -84,9 +76,9 @@ public class FoldersAdapter extends RecyclerView.Adapter<FoldersAdapter.CardTasa
                 mUtils.copyFileOrDirectory(StaticVeriables.movingPdfModel.getFilePath()
                         ,StaticVeriables.path+"/"+v.getTag().toString());
                 new File(StaticVeriables.movingPdfModel.getFilePath()).delete();
-                if (context instanceof MainPage) {
-                    ((MainPage)context).folderList.clear();
-                    ((MainPage)context).getPdfFolderInfos();
+                if (context instanceof MainActivity) {
+                    ((MainActivity)context).folderList.clear();
+                    ((MainActivity)context).getPdfFolderInfos();
                 }
                 StaticVeriables.checkedPdfList.clear();
                 whenCheckedLayout.setVisibility(View.GONE);

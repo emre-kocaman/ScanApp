@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="#EAEAEA"
     android:scrollbarSize="10dp"
-    tools:context=".mAppScreens.MainPage">
+    tools:context=".mAppScreens.MainActivity">
 
     <Button
         android:id="@+id/buttonScanDocument"
@@ -113,7 +113,7 @@
         android:background="#FFF"
         android:clickable="true"
         android:elevation="10dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -135,7 +135,7 @@
             android:layout_marginBottom="3dp"
             android:clickable="true"
             android:src="@drawable/ic_baseline_share_24"
-            app:backgroundTint="#3350CA5F"
+            app:backgroundTint="#CBFFD1"
             app:elevation="0dp"
             app:layout_constraintBottom_toTopOf="@+id/textView4"
             app:layout_constraintEnd_toEndOf="parent"
@@ -148,7 +148,7 @@
             android:layout_marginBottom="3dp"
             android:clickable="true"
             android:src="@drawable/ic_baseline_edit_24"
-            app:backgroundTint="#3322A6F2"
+            app:backgroundTint="#BAE6D1"
             app:elevation="0dp"
             app:layout_constraintBottom_toTopOf="@+id/textView4"
             app:layout_constraintEnd_toEndOf="parent"
@@ -172,7 +172,7 @@
             android:layout_marginBottom="3dp"
             android:clickable="true"
             android:src="@drawable/ic_baseline_delete_24"
-            app:backgroundTint="#33F63657"
+            app:backgroundTint="#FFC8D1"
             app:elevation="0dp"
             app:layout_constraintBottom_toTopOf="@+id/textView4"
             app:layout_constraintEnd_toStartOf="@+id/fabEdit"

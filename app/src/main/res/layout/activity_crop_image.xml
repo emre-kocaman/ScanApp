@@ -11,19 +11,19 @@
         android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:text="Contrast"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/seekBarSharpness"
-        app:layout_constraintEnd_toEndOf="@+id/seekBarSharpness"
+        app:layout_constraintBottom_toTopOf="@+id/seeekBarContrast"
+        app:layout_constraintEnd_toEndOf="@+id/seeekBarContrast"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/seekBarSharpness" />
+        app:layout_constraintStart_toStartOf="@+id/seeekBarContrast" />
 
     <TextView
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:text="Brightness"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/seekBarBrightness"
@@ -34,11 +34,13 @@
     <SeekBar
         android:id="@+id/seekBarBrightness"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="16dp"
-        android:background="#E8E8E8"
+        android:background="@drawable/track"
+        android:progressTint="#CCCCCC"
+        android:thumb="@drawable/thumb"
         android:max="510"
         android:progress="0"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -46,12 +48,14 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <SeekBar
-        android:id="@+id/seekBarSharpness"
+        android:id="@+id/seeekBarContrast"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:background="#E8E8E8"
+        android:background="@drawable/track"
+        android:progressTint="#CCCCCC"
+        android:thumb="@drawable/thumb"
         android:max="510"
         android:progress="0"
         app:layout_constraintBottom_toTopOf="@+id/textView8"
@@ -72,6 +76,32 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Sharpness"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/seekBarSharpness"
+        app:layout_constraintStart_toStartOf="@+id/seekBarSharpness" />
+
+    <SeekBar
+        android:id="@+id/seekBarSharpness"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/track"
+        android:progressTint="#CCCCCC"
+        android:thumb="@drawable/thumb"
+        android:indeterminate="false"
+        android:max="3"
+        android:progress="0"
+        app:layout_constraintBottom_toTopOf="@+id/textView7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <ImageView
         android:id="@+id/imageViewCropped"
         android:layout_width="0dp"
@@ -79,10 +109,12 @@
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"
         android:scaleType="fitCenter"
-        app:layout_constraintBottom_toTopOf="@+id/textView7"
+        app:layout_constraintBottom_toTopOf="@+id/textView9"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/saveCropppedImage"
+        app:layout_constraintVertical_bias="0.0"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

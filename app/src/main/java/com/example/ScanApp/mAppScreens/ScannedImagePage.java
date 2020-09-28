@@ -1,9 +1,7 @@
 package com.example.ScanApp.mAppScreens;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -25,7 +23,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,13 +34,11 @@ import com.example.ScanApp.mAppScreens.Models.ScannedImageModel;
 import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
 import com.example.ScanApp.mAppScreens.mUtils.mUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.itextpdf.kernel.geom.Line;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
-import uk.co.samuelwall.materialtaptargetprompt.extras.focals.CirclePromptFocal;
 import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFocal;
 
 public class ScannedImagePage extends AppCompatActivity implements View.OnClickListener {
@@ -142,7 +137,7 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         if (isPdfCreated){//Eğer kullanıcı zaten pdf combine ettiyse done buttonuna basınca bir daha combine etmesine gerek kalmadan direk ana sayfaya git
             //Seçilen resimleri pdf olarak sırasıyla kayıt edeceğimiz nokta burası.
             StaticVeriables.scannedImageModelList= new ArrayList<>();
-            Intent intent = new Intent(ScannedImagePage.this,MainPage.class);
+            Intent intent = new Intent(ScannedImagePage.this, MainActivity.class);
             startActivity(intent);
             finish();
         }
@@ -238,7 +233,7 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
                     mUtils.createPdfOfImageFromList(root,StaticVeriables.scannedImageModelList,context,fileName);
                     whenCheckedSp.setVisibility(View.GONE);
                     StaticVeriables.scannedImageModelList= new ArrayList<>();
-                    Intent intent = new Intent(ScannedImagePage.this,MainPage.class);
+                    Intent intent = new Intent(ScannedImagePage.this, MainActivity.class);
                     startActivity(intent);
                     finish();
                 }
