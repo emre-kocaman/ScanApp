@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="divider">#d7d7db</color>
-    <color name="negative">#FA8A00</color>
+    <color name="negative">#5c5c5c</color>
     <color name="positive">#ff3b30</color>
     <color name="others">#ff3b30</color>
     <color name="text_actionsheet_title">#000000</color>
