@@ -112,6 +112,7 @@ public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTa
                     pdf.setChecked(false);
                     StaticVeriables.checkedPdfList.remove(pdf);
                     if(StaticVeriables.checkedPdfList.size()==0){
+                        StaticVeriables.checkedPdfList.clear();
                         whenCheckedLayout.setVisibility(View.GONE);
                     }
                     else{

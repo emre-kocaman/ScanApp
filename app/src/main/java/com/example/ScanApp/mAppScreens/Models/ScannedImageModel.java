@@ -42,7 +42,7 @@ public class ScannedImageModel  {
     }
 
     public ScannedImageModel(Bitmap bitmap, String title, String info, Boolean isChecked) {
-        this.bitmap = bitmap;
+        this.bitmap = bitmap.copy(bitmap.getConfig(),true);
         this.title = title;
         this.info = info;
         this.isChecked = isChecked;

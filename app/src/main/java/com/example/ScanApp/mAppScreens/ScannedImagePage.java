@@ -83,7 +83,6 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         def();
         clicks();
         getScannedImagesFromList();
-
         //exampleForScannedImagePage();
     }
 
@@ -116,10 +115,9 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
                 Mat madt = new Mat(200,300, CvType.CV_8U);
                 Utils.bitmapToMat(bmp,madt);
                 applyThreshold(madt);
-                StaticVeriables.getScannedFromGallery=bmp;
-             /*   bmp.recycle();
-                madt.release();*/
-
+                StaticVeriables.getScannedFromGallery=bmp.copy(bmp.getConfig(),true);
+                bmp.recycle();
+                madt.release();
                 Intent gallery1 = new Intent(ScannedImagePage.this, EditImage.class);
                 gallery1.putExtra("isGallery",true);
                 startActivity(gallery1);
@@ -169,7 +167,6 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
 
 
     private void getScannedImagesFromList(){
-
         scannedImageCardAdapter = new ScannedImageCardAdapter(StaticVeriables.scannedImageModelList);
         recyclerViewScannedImages.setHasFixedSize(true);
         recyclerViewScannedImages.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));

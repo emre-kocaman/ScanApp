@@ -16,20 +16,20 @@ import java.util.logging.LogRecord;
 public class PictureThread extends Thread{
 
     public  ImageView imageView;
-    private Bitmap bitmap;
+    public Bitmap bitmap;
     public Bitmap temp_bitmap;
-    private Canvas canvas;
-    private Paint paint;
-    private ColorMatrix colorMatrixBrightness,colorMatrixSharpness;
-    private ColorMatrixColorFilter colorMatrixColorFilterBrightness,colorMatrixColorFilterSharpness;
-    private Handler handler;
-    private boolean running=false;
+    public Canvas canvas;
+    public Paint paint;
+    public ColorMatrix colorMatrixBrightness,colorMatrixSharpness;
+    public ColorMatrixColorFilter colorMatrixColorFilterBrightness,colorMatrixColorFilterSharpness;
+    public Handler handler;
+    public boolean running=false;
 
 
     public PictureThread(ImageView imageViewCropped, Bitmap bitmap) {
         this.imageView=imageViewCropped;
         this.bitmap = bitmap;
-        temp_bitmap= Bitmap.createBitmap(bitmap.getWidth(),bitmap.getHeight(),bitmap.getConfig());
+        temp_bitmap= bitmap.copy(bitmap.getConfig(),true);
         canvas= new Canvas(temp_bitmap);
         paint = new Paint();
         handler = new Handler();
@@ -76,6 +76,15 @@ public class PictureThread extends Thread{
         colorMatrixColorFilterBrightness = new ColorMatrixColorFilter(colorMatrixBrightness);
         paint.setColorFilter(colorMatrixColorFilterBrightness);
         running=true;
+    }
+
+    public void clearMemoryThread(){
+        canvas.drawBitmap(null,0,0,paint);
+        imageView.setImageBitmap(null);
+        bitmap.recycle();
+        bitmap=null;
+        temp_bitmap.recycle();
+        temp_bitmap=null;
     }
 
     @Override

@@ -146,10 +146,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void defs(){
-        StaticVeriables.checkedPdfList=new ArrayList<>();
+
+        if (StaticVeriables.scannedImageModelList!=null){
+            StaticVeriables.scannedImageModelList.clear();
+            Log.e("STASDFscannedlList","NULL DEGİL");
+        }
+        if (StaticVeriables.scannedDocument!=null){
+            StaticVeriables.scannedDocument.release();
+            Log.e("STASDFscannedDocument","NULL DEGİL");
+        }
+        if (StaticVeriables.checkedPdfList!=null){
+            StaticVeriables.checkedPdfList.clear();
+            Log.e("STASDFcheckedPdfList","NULL DEGİL");
+        }
+
         if (StaticVeriables.getScannedFromGallery!=null){
+            Log.e("STASDFgetGallery","NULL DEGİL");
             StaticVeriables.getScannedFromGallery.recycle();
         }
+
         bitmap=null;
         /*ActivityCompat.requestPermissions(MainPage.this,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE},

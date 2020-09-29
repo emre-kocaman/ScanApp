@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -56,7 +57,7 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
     Uri uri=null;
     PictureThread thread;
     File root;
-
+    ScannedImageModel scannedImageModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +82,6 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
         imageViewCropped=findViewById(R.id.imageViewCropped);
         intent = new Intent(EditImage.this, DocumentScannerActivity.class);
         saveCropppedImage=findViewById(R.id.saveCropppedImage);
-
 
         root = new File(Environment.getExternalStorageDirectory(), "PDF folders/Default Pdf Folder");
         if(!root.exists()){
@@ -108,8 +108,10 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
                 }
                 try {
                     imageViewCropped.setImageBitmap(mUtils.getBitmapFromUri(uri,bitmapEdit,this));
+
                     thread = new PictureThread(imageViewCropped,bitmapEdit);
                     thread.start();
+
                     original = bitmapEdit.copy(bitmapEdit.getConfig(),true);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -175,12 +177,10 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
 
     private void checkIsCard(){
         StaticVeriables.photoCount--;
-        if (StaticVeriables.photoCount==0 && !StaticVeriables.userWillScanCard){
-            Log.e("hangisine","1");
-            //Kullanıcı döküman scan etmiştir ve tarama bitmiştir taranan resimlerin olduğu sayfaya gönder.
+        if (StaticVeriables.photoCount==0 && !StaticVeriables.userWillScanCard){//Kullanıcı döküman scan etmiştir ve tarama bitmiştir taranan resimlerin olduğu sayfaya gönder.
             StaticVeriables.informationText="";
             StaticVeriables.photoCount=20;
-            Log.e("DIZIBOYUTUNE",String.valueOf(StaticVeriables.scannedImageModelList.size()));
+            clearMemory();
             Intent intent = new Intent(this, ScannedImagePage.class);
             startActivity(intent);
             finish();
@@ -195,7 +195,7 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
         }
         else if (StaticVeriables.photoCount==1){//Kimlik sayfasının arka sayfasını çekmeye git
             Log.e("hangisine","3");
-
+            clearMemory();
             StaticVeriables.informationText="SCAN THE BACK OF YOUR CARD";
             startActivity(intent);
             finish();
@@ -205,7 +205,7 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
     }
 
     private void saveImageToList(){
-        ScannedImageModel scannedImageModel = new ScannedImageModel(bitmapEdit,StaticVeriables.photoCount+". image","",false);
+        scannedImageModel = new ScannedImageModel(bitmapEdit,StaticVeriables.photoCount+". image","",false);
         StaticVeriables.scannedImageModelList.add(scannedImageModel);
     }
 
@@ -263,7 +263,6 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
                     case 0:
                         bitmapEdit= original.copy(original.getConfig(),true);
                         imageViewCropped.setImageBitmap(bitmapEdit);
-
                         break;
                     case 1:
                         loadBitmapSharp2();
@@ -294,8 +293,12 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
 
     }
 
-    private void clearBitmapsFromMemory(){
-
+    private void clearMemory(){
+        imageViewCropped.setImageBitmap(null);
+        bitmapEdit.recycle();
+        original.recycle();
+        bitmapEdit=null;
+        original=null;
     }
 
 
@@ -323,6 +326,7 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
                     //mUtils.createPdfOfImageFromList(root,StaticVeriables.scannedImageModelList,context,folderName);
 //                    bitmapEdit.recycle();
 //                    original.recycle();
+                    clearMemory();
                     Intent intent = new Intent(EditImage.this, MainActivity.class);
                     startActivity(intent);
                     finish();
