@@ -227,6 +227,7 @@ public class DocumentScannerActivity extends AppCompatActivity
                 display.getRealSize(size);
 
                 scanDocButton = (Button) findViewById(R.id.scanDocButton);
+                scanDocButton.setBackgroundResource(R.drawable.button);
                 sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
                 startMainPageTutorial1();
 
