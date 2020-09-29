@@ -147,6 +147,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void defs(){
         StaticVeriables.checkedPdfList=new ArrayList<>();
+        if (StaticVeriables.getScannedFromGallery!=null){
+            StaticVeriables.getScannedFromGallery.recycle();
+        }
         bitmap=null;
         /*ActivityCompat.requestPermissions(MainPage.this,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE},
@@ -215,7 +218,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Imgproc.adaptiveThreshold(src, src, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 11, 2);
 
         org.opencv.android.Utils.matToBitmap(src, bitmap);
-        StaticVeriables.getScannedFromGallery=bitmap;
+
+
     }
 
     @Override
@@ -228,14 +232,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Uri selectImage = data.getData();
             try {
                 bitmap = mUtils.getBitmapFromUri(selectImage,bitmap,this);
-                Log.e("BITMAPGELDIMI",String.valueOf(bitmap));
                 madt = new Mat(200,300, CvType.CV_8U);
                 Utils.bitmapToMat(bitmap,madt);
                 applyThreshold(madt);
+                StaticVeriables.getScannedFromGallery=bitmap.copy(bitmap.getConfig(),true);
+                bitmap.recycle();
+                madt.release();
                 Intent gallery1 = new Intent(MainActivity.this, EditImage.class);
                 gallery1.putExtra("isGallery",true);
                 startActivity(gallery1);
-                madt.release();
                 finish();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -394,7 +399,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 sharePdf(uriList());
                 break;
             case R.id.scanImage:
-                folderAdapter.notifyDataSetChanged();
                 break;
         }
     }

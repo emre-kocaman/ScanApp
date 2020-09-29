@@ -15,7 +15,7 @@ import java.util.logging.LogRecord;
 
 public class PictureThread extends Thread{
 
-    private ImageView imageView;
+    public  ImageView imageView;
     private Bitmap bitmap;
     public Bitmap temp_bitmap;
     private Canvas canvas;

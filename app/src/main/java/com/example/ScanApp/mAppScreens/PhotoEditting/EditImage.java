@@ -176,25 +176,31 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
     private void checkIsCard(){
         StaticVeriables.photoCount--;
         if (StaticVeriables.photoCount==0 && !StaticVeriables.userWillScanCard){
+            Log.e("hangisine","1");
             //Kullanıcı döküman scan etmiştir ve tarama bitmiştir taranan resimlerin olduğu sayfaya gönder.
             StaticVeriables.informationText="";
             StaticVeriables.photoCount=20;
-//            bitmapEdit.recycle();
-//            original.recycle();
+            Log.e("DIZIBOYUTUNE",String.valueOf(StaticVeriables.scannedImageModelList.size()));
             Intent intent = new Intent(this, ScannedImagePage.class);
             startActivity(intent);
             finish();
+
         }
         else if(StaticVeriables.photoCount==0 && StaticVeriables.userWillScanCard){
+            Log.e("hangisine","2");
+
             //Kullanıcı kard scan etmiştir ve tarama bitmiştir pdf oluşturup direk ana sayfaya gönder
             showAlert(this);
 
         }
         else if (StaticVeriables.photoCount==1){//Kimlik sayfasının arka sayfasını çekmeye git
+            Log.e("hangisine","3");
+
             StaticVeriables.informationText="SCAN THE BACK OF YOUR CARD";
-//            bitmapEdit.recycle();
-//            original.recycle();
             startActivity(intent);
+            finish();
+
+
         }
     }
 
@@ -211,8 +217,6 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
                 thread.adjustBrightnessAndSharpness(seekBar.getProgress(),seekBarConstrat.getProgress());
                 bitmapEdit=thread.temp_bitmap;
                 original = bitmapEdit.copy(bitmapEdit.getConfig(),true);
-                Log.e("LISTENERPRGBRGHT",String.valueOf(seekBarBrightness.getProgress()));
-                Log.e("LISTENERPRGSHRPN",String.valueOf(seekBarConstrat.getProgress()));
 
             }
 
@@ -290,6 +294,10 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
 
     }
 
+    private void clearBitmapsFromMemory(){
+
+    }
+
 
     public void showAlert(Context context)
     {
@@ -318,6 +326,7 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
                     Intent intent = new Intent(EditImage.this, MainActivity.class);
                     startActivity(intent);
                     finish();
+
 
                 }
                 else{

@@ -1,5 +1,6 @@
 package com.example.ScanApp.mAppScreens;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,6 +14,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -31,11 +33,19 @@ import com.example.ScanApp.OpenCvClasses.DocumentScannerActivity;
 import com.example.ScanApp.R;
 import com.example.ScanApp.mAppScreens.Adapters.ScannedImageCardAdapter;
 import com.example.ScanApp.mAppScreens.Models.ScannedImageModel;
+import com.example.ScanApp.mAppScreens.PhotoEditting.EditImage;
 import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
 import com.example.ScanApp.mAppScreens.mUtils.mUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.opencv.android.Utils;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
@@ -49,6 +59,9 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
     ArrayList<ScannedImageModel> selectedScannedImageList;
     File root;
     Boolean isPdfCreated=false;
+    private static final int SELECT_PHOTO=100;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     Bitmap bmp;
     //Visual Objects
@@ -57,13 +70,11 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
     FloatingActionButton floatingActionButtonDelete,floatingActionButtonCombine;
     RecyclerView recyclerViewScannedImages;
     Button buttonDone;
-    FloatingActionButton buttonScanAgain;
+    FloatingActionButton buttonScanAgain,buttonScanAgainFromGallery;
     ConstraintLayout whenCheckedSp;
     TextView textView;
     ImageView imageViewCloseSp;
 
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +87,49 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         //exampleForScannedImagePage();
     }
 
+
+    private void applyThreshold(Mat src) {
+        Imgproc.cvtColor(src, src, Imgproc.COLOR_BGR2GRAY);
+
+        // Some other approaches
+//        Imgproc.adaptiveThreshold(src, src, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 15, 15);
+//        Imgproc.threshold(src, src, 0, 255, Imgproc.THRESH_BINARY + Imgproc.THRESH_OTSU);
+
+        Imgproc.GaussianBlur(src, src, new Size(5, 5), 0);
+        Imgproc.adaptiveThreshold(src, src, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 11, 2);
+
+        org.opencv.android.Utils.matToBitmap(src, bmp);
+
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e("GIRDI","RESULT");
+        Log.e("GIRDICOD",String.valueOf(requestCode) + " "+String.valueOf(resultCode));
+        if (requestCode==SELECT_PHOTO && resultCode==RESULT_OK){
+
+            Uri selectImage = data.getData();
+            try {
+                bmp = mUtils.getBitmapFromUri(selectImage,bmp,this);
+                Mat madt = new Mat(200,300, CvType.CV_8U);
+                Utils.bitmapToMat(bmp,madt);
+                applyThreshold(madt);
+                StaticVeriables.getScannedFromGallery=bmp;
+             /*   bmp.recycle();
+                madt.release();*/
+
+                Intent gallery1 = new Intent(ScannedImagePage.this, EditImage.class);
+                gallery1.putExtra("isGallery",true);
+                startActivity(gallery1);
+                finish();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void def(){
         recyclerViewScannedImages=findViewById(R.id.recyclerViewScannedImages);
         //recyclerViewScannedImages.setLayoutManager(new LinearLayoutManager(this));
@@ -83,6 +137,7 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         bmp= BitmapFactory.decodeResource(getResources(),R.drawable.tmp);
         buttonDone=findViewById(R.id.buttonDone);
         buttonScanAgain=findViewById(R.id.buttonScanAgain);
+        buttonScanAgainFromGallery=findViewById(R.id.buttonScanAgainFromGallery);
 
         whenCheckedSp=findViewById(R.id.whenCheckedSp);
         selectedScannedImageList= new ArrayList<>();
@@ -103,6 +158,7 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
     private void clicks(){
         buttonDone.setOnClickListener(this);
         buttonScanAgain.setOnClickListener(this);
+        buttonScanAgainFromGallery.setOnClickListener(this);
         floatingActionButtonDelete.setOnClickListener(this);
         floatingActionButtonCombine.setOnClickListener(this);
         imageViewCloseSp.setOnClickListener(this);
@@ -160,7 +216,16 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
                 StaticVeriables.photoCount=1;
                 startActivity(new Intent(ScannedImagePage.this, DocumentScannerActivity.class));
                 break;
+            case R.id.buttonScanAgainFromGallery:
+                StaticVeriables.userWillScanCard=false;
+                StaticVeriables.willScanFromGallery=true;
+                StaticVeriables.photoCount=1;
+                StaticVeriables.informationText="SCAN FROM GALLERY.";
 
+                Intent pickFromGallery= new Intent(Intent.ACTION_PICK);
+                pickFromGallery.setType("image/*");
+                startActivityForResult(pickFromGallery,SELECT_PHOTO);
+                break;
             case R.id.floatingActionButtonCombine:
                 if(selectedScannedImageList.size()!=0){
                     showAlert(this);

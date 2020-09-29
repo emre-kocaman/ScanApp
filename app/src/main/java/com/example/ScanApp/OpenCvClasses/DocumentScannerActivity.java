@@ -299,52 +299,8 @@ public class DocumentScannerActivity extends AppCompatActivity
             }
 
 
-//        if(StaticVeriables.willScanFromGallery){
-//            findViewById(R.id.viewForPickImage).setVisibility(View.VISIBLE);
-//            Intent intent= new Intent(Intent.ACTION_PICK);
-//            intent.setType("image/*");
-//            startActivityForResult(intent,SELECT_PHOTO);
-//        }
     }
-    private Bitmap applyThreshold(Mat src) {
-        Imgproc.cvtColor(src, src, Imgproc.COLOR_BGR2GRAY);
 
-        // Some other approaches
-//        Imgproc.adaptiveThreshold(src, src, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 15, 15);
-//        Imgproc.threshold(src, src, 0, 255, Imgproc.THRESH_BINARY + Imgproc.THRESH_OTSU);
-
-        Imgproc.GaussianBlur(src, src, new Size(5, 5), 0);
-        Imgproc.adaptiveThreshold(src, src, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 11, 2);
-
-        Bitmap bm = Bitmap.createBitmap(src.width(), src.height(), Bitmap.Config.ARGB_8888);
-        org.opencv.android.Utils.matToBitmap(src, bm);
-
-        return bm;
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode==SELECT_PHOTO && resultCode==RESULT_OK){
-
-            Uri selectImage = data.getData();
-            Bitmap bitmap=null;
-            try {
-                bitmap = mUtils.getBitmapFromUri(selectImage,bitmap,this);
-                Log.e("BITMAPGELDIMI",String.valueOf(bitmap));
-                Bitmap bmp32 = bitmap.copy(Bitmap.Config.ARGB_8888,true);
-                Mat madt = new Mat(500,500,CvType.CV_8U);
-                Utils.bitmapToMat(bmp32,madt);
-                StaticVeriables.getScannedFromGallery=applyThreshold(madt);
-                Intent gallery = new Intent(DocumentScannerActivity.this,EditImage.class);
-                gallery.putExtra("isGallery",true);
-                startActivity(gallery);
-                finish();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     private void checkResumePermissions() {
         if (ContextCompat.checkSelfPermission(this,
@@ -515,9 +471,6 @@ public class DocumentScannerActivity extends AppCompatActivity
                 mImageProcessor = new ImageProcessor(mImageThread.getLooper(), new Handler(), this);
             }
             this.setImageProcessorBusy(false);
-//        if (StaticVeriables.willScanFromGallery){
-//            findViewById(R.id.viewForPickImage).setVisibility(View.VISIBLE);
-//        }
     }
 
     public void waitSpinnerVisible() {

@@ -99,7 +99,7 @@ public class mUtils {
 
             //RESMİ PDF OLARAK KAYDETME
 
-            File file = new File(root,folderName+"document.pdf");
+            File file = new File(root,folderName+".pdf");
 
             try {
                 FileOutputStream fileOutputStream = new FileOutputStream(file);
@@ -142,7 +142,7 @@ public class mUtils {
 
         pdfDocument.finishPage(page);
 
-        File file = new File(root,folderName+"card.pdf");
+        File file = new File(root,folderName+".pdf");
 
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
