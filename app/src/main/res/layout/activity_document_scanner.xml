@@ -145,7 +145,7 @@
                 android:layout_height="263dp"
                 android:gravity="center"
                 android:text="TextView"
-                android:textColor="#005EFF"
+                android:textColor="#FA8A00"
                 android:textSize="14sp" />
 
         </com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout>
