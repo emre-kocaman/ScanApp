@@ -11,6 +11,37 @@
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
 
+    <SurfaceView
+        android:id="@+id/surfaceView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentTop="true"
+        android:visibility="gone" />
+
+    <!-- This FrameLayout insets its children based on system windows using
+         android:fitsSystemWindows. -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <FrameLayout
+            android:id="@+id/fullscreen_content_controls"
+            style="?metaButtonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="@color/black_overlay"
+            android:orientation="vertical">
+        </FrameLayout>
+
+    </FrameLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -21,36 +52,35 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:background="@color/transparent"
-            android:paddingLeft="@dimen/zerodp"
-            android:paddingBottom="@dimen/zerodp" />
+            android:paddingBottom="@dimen/zerodp"
+            android:paddingLeft="@dimen/zerodp" />
 
 
         <ImageView
             android:id="@+id/nw_angle"
             android:layout_width="@dimen/angleside"
             android:layout_height="@dimen/angleside"
-            android:rotation="90"
+            android:rotation="270"
             android:src="@drawable/angle" />
 
         <ImageView
             android:id="@+id/se_angle"
             android:layout_width="@dimen/angleside"
             android:layout_height="@dimen/angleside"
-            android:rotation="270"
+            android:rotation="90"
             android:src="@drawable/angle" />
 
         <ImageView
             android:id="@+id/sw_angle"
             android:layout_width="@dimen/angleside"
             android:layout_height="@dimen/angleside"
-            android:rotation="0"
+            android:rotation="180"
             android:src="@drawable/angle" />
 
         <ImageView
             android:id="@+id/ne_angle"
             android:layout_width="@dimen/angleside"
             android:layout_height="@dimen/angleside"
-            android:rotation="180"
             android:src="@drawable/angle" />
 
 
@@ -107,7 +137,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/seventydp"
                 android:layout_alignParentTop="true"
-                android:orientation="horizontal" />
+                android:orientation="horizontal"/>
 
             <TextView
                 android:id="@+id/textViewInfo"
@@ -115,7 +145,7 @@
                 android:layout_height="263dp"
                 android:gravity="center"
                 android:text="TextView"
-                android:textColor="#FA8A00"
+                android:textColor="#005EFF"
                 android:textSize="14sp" />
 
         </com.github.fafaldo.fabtoolbar.widget.FABToolbarLayout>
@@ -132,27 +162,10 @@
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="#FA8A00"
-            android:indeterminate="true"
-            android:progressBackgroundTint="#FA8A00" />
+            android:indeterminate="true" />
 
     </RelativeLayout>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
-
-        <FrameLayout
-            android:id="@+id/fullscreen_content_controls"
-            style="?metaButtonBarStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:background="@color/black_overlay"
-            android:orientation="vertical"></FrameLayout>
-
-    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -165,10 +178,11 @@
 
         <Button
             android:id="@+id/scanDocButton"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="@dimen/seventydp"
+            android:layout_height="@dimen/seventydp"
             android:layout_gravity="center|center_horizontal|center_vertical"
-            android:background="@drawable/button"
+            android:background="@drawable/scan"
+            android:backgroundTint="#19FF00"
             android:elevation="@dimen/gap"
             android:enabled="true"
             android:gravity="center_horizontal|center_vertical"
@@ -176,21 +190,6 @@
             android:translationZ="@dimen/gap" />
 
     </LinearLayout>
-
-    <SurfaceView
-        android:id="@+id/surfaceView"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone" />
-
-    <!-- This FrameLayout insets its children based on system windows using
-         android:fitsSystemWindows. -->
 
 
 </FrameLayout>
