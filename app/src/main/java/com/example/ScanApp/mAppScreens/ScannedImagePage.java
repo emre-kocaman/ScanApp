@@ -360,6 +360,7 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
 
     public void startMainPageTutorial1() {
         //sharedPreferences.getBoolean("isFirstTimeScannedImagePage",true)
+        //recyclerViewScannedImages.getAdapter() != null && sharedPreferences.getBoolean("isFirstTimeScannedImagePage",true)
         if (recyclerViewScannedImages.getAdapter() != null && sharedPreferences.getBoolean("isFirstTimeScannedImagePage",true)){
             View targetItem = ((ScannedImageCardAdapter) recyclerViewScannedImages.getAdapter()).focusItem;
 
@@ -428,7 +429,7 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
                 .setBackButtonDismissEnabled(true)
                 .setBackgroundColour(Color.parseColor("#FA8A00"))
                 .setPromptFocal(new RectanglePromptFocal())
-                .setPrimaryText("Scan again")
+                .setPrimaryText("Scan again from camera")
                 .setSecondaryText(R.string.ScannedImage3)
                 .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
                 {
@@ -449,6 +450,37 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
 
     public void startMainPageTutorial4() {
 
+
+        new MaterialTapTargetPrompt.Builder(ScannedImagePage.this)
+                .setTarget(buttonScanAgainFromGallery)
+                .setCaptureTouchEventOnFocal(true)
+                .setBackButtonDismissEnabled(true)
+                .setBackgroundColour(Color.parseColor("#FA8A00"))
+                .setPromptFocal(new RectanglePromptFocal())
+                .setPrimaryText("Scan image from gallery")
+                .setSecondaryText(R.string.ScannedImage5)
+                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
+                {
+                    @Override
+                    public void onPromptStateChanged(MaterialTapTargetPrompt prompt, int state)
+                    {
+                        if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state==MaterialTapTargetPrompt.STATE_NON_FOCAL_PRESSED)
+                        {
+
+                            startMainPageTutorial5();
+                        }
+                    }
+                })
+                .show();
+
+
+
+
+
+    }
+
+
+    public void startMainPageTutorial5() {
         new MaterialTapTargetPrompt.Builder(ScannedImagePage.this)
                 .setTarget(buttonDone)
                 .setCaptureTouchEventOnFocal(true)
@@ -470,6 +502,7 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
                     }
                 })
                 .show();
+
 
 
     }

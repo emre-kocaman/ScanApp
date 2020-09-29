@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.ScanApp.R;
 import com.example.ScanApp.mAppScreens.Models.ScannedImageModel;
 import com.example.ScanApp.mAppScreens.ScannedImagePage;
@@ -73,7 +74,7 @@ class ScannedCardHolder extends RecyclerView.ViewHolder implements View.OnClickL
 
 
     public void bind(ScannedImageModel model){
-        imageView.setImageBitmap(model.getBitmap());
+        Glide.with(itemView.getContext()).load(model.getBitmap()).centerCrop().into(imageView);
         checkBox.setChecked(model.getChecked());
     }
 

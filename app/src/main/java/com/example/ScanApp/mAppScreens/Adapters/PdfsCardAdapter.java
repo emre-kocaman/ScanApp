@@ -93,7 +93,6 @@ public class PdfsCardAdapter extends RecyclerView.Adapter<PdfsCardAdapter.CardTa
     public void onBindViewHolder(@NonNull CardTasarimTutucu holder, int position) {
         Log.e("OKABASILDI","DENEME");
         PdfDocumentsModel pdf = pdfDocumentsList.get(position);
-
         Glide.with(context).load(pdf.getBitmap()).centerCrop().into(holder.pdfImage);
         //holder.pdfImage.setImageBitmap(pdf.getBitmap());
         holder.textViewPdfInfo.setText(pdf.getPdfInfo());
