@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.renderscript.Allocation;
@@ -22,6 +23,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -44,6 +46,8 @@ import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 public class EditImage extends AppCompatActivity implements View.OnClickListener {
 
@@ -51,6 +55,7 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
     ImageView imageViewCropped;
     Button saveCropppedImage;
     SeekBar seekBarConstrat,seekBarBrightness,seekBarSharpness;
+    ProgressBar progressBarPdfCreating;
     //Veriables
     Intent intent;
     Bitmap bitmapEdit=null,original=null;
@@ -74,7 +79,7 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
     }
 
     private void defs(){
-
+        progressBarPdfCreating=findViewById(R.id.progressBarPdfCreating);
         seekBarConstrat=findViewById(R.id.seeekBarContrast);
         seekBarBrightness=findViewById(R.id.seekBarBrightness);
         seekBarSharpness=findViewById(R.id.seekBarSharpness);
@@ -322,10 +327,10 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
 
                 String folderName = editTextFolderName.getText().toString().trim();
                 if (folderName.length()!=0){
-                    mUtils.createPdfOfCard(root,StaticVeriables.scannedImageModelList,folderName);
-                    //mUtils.createPdfOfImageFromList(root,StaticVeriables.scannedImageModelList,context,folderName);
-//                    bitmapEdit.recycle();
-//                    original.recycle();
+
+                    new MyTask(EditImage.this).execute(folderName);
+
+
                     clearMemory();
                     Intent intent = new Intent(EditImage.this, MainActivity.class);
                     startActivity(intent);
@@ -350,6 +355,61 @@ public class EditImage extends AppCompatActivity implements View.OnClickListener
         });
 
         alert.create().show();
+    }
+
+
+    public static class MyTask extends AsyncTask<String, Void, Void> {
+        private WeakReference<EditImage> weakReference;
+
+        MyTask(EditImage scannedImagePage){
+            weakReference = new WeakReference<>(scannedImagePage);
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            EditImage activity = weakReference.get();
+            if (activity==null || activity.isFinishing()){
+                return;
+            }
+
+            activity.progressBarPdfCreating.setVisibility(View.VISIBLE);
+
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(String... string) {
+
+            EditImage activity = weakReference.get();
+            if (activity==null || activity.isFinishing()){
+                return null;
+            }
+            mUtils.createPdfOfImageFromList(activity.root,StaticVeriables.scannedImageModelList,activity,string[0]);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            EditImage activity = weakReference.get();
+            if (activity==null || activity.isFinishing()){
+                return;
+            }
+
+                activity.progressBarPdfCreating.setVisibility(View.GONE);
+                Toast.makeText(activity, "Pdf dönüştürme işlemi tamamlandı.Done buttonuna basarak ana sayfaya gidebilirsiniz.", Toast.LENGTH_SHORT).show();
+
+                activity.progressBarPdfCreating.setVisibility(View.GONE);
+                StaticVeriables.scannedImageModelList=new ArrayList<>();
+                Intent intent = new Intent(activity, MainActivity.class);
+                activity.startActivity(intent);
+                activity.finish();
+
+
+
+        }
     }
 
     public Bitmap doSharpen(Bitmap original, float[] radius, Context context) {

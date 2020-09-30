@@ -36,55 +36,18 @@ public class PictureThread extends Thread{
 
     }
 
-    public void adjustBrightness(int amount){
-        colorMatrixBrightness = new ColorMatrix(new float[]{
-                1, 0, 0, 0, amount,
-                0, 1f, 0, 0, amount,
-                0, 0, 1f, 0, amount,
-                0, 0, 0, 1f, 0
-        });
-
-        colorMatrixColorFilterBrightness = new ColorMatrixColorFilter(colorMatrixBrightness);
-        paint.setColorFilter(colorMatrixColorFilterBrightness);
-        running=true;
-    }
-
-    public void adjustSharpness(int amount){
-        colorMatrixSharpness=new ColorMatrix(new float[]{
-                amount, 0, 0, 0, 0,
-                0, amount, 0, 0, 0,
-                0, 0, amount, 0, 0,
-                0, 0, 0, 1, 0
-        });
-        colorMatrixColorFilterSharpness=new ColorMatrixColorFilter(colorMatrixSharpness);
-        paint.setColorFilter(colorMatrixColorFilterSharpness);
-        running=true;
-    }
-
     public void adjustBrightnessAndSharpness(int amountBrightness,int amountSharpness){
         colorMatrixBrightness = new ColorMatrix(new float[]{
                 amountSharpness+1, 0, 0, 0, amountBrightness,
                 0, amountSharpness+1, 0, 0, amountBrightness,
                 0, 0, amountSharpness+1, 0, amountBrightness,
                 0, 0, 0, 1, 0
-/*                0, 0, amountSharpness, 0, amountBrightness,
-                0,0 , 0, amountSharpness/2, amountBrightness,
-                0, 0,0 , amountSharpness/4, amountBrightness,
-                0, 0, 0, 1, 0*/
+
         });
 
         colorMatrixColorFilterBrightness = new ColorMatrixColorFilter(colorMatrixBrightness);
         paint.setColorFilter(colorMatrixColorFilterBrightness);
         running=true;
-    }
-
-    public void clearMemoryThread(){
-        canvas.drawBitmap(null,0,0,paint);
-        imageView.setImageBitmap(null);
-        bitmap.recycle();
-        bitmap=null;
-        temp_bitmap.recycle();
-        temp_bitmap=null;
     }
 
     @Override

@@ -38,6 +38,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -240,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         Log.e("GIRDI","RESULT");
         Log.e("GIRDICOD",String.valueOf(requestCode) + " "+String.valueOf(resultCode));
         if (requestCode==SELECT_PHOTO && resultCode==RESULT_OK){
@@ -588,6 +590,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         View tasarim = layoutInflater.inflate(R.layout.alert_design,null);
 
         final EditText editTextFolderName = tasarim.findViewById(R.id.editTextFolderName);
+
 
 
         AlertDialog.Builder alert = new AlertDialog.Builder(this);

@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,10 +15,13 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.pdf.PdfRenderer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,12 +30,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ScanApp.OpenCvClasses.DocumentScannerActivity;
 import com.example.ScanApp.R;
 import com.example.ScanApp.mAppScreens.Adapters.ScannedImageCardAdapter;
+import com.example.ScanApp.mAppScreens.Models.PdfDocumentsModel;
 import com.example.ScanApp.mAppScreens.Models.ScannedImageModel;
 import com.example.ScanApp.mAppScreens.PhotoEditting.EditImage;
 import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
@@ -46,6 +52,7 @@ import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
@@ -59,14 +66,13 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
     ArrayList<ScannedImageModel> selectedScannedImageList;
     File root;
     Boolean isPdfCreated=false;
+    Boolean isPdfCreating=false;
     private static final int SELECT_PHOTO=100;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
     Bitmap bmp;
     //Visual Objects
-    View viewItem;
-    View icon ;
     FloatingActionButton floatingActionButtonDelete,floatingActionButtonCombine;
     RecyclerView recyclerViewScannedImages;
     Button buttonDone;
@@ -74,6 +80,7 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
     ConstraintLayout whenCheckedSp;
     TextView textView;
     ImageView imageViewCloseSp;
+    ProgressBar progressBarPdfCreating;
 
 
     @Override
@@ -151,6 +158,10 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         }
 
         sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
+
+        progressBarPdfCreating=findViewById(R.id.progressBarPdfCreating);
+        progressBarPdfCreating.setVisibility(View.GONE);
+
     }
 
     private void clicks(){
@@ -187,26 +198,30 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
     }
 
     private void goToMainPage(){
-        if (isPdfCreated){//Eğer kullanıcı zaten pdf combine ettiyse done buttonuna basınca bir daha combine etmesine gerek kalmadan direk ana sayfaya git
-            //Seçilen resimleri pdf olarak sırasıyla kayıt edeceğimiz nokta burası.
-            StaticVeriables.scannedImageModelList= new ArrayList<>();
-            Intent intent = new Intent(ScannedImagePage.this, MainActivity.class);
-            startActivity(intent);
-            finish();
+        Log.e("HANGIBOOL",isPdfCreated.toString());
+        if (isPdfCreating){
+            Toast.makeText(this, "Pdf oluşturuluyor lütfen bekleyiniz.", Toast.LENGTH_SHORT).show();
         }
         else{
-            showWhenPressDone(this);
+            if (isPdfCreated){//Eğer kullanıcı zaten pdf combine ettiyse done buttonuna basınca bir daha combine etmesine gerek kalmadan direk ana sayfaya git
+                //Seçilen resimleri pdf olarak sırasıyla kayıt edeceğimiz nokta burası.
+                StaticVeriables.scannedImageModelList= new ArrayList<>();
+                Intent intent = new Intent(ScannedImagePage.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+            else{
+                showWhenPressDone(this);
 
-//            mUtils.createPdfOfImageFromList(root,StaticVeriables.scannedImageModelList,this,);
-//            whenCheckedSp.setVisibility(View.GONE);
-
+            }
         }
+
     }
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.buttonDone:
-                goToMainPage();
+                    goToMainPage();
                 break;
             case R.id.buttonScanAgain:
                 //Eğer kullanıcı taranan resimler sayfasından tekrar bir resim scan etmek isterse buradan yönlendirip scan edip tekrar bu sayfaya resim eklenmiş bir şekilde geri dönüyoruz.
@@ -292,12 +307,12 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
             public void onClick(DialogInterface dialogInterface, int i) {
                 String fileName = editTextFolderName.getText().toString().trim();
                 if (fileName.length()!=0){
-                    mUtils.createPdfOfImageFromList(root,StaticVeriables.scannedImageModelList,context,fileName);
+
+
+                    new MyTask(ScannedImagePage.this).execute(fileName,"done");
                     whenCheckedSp.setVisibility(View.GONE);
-                    StaticVeriables.scannedImageModelList= new ArrayList<>();
-                    Intent intent = new Intent(ScannedImagePage.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
+
+
                 }
                 else{
                     Toast.makeText(context, "Name cant be empty", Toast.LENGTH_SHORT).show();
@@ -324,7 +339,6 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
 
         final EditText editTextFolderName = tasarim.findViewById(R.id.editTextFolderName);
 
-
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("File Name");
         alert.setView(tasarim);
@@ -334,10 +348,10 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
             public void onClick(DialogInterface dialogInterface, int i) {
                 String fileName = editTextFolderName.getText().toString().trim();
                 if (fileName.length()!=0){
-                    Log.e("SIZEOFSCANNED",String.valueOf(StaticVeriables.scannedImageModelList.size()));
-                    mUtils.createPdfOfImageFromList(root,selectedScannedImageList,context,fileName);
-                    whenCheckedSp.setVisibility(View.GONE);
-                    isPdfCreated=true;
+                        isPdfCreating=true;
+                        isPdfCreated=true;
+                    new MyTask(ScannedImagePage.this).execute(fileName,"combine");
+                        whenCheckedSp.setVisibility(View.GONE);
                 }
                 else{
                     Toast.makeText(context, "Name cant be empty", Toast.LENGTH_SHORT).show();
@@ -353,6 +367,76 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         });
 
         alert.create().show();
+    }
+
+
+    public static class MyTask extends AsyncTask<String, Void, Boolean> {
+        private WeakReference<ScannedImagePage> weakReference;
+
+        MyTask(ScannedImagePage scannedImagePage){
+            weakReference = new WeakReference<>(scannedImagePage);
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            ScannedImagePage activity = weakReference.get();
+            if (activity==null || activity.isFinishing()){
+                return;
+            }
+
+            activity.progressBarPdfCreating.setVisibility(View.VISIBLE);
+
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(String... string) {
+
+            ScannedImagePage activity = weakReference.get();
+            if (activity==null || activity.isFinishing()){
+                return null;
+            }
+
+            if (string[1].equals("combine")){
+                mUtils.createPdfOfImageFromList(activity.root,activity.selectedScannedImageList,activity,string[0]);
+                return true;
+            }
+            else if(string[1].equals("done")) {
+                mUtils.createPdfOfImageFromList(activity.root,StaticVeriables.scannedImageModelList,activity,string[0]);
+                return false;
+            }
+            else{
+                return null;
+            }
+
+
+
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aVoid) {
+            super.onPostExecute(aVoid);
+            ScannedImagePage activity = weakReference.get();
+            if (activity==null || activity.isFinishing()){
+                return;
+            }
+                if (aVoid){
+                    activity.progressBarPdfCreating.setVisibility(View.GONE);
+                    activity.isPdfCreating=false;
+                    Toast.makeText(activity, "Pdf dönüştürme işlemi tamamlandı.Done buttonuna basarak ana sayfaya gidebilirsiniz.", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    activity.progressBarPdfCreating.setVisibility(View.GONE);
+                    StaticVeriables.scannedImageModelList=new ArrayList<>();
+                    Intent intent = new Intent(activity, MainActivity.class);
+                    activity.startActivity(intent);
+                    activity.finish();
+                }
+
+
+
+        }
     }
 
     public void startMainPageTutorial1() {
