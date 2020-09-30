@@ -116,7 +116,8 @@
         android:secondaryProgressTint="#F69833"
         app:layout_constraintBottom_toBottomOf="@+id/recyclerViewScannedImages"
         app:layout_constraintEnd_toEndOf="@+id/recyclerViewScannedImages"
-        app:layout_constraintStart_toStartOf="@+id/recyclerViewScannedImages" />
+        app:layout_constraintStart_toStartOf="@+id/recyclerViewScannedImages"
+        app:layout_constraintTop_toTopOf="@+id/recyclerViewScannedImages" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/whenCheckedSp"

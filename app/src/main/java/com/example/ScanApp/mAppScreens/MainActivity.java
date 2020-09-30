@@ -50,6 +50,13 @@ import com.example.ScanApp.mAppScreens.PhotoEditting.EditImage;
 import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
 import com.example.ScanApp.OpenCvClasses.DocumentScannerActivity;
 import com.example.ScanApp.mAppScreens.mUtils.mUtils;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.opencv.android.BaseLoaderCallback;
@@ -89,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public ArrayList<Folder> folderList;
     private FoldersAdapter folderAdapter;
     private TextView folderSelected;
+    private AdView banner;
 
     //Veriables
     Intent intent;
@@ -111,6 +119,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     scanButtonsListener();
                     getPdfFolderInfos();
                     startMainPageTutorial1();
+                    initAds();
+                    bannerListener();
                     //exampleForMainPage()
                 } else {
                     Toast.makeText(this, "You have to give permissions", Toast.LENGTH_SHORT).show();
@@ -211,6 +221,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         StrictMode.setVmPolicy(builder.build());
 
         sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
+
+        banner = findViewById(R.id.banner);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        banner.loadAd(adRequest);
 
     }
 
@@ -755,6 +769,69 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         folderList=new ArrayList<>();
         getPdfFolderInfos();
         whenCheckedLayout.setVisibility(View.GONE);
+    }
+
+    private void initAds(){
+        MobileAds.initialize(MainActivity.this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+
+            }
+        });
+    }
+
+    private void bannerListener(){
+        banner.setAdListener(new AdListener(){
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                Log.e("REKLAM","onAdClosed");
+            }
+
+            @Override
+            public void onAdFailedToLoad(LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
+                Toast.makeText(MainActivity.this, "Reklam yüklemede hata...", Toast.LENGTH_SHORT).show();
+
+                Log.e("REKLAM","onAdFailedToLoad");
+
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                super.onAdLeftApplication();
+                Log.e("REKLAM","onAdLeftApplication");
+
+            }
+
+            @Override
+            public void onAdOpened() {
+                super.onAdOpened();
+                Log.e("REKLAM","onAdOpened");
+
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                Log.e("REKLAM","onAdLoaded");
+
+            }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                Log.e("REKLAM","onAdClicked");
+
+            }
+
+            @Override
+            public void onAdImpression() {
+                super.onAdImpression();
+                Log.e("REKLAM","onAdImpression");
+
+            }
+        });
     }
 
 

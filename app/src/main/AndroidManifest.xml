@@ -46,6 +46,10 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/AppTheme" />
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-5087773943034547~7736654139"/><!--App ads ürün kimliği-->
     </application>
 
 </manifest>

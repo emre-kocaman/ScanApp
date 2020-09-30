@@ -42,6 +42,13 @@ import com.example.ScanApp.mAppScreens.Models.ScannedImageModel;
 import com.example.ScanApp.mAppScreens.PhotoEditting.EditImage;
 import com.example.ScanApp.mAppScreens.mUtils.StaticVeriables;
 import com.example.ScanApp.mAppScreens.mUtils.mUtils;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.opencv.android.Utils;
@@ -61,6 +68,8 @@ import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFoc
 public class ScannedImagePage extends AppCompatActivity implements View.OnClickListener {
 
     //Veriables
+    Intent intent;
+
     ScannedImageCardAdapter scannedImageCardAdapter;
     ArrayList<ScannedImageModel> scannedImageModelArrayList;
     ArrayList<ScannedImageModel> selectedScannedImageList;
@@ -82,6 +91,8 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
     ImageView imageViewCloseSp;
     ProgressBar progressBarPdfCreating;
 
+    private InterstitialAd interstitialAd;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +101,7 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         def();
         clicks();
         getScannedImagesFromList();
+        addListener();
         //exampleForScannedImagePage();
     }
 
@@ -136,6 +148,19 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
     }
 
     private void def(){
+
+        MobileAds.initialize(ScannedImagePage.this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+
+            }
+        });
+        //ca-app-pub-5087773943034547/3797409122 Ana Id
+        //ca-app-pub-3940256099942544/1033173712 test Id
+        interstitialAd= new InterstitialAd(this);
+        interstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        interstitialAd.loadAd(new AdRequest.Builder().build());
+        intent = new Intent(ScannedImagePage.this, MainActivity.class);
         recyclerViewScannedImages=findViewById(R.id.recyclerViewScannedImages);
         //recyclerViewScannedImages.setLayoutManager(new LinearLayoutManager(this));
         scannedImageModelArrayList=new ArrayList<>();
@@ -161,6 +186,10 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
 
         progressBarPdfCreating=findViewById(R.id.progressBarPdfCreating);
         progressBarPdfCreating.setVisibility(View.GONE);
+
+
+
+
 
     }
 
@@ -205,10 +234,18 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         else{
             if (isPdfCreated){//Eğer kullanıcı zaten pdf combine ettiyse done buttonuna basınca bir daha combine etmesine gerek kalmadan direk ana sayfaya git
                 //Seçilen resimleri pdf olarak sırasıyla kayıt edeceğimiz nokta burası.
-                StaticVeriables.scannedImageModelList= new ArrayList<>();
-                Intent intent = new Intent(ScannedImagePage.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+                //ca-app-pub-5087773943034547/3797409122 Ana Id
+                //ca-app-pub-3940256099942544/1033173712 test Id
+                if (interstitialAd.isLoaded()){
+                    interstitialAd.show();
+                }
+                else{
+                    Log.e("REKLAM","REKLAM HAZIR DEGİL.");
+                    StaticVeriables.scannedImageModelList= new ArrayList<>();
+                    startActivity(intent);
+                    finish();
+                }
+
             }
             else{
                 showWhenPressDone(this);
@@ -369,7 +406,6 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
         alert.create().show();
     }
 
-
     public static class MyTask extends AsyncTask<String, Void, Boolean> {
         private WeakReference<ScannedImagePage> weakReference;
 
@@ -427,16 +463,77 @@ public class ScannedImagePage extends AppCompatActivity implements View.OnClickL
                     Toast.makeText(activity, "Pdf dönüştürme işlemi tamamlandı.Done buttonuna basarak ana sayfaya gidebilirsiniz.", Toast.LENGTH_SHORT).show();
                 }
                 else{
+                    //ca-app-pub-5087773943034547/3797409122 Ana Id
+                    //ca-app-pub-3940256099942544/1033173712 test Id
                     activity.progressBarPdfCreating.setVisibility(View.GONE);
-                    StaticVeriables.scannedImageModelList=new ArrayList<>();
-                    Intent intent = new Intent(activity, MainActivity.class);
-                    activity.startActivity(intent);
-                    activity.finish();
+                    if (activity.interstitialAd.isLoaded()){
+                        activity.interstitialAd.show();
+                    }
+                    else{
+                        StaticVeriables.scannedImageModelList=new ArrayList<>();
+                        activity.startActivity(activity.intent);
+                        activity.finish();
+                    }
                 }
 
 
 
         }
+    }
+
+    private void addListener(){
+        interstitialAd.setAdListener(new AdListener(){
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                Log.e("REKLAM","onAdClosed");
+                StaticVeriables.scannedImageModelList= new ArrayList<>();
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onAdFailedToLoad(LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
+                Log.e("REKLAM","onAdFailedToLoad");
+
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                super.onAdLeftApplication();
+                Log.e("REKLAM","onAdLeftApplication");
+
+            }
+
+            @Override
+            public void onAdOpened() {
+                super.onAdOpened();
+                Log.e("REKLAM","onAdOpened");
+
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                Log.e("REKLAM","onAdLoaded");
+
+            }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                Log.e("REKLAM","onAdClicked");
+
+            }
+
+            @Override
+            public void onAdImpression() {
+                super.onAdImpression();
+                Log.e("REKLAM","onAdImpression");
+
+            }
+        });
     }
 
     public void startMainPageTutorial1() {
